@@ -175,7 +175,8 @@ for item in selected_backgrounds:
                 f"* [Lijst met relevante instanties, beleidsstukken of onderzoeksinstellingen]"
             )
             
-            url_api = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
+            # Officiële v1 REST endpoint voor gemini-1.5-flash
+            url_api = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
             data = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode('utf-8')
             req = urllib.request.Request(url_api, data=data, headers={'Content-Type': 'application/json'})
             
@@ -188,7 +189,7 @@ for item in selected_backgrounds:
         except urllib.error.HTTPError as http_err:
             error_body = http_err.read().decode()
             print(f"HTTP Fout bij '{item['title']}': Status {http_err.code} - Details: {error_body}")
-            full_text = f"<b>API Fout ({http_err.code}):</b> Het ophalen van het dossier via Gemini is mislukt. Zie logs in GitHub Actions."
+            full_text = f"<b>API Fout ({http_err.code}):</b> Het ophalen via Gemini is mislukt."
         except Exception as ai_err:
             print(f"Algemene AI dossier fout bij '{item['title']}': {ai_err}")
             full_text = f"<b>Niet gelukt om live AI-dossier op te halen.</b><br>Fout: {ai_err}"
@@ -267,7 +268,7 @@ for category, urls in FEEDS.items():
                     f"{extra_prompt} Bericht: {title} - {clean_summary}"
                 )
                 
-                url_api = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
+                url_api = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
                 data = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode('utf-8')
                 req = urllib.request.Request(url_api, data=data, headers={'Content-Type': 'application/json'})
                 response = urllib.request.urlopen(req, timeout=10)
