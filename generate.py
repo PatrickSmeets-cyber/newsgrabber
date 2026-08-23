@@ -1,5 +1,6 @@
 import feedparser
 import urllib.request
+import urllib.error
 import json
 import os
 import re
@@ -66,7 +67,7 @@ BACKGROUND_POOL = [
     },
     {
         "title": "Energietransitie & Het Volle Stroomnet",
-        "topic": "Netcongestie, de grenzen van het elektriciteitsnet en verduurzaming",
+        "topic": "Netcongestie, de grenzen van het elektriciteitsnet en verduurzamingsuitdagingen",
         "img": "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600"
     },
     {
@@ -133,14 +134,15 @@ def clean_markdown(text):
     text = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', text)
     text = re.sub(r'### (.*?)\n', r'<h4 style="color:#00b4d8; margin-top:15px; margin-bottom:5px;">\1</h4>', text)
     text = re.sub(r'\* (.*?)\n', r'• \1<br>', text)
+    text = text.replace("\n", "<br>")
     return text
+
+def strip_tags(text):
+    return re.sub('<[^<]+?>', '', text)
 
 articles_html = ""
 modal_data = {}
 api_key = os.environ.get("AI_API_KEY", "").strip()
-
-def strip_tags(text):
-    return re.sub('<[^<]+?>', '', text)
 
 article_id = 0
 
@@ -173,20 +175,23 @@ for item in selected_backgrounds:
                 f"* [Lijst met relevante instanties, beleidsstukken of onderzoeksinstellingen]"
             )
             
-            # Correct officieel endpoint voor Gemini 1.5 Flash
-            url_api = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+            url_api = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
             data = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode('utf-8')
             req = urllib.request.Request(url_api, data=data, headers={'Content-Type': 'application/json'})
             
-            response = urllib.request.urlopen(req, timeout=15)
+            response = urllib.request.urlopen(req, timeout=20)
             res_json = json.loads(response.read().decode())
             
             ai_out = res_json['candidates'][0]['content']['parts'][0]['text'].strip()
             full_text = clean_markdown(ai_out)
             summary = item['topic']
+        except urllib.error.HTTPError as http_err:
+            error_body = http_err.read().decode()
+            print(f"HTTP Fout bij '{item['title']}': Status {http_err.code} - Details: {error_body}")
+            full_text = f"<b>API Fout ({http_err.code}):</b> Het ophalen van het dossier via Gemini is mislukt. Zie logs in GitHub Actions."
         except Exception as ai_err:
-            print(f"AI dossier fout bij '{item['title']}': {ai_err}")
-            full_text = f"<b>Niet gelukt om live AI-dossier op te halen.</b><br>Onderwerp: {item['topic']}. Controleer of AI_API_KEY correct is ingesteld op GitHub Actions."
+            print(f"Algemene AI dossier fout bij '{item['title']}': {ai_err}")
+            full_text = f"<b>Niet gelukt om live AI-dossier op te halen.</b><br>Fout: {ai_err}"
 
     modal_data[str(article_id)] = {
         "title": item["title"],
@@ -262,12 +267,14 @@ for category, urls in FEEDS.items():
                     f"{extra_prompt} Bericht: {title} - {clean_summary}"
                 )
                 
-                url_api = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+                url_api = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
                 data = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode('utf-8')
                 req = urllib.request.Request(url_api, data=data, headers={'Content-Type': 'application/json'})
-                response = urllib.request.urlopen(req, timeout=8)
+                response = urllib.request.urlopen(req, timeout=10)
                 res_json = json.loads(response.read().decode())
                 ai_summary = res_json['candidates'][0]['content']['parts'][0]['text'].strip()
+            except urllib.error.HTTPError as http_err:
+                print(f"HTTP Fout bij {category} item {idx}: Status {http_err.code}")
             except Exception as ai_err:
                 print(f"AI fout bij {category} item {idx}: {ai_err}")
 
@@ -295,7 +302,7 @@ for category, urls in FEEDS.items():
         </div>
         """
 
-# 5. Volledige HTML
+# 5. Volledige HTML opbouwen
 html_content = f"""<!DOCTYPE html>
 <html lang="nl">
 <head>
