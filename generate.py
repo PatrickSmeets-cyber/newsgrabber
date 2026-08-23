@@ -3,6 +3,7 @@ import urllib.request
 import json
 import os
 import re
+import random
 from datetime import datetime
 import zoneinfo
 
@@ -10,7 +11,7 @@ import zoneinfo
 tz = zoneinfo.ZoneInfo("Europe/Amsterdam")
 last_updated = datetime.now(tz).strftime("%d-%m-%Y om %H:%M uur")
 
-# 1. RSS Feeds met fallbacks per rubriek (Inclusief Weert de Gekste & Fitness)
+# 1. RSS Feeds met meerdere bronnen per rubriek
 FEEDS = {
     "Wereld": [
         "https://feeds.nos.nl/nosnieuwsbuitenland",
@@ -67,7 +68,7 @@ try:
 except Exception as e:
     print(f"Weer ophalen mislukt: {e}")
 
-# 3. Nieuws verzamelen
+# 3. Nieuws verzamelen met random shuffling
 articles_html = ""
 modal_data = {}
 api_key = os.environ.get("AI_API_KEY", "").strip()
@@ -78,16 +79,22 @@ def strip_tags(text):
 article_id = 0
 
 for category, urls in FEEDS.items():
-    category_items = []
+    pool_items = []
     
+    # Verzamel items uit alle feeds in deze categorie
     for url in urls:
         try:
             feed = feedparser.parse(url)
             if feed.entries:
-                category_items = feed.entries[:3]
-                break
+                pool_items.extend(feed.entries[:5])
         except Exception as err:
             print(f"Fout bij ophalen {url}: {err}")
+            
+    # Kies willekeurig 3 unieke artikelen uit de poel
+    if len(pool_items) >= 3:
+        category_items = random.sample(pool_items, 3)
+    else:
+        category_items = pool_items[:3]
             
     for idx, item in enumerate(category_items):
         article_id += 1
@@ -422,4 +429,4 @@ html_content = f"""<!DOCTYPE html>
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
 
-print("index.html succesvol gegenereerd inclusief klikbare ververs-widget!")
+print("index.html succesvol gegenereerd met gevarieerde nieuwsselectie!")
