@@ -1,16 +1,20 @@
 import feedparser
-import urllib.request
-import urllib.error
 import json
 import os
 import re
 import random
+import urllib.request
 from datetime import datetime
 import zoneinfo
+from google import genai
 
 # 0. Nederlandse tijdstempel bepalen
 tz = zoneinfo.ZoneInfo("Europe/Amsterdam")
 last_updated = datetime.now(tz).strftime("%d-%m-%Y om %H:%M uur")
+
+# Initialize Gemini Client via de officiële SDK
+api_key = os.environ.get("AI_API_KEY", "").strip()
+client = genai.Client(api_key=api_key) if api_key else None
 
 # 1. RSS Feeds met objectieve bronnen per rubriek
 FEEDS = {
@@ -129,7 +133,6 @@ except Exception as e:
     print(f"Weer ophalen mislukt: {e}")
     weather_html_summary = "Weergegevens momenteel niet beschikbaar."
 
-# Helper om Markdown koppen en vetgedrukte tekst om te zetten naar schone HTML
 def clean_markdown(text):
     text = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', text)
     text = re.sub(r'### (.*?)\n', r'<h4 style="color:#00b4d8; margin-top:15px; margin-bottom:5px;">\1</h4>', text)
@@ -142,8 +145,6 @@ def strip_tags(text):
 
 articles_html = ""
 modal_data = {}
-api_key = os.environ.get("AI_API_KEY", "").strip()
-
 article_id = 0
 
 # A. Kies 3 willekeurige achtergrondonderwerpen
@@ -155,7 +156,7 @@ for item in selected_backgrounds:
     summary = f"Synthese van feiten en standpunten over: {item['topic']}."
     full_text = "Er is momenteel geen gedetailleerd dossier beschikbaar."
 
-    if api_key:
+    if client:
         try:
             prompt = (
                 f"Schrijf een compleet, op zichzelf staand achtergronddossier over het onderwerp: '{item['topic']}'. "
@@ -175,23 +176,15 @@ for item in selected_backgrounds:
                 f"* [Lijst met relevante instanties, beleidsstukken of onderzoeksinstellingen]"
             )
             
-            # Officiële v1 REST endpoint voor gemini-1.5-flash
-            url_api = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
-            data = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode('utf-8')
-            req = urllib.request.Request(url_api, data=data, headers={'Content-Type': 'application/json'})
+            response = client.models.generate_content(
+                model='gemini-2.5-flash',
+                contents=prompt
+            )
             
-            response = urllib.request.urlopen(req, timeout=20)
-            res_json = json.loads(response.read().decode())
-            
-            ai_out = res_json['candidates'][0]['content']['parts'][0]['text'].strip()
-            full_text = clean_markdown(ai_out)
+            full_text = clean_markdown(response.text.strip())
             summary = item['topic']
-        except urllib.error.HTTPError as http_err:
-            error_body = http_err.read().decode()
-            print(f"HTTP Fout bij '{item['title']}': Status {http_err.code} - Details: {error_body}")
-            full_text = f"<b>API Fout ({http_err.code}):</b> Het ophalen via Gemini is mislukt."
         except Exception as ai_err:
-            print(f"Algemene AI dossier fout bij '{item['title']}': {ai_err}")
+            print(f"AI dossier fout bij '{item['title']}': {ai_err}")
             full_text = f"<b>Niet gelukt om live AI-dossier op te halen.</b><br>Fout: {ai_err}"
 
     modal_data[str(article_id)] = {
@@ -255,7 +248,7 @@ for category, urls in FEEDS.items():
 
         ai_summary = clean_summary[:140] + "..."
 
-        if api_key:
+        if client:
             try:
                 extra_prompt = ""
                 if category == "Fitness & Resistance Training":
@@ -268,14 +261,11 @@ for category, urls in FEEDS.items():
                     f"{extra_prompt} Bericht: {title} - {clean_summary}"
                 )
                 
-                url_api = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
-                data = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode('utf-8')
-                req = urllib.request.Request(url_api, data=data, headers={'Content-Type': 'application/json'})
-                response = urllib.request.urlopen(req, timeout=10)
-                res_json = json.loads(response.read().decode())
-                ai_summary = res_json['candidates'][0]['content']['parts'][0]['text'].strip()
-            except urllib.error.HTTPError as http_err:
-                print(f"HTTP Fout bij {category} item {idx}: Status {http_err.code}")
+                response = client.models.generate_content(
+                    model='gemini-2.5-flash',
+                    contents=prompt
+                )
+                ai_summary = response.text.strip()
             except Exception as ai_err:
                 print(f"AI fout bij {category} item {idx}: {ai_err}")
 
