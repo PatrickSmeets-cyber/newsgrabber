@@ -16,7 +16,7 @@ last_updated = datetime.now(tz).strftime("%d-%m-%Y om %H:%M uur")
 api_key = os.environ.get("AI_API_KEY", "").strip()
 client = genai.Client(api_key=api_key) if api_key else None
 
-# 1. RSS Feeds met objectieve bronnen per rubriek
+# 1. RSS Feeds per rubriek
 FEEDS = {
     "Wereld": [
         "https://feeds.nos.nl/nosnieuwsbuitenland",
@@ -96,7 +96,7 @@ BACKGROUND_POOL = [
     }
 ]
 
-# 3. Uitgebreid weer ophalen voor Midden-Limburg
+# 3. Weer ophalen voor Midden-Limburg
 weather_html_summary = "Weergegevens niet beschikbaar."
 try:
     url_w = "https://api.open-meteo.com/v1/forecast?latitude=51.19&longitude=5.99&current_weather=true&hourly=temperature_2m,precipitation_probability&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FAmsterdam"
@@ -104,7 +104,6 @@ try:
     w_data = json.loads(w_res)
     
     cur_temp = round(w_data['current_weather']['temperature'])
-    
     hourly_temps = w_data['hourly']['temperature_2m'][:24]
     hourly_precip = w_data['hourly']['precipitation_probability'][:24]
     max_24h_temp = round(max(hourly_temps))
@@ -147,7 +146,7 @@ articles_html = ""
 modal_data = {}
 article_id = 0
 
-# A. Kies 3 willekeurige achtergrondonderwerpen
+# A. Kies 3 achtergrondonderwerpen
 selected_backgrounds = random.sample(BACKGROUND_POOL, 3)
 
 for item in selected_backgrounds:
@@ -160,20 +159,20 @@ for item in selected_backgrounds:
         try:
             prompt = (
                 f"Schrijf een compleet, op zichzelf staand achtergronddossier over het onderwerp: '{item['topic']}'. "
-                f"Gebruik inzichten uit meerdere objectieve bronnen (zoals CBS, TNO, Rijksoverheid, CPB, EU-rapporten en wetenschappelijke studies). "
+                f"Gebruik inzichten uit meerdere objectieve bronnen. "
                 f"Structureer het antwoord exact als volgt:\n\n"
                 f"### Take-aways\n"
                 f"* [Kernpunt 1]\n"
                 f"* [Kernpunt 2]\n"
                 f"* [Kernpunt 3]\n\n"
                 f"### Introductie\n"
-                f"[Een heldere, feitelijke introductie van de situatie en waarom dit nu speelt]\n\n"
+                f"[Een heldere, feitelijke introductie]\n\n"
                 f"### Details & Nuances\n"
-                f"[Diepgaandere analyse met voor- en nadelen, kansen en risico's]\n\n"
+                f"[Diepgaandere analyse]\n\n"
                 f"### Betrouwbaarheidswaarde\n"
-                f"Score: 8.5/10 - [Toelichting op basis van data en consensus]\n\n"
+                f"Score: 8.5/10 - [Toelichting]\n\n"
                 f"### Gebruikte Bronnen & Referenties\n"
-                f"* [Lijst met relevante instanties, beleidsstukken of onderzoeksinstellingen]"
+                f"* [Lijst met bronnen]"
             )
             
             response = client.models.generate_content(
@@ -210,7 +209,7 @@ for item in selected_backgrounds:
     </div>
     """
 
-# B. Verzamel regulier nieuws per categorie
+# B. Verzamel nieuws per categorie
 for category, urls in FEEDS.items():
     pool_items = []
     for url in urls:
@@ -257,7 +256,7 @@ for category, urls in FEEDS.items():
                 prompt = (
                     "Jij bent een redacteur van een positief, energiek nieuwsdashboard. "
                     "Herschrijf het onderstaande bericht in maximaal 2 korte, krachtige zinnen. "
-                    "Richt je primair op positief nieuws, kansen, oplossingen, innovaties of menselijke vooruitgang. "
+                    "Richt je primair op positief nieuws, kansen, oplossingen of vooruitgang. "
                     f"{extra_prompt} Bericht: {title} - {clean_summary}"
                 )
                 
@@ -293,11 +292,18 @@ for category, urls in FEEDS.items():
         </div>
         """
 
-# 5. Volledige HTML opbouwen
+# JSON veilig formatteren voor JS
+json_modal_data = json.dumps(modal_data)
+
+# 5. Volledige HTML
 html_content = f"""<!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="300">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patrick’s Nieuwsboard</title>
     
@@ -479,7 +485,7 @@ html_content = f"""<!DOCTYPE html>
     </header>
     
     <div class="widget-bar">
-        <div class="widget widget-clickable" onclick="window.location.reload();">
+        <div class="widget widget-clickable" onclick="forceRefresh();">
             <div class="widget-title">🔄 Laatste Update</div>
             <div class="widget-body"><b>{last_updated}</b><br><small style="opacity:0.8">Tik hier om te verversen ↻</small></div>
         </div>
@@ -519,7 +525,11 @@ html_content = f"""<!DOCTYPE html>
     </div>
 
     <script>
-        const articlesData = {json.dumps(modal_data)};
+        const articlesData = {json_modal_data};
+
+        function forceRefresh() {{
+            window.location.href = window.location.pathname + '?v=' + new Date().getTime();
+        }}
 
         function openArticle(id) {{
             const article = articlesData[id];
