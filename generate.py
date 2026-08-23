@@ -16,6 +16,9 @@ last_updated = datetime.now(tz).strftime("%d-%m-%Y om %H:%M uur")
 api_key = os.environ.get("AI_API_KEY", "").strip()
 client = genai.Client(api_key=api_key) if api_key else None
 
+# User-Agent instellen tegen IP/bot-blokkades op GitHub Actions
+HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+
 # 1. RSS Feeds per rubriek
 FEEDS = {
     "Wereld": [
@@ -100,7 +103,8 @@ BACKGROUND_POOL = [
 weather_html_summary = "Weergegevens niet beschikbaar."
 try:
     url_w = "https://api.open-meteo.com/v1/forecast?latitude=51.19&longitude=5.99&current_weather=true&hourly=temperature_2m,precipitation_probability&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FAmsterdam"
-    w_res = urllib.request.urlopen(url_w, timeout=5).read()
+    req_w = urllib.request.Request(url_w, headers=HEADERS)
+    w_res = urllib.request.urlopen(req_w, timeout=5).read()
     w_data = json.loads(w_res)
     
     cur_temp = round(w_data['current_weather']['temperature'])
@@ -175,8 +179,9 @@ for item in selected_backgrounds:
                 f"* [Lijst met bronnen]"
             )
             
+            # Gebruik het correcte gemini-2.0-flash model
             response = client.models.generate_content(
-                model='gemini-2.5-flash',
+                model='gemini-2.0-flash',
                 contents=prompt
             )
             
@@ -184,7 +189,7 @@ for item in selected_backgrounds:
             summary = item['topic']
         except Exception as ai_err:
             print(f"AI dossier fout bij '{item['title']}': {ai_err}")
-            full_text = f"<b>Niet gelukt om live AI-dossier op te halen.</b><br>Fout: {ai_err}"
+            full_text = f"<b>Kon geen AI-dossier genereren.</b><br>Fout: {ai_err}"
 
     modal_data[str(article_id)] = {
         "title": item["title"],
@@ -214,7 +219,7 @@ for category, urls in FEEDS.items():
     pool_items = []
     for url in urls:
         try:
-            feed = feedparser.parse(url)
+            feed = feedparser.parse(url, request_headers=HEADERS)
             if feed.entries:
                 pool_items.extend(feed.entries[:5])
         except Exception as err:
@@ -261,7 +266,7 @@ for category, urls in FEEDS.items():
                 )
                 
                 response = client.models.generate_content(
-                    model='gemini-2.5-flash',
+                    model='gemini-2.0-flash',
                     contents=prompt
                 )
                 ai_summary = response.text.strip()
@@ -292,8 +297,8 @@ for category, urls in FEEDS.items():
         </div>
         """
 
-# JSON veilig formatteren voor JS
-json_modal_data = json.dumps(modal_data)
+# JSON veilig formatteren voor in de HTML <script> tag
+json_modal_data = json.dumps(modal_data).replace('</', r'<\/')
 
 # 5. Volledige HTML
 html_content = f"""<!DOCTYPE html>
