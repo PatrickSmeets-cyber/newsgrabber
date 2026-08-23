@@ -4,7 +4,7 @@ import json
 import os
 import re
 
-# 1. RSS Feeds met fallbacks per rubriek (Inclusief Fitness & Resistance Training)
+# 1. RSS Feeds met fallbacks per rubriek
 FEEDS = {
     "Wereld": [
         "https://feeds.nos.nl/nosnieuwsbuitenland",
@@ -59,12 +59,15 @@ try:
 except Exception as e:
     print(f"Weer ophalen mislukt: {e}")
 
-# 3. Nieuws verzamelen (3 berichten per rubriek)
+# 3. Nieuws verzamelen
 articles_html = ""
+modal_data = {}
 api_key = os.environ.get("AI_API_KEY", "").strip()
 
 def strip_tags(text):
     return re.sub('<[^<]+?>', '', text)
+
+article_id = 0
 
 for category, urls in FEEDS.items():
     category_items = []
@@ -79,34 +82,42 @@ for category, urls in FEEDS.items():
             print(f"Fout bij ophalen {url}: {err}")
             
     for idx, item in enumerate(category_items):
+        article_id += 1
         title = item.title
+        link = item.get('link', '#')
         raw_summary = item.get('summary', item.get('description', 'Geen samenvatting beschikbaar.'))
-        summary = strip_tags(raw_summary)
+        clean_summary = strip_tags(raw_summary)
         
-        # Standaard afbeeldingen per categorie (als fallback)
         default_img = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600"
         if category == "Fitness & Resistance Training":
-            default_img = "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600" # Krachttraining / Gym foto
+            default_img = "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600"
 
         img_url = default_img
         if 'media_content' in item and len(item.media_content) > 0:
             img_url = item.media_content[0].get('url', default_img)
         elif 'links' in item:
-            for link in item.links:
-                if link.get('type', '').startswith('image/'):
-                    img_url = link.href
+            for link_item in item.links:
+                if link_item.get('type', '').startswith('image/'):
+                    img_url = link_item.href
                     break
 
-        ai_summary = summary[:140] + "..."
+        ai_summary = clean_summary[:140] + "..."
 
-        # AI Positieve Herschrijving
+        # AI Positieve Herschrijving en filtering
         if api_key:
             try:
                 extra_prompt = ""
                 if category == "Fitness & Resistance Training":
-                    extra_prompt = " Leg het accent op krachttraining, spieropbouw, progressive overload of efficiënt herstel."
+                    extra_prompt = " Leg de nadruk op krachttraining, spieropbouw, herstel of progressie."
                 
-                prompt = f"Herschrijf dit bericht in maximaal 2 korte, krachtige zinnen met een positieve en motiverende toon:{extra_prompt} {title} - {summary}"
+                prompt = (
+                    "Jij bent een redacteur van een positief, energiek nieuwsdashboard. "
+                    "Herschrijf het onderstaande bericht in maximaal 2 korte, krachtige zinnen. "
+                    "Richt je primair op positief nieuws, kansen, oplossingen, innovaties of menselijke vooruitgang. "
+                    "Als het oorspronkelijke bericht neutraal of negatief is, belicht dan de constructieve kant, geleerde lessen of mogelijke oplossingen in een hoopvolle, energieke en positieve toon."
+                    f"{extra_prompt} Bericht: {title} - {clean_summary}"
+                )
+                
                 url_api = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
                 data = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode('utf-8')
                 req = urllib.request.Request(url_api, data=data, headers={'Content-Type': 'application/json'})
@@ -116,9 +127,19 @@ for category, urls in FEEDS.items():
             except Exception as ai_err:
                 print(f"AI fout bij {category} item {idx}: {ai_err}")
 
-        # Bouw de kaart
+        # Opslaan voor het volledige berichtvenster
+        modal_data[str(article_id)] = {
+            "title": title,
+            "category": category,
+            "img": img_url,
+            "ai_summary": ai_summary,
+            "full_text": clean_summary,
+            "original_link": link
+        }
+
+        # Bouw de klikbare kaart
         articles_html += f"""
-        <div class="card">
+        <div class="card" onclick="openArticle('{article_id}')">
             <div class="card-img-wrapper">
                 <img src="{img_url}" alt="{category}" onerror="this.onerror=null;this.src='{default_img}';">
                 <span class="badge">{category}</span>
@@ -126,6 +147,7 @@ for category, urls in FEEDS.items():
             <div class="card-content">
                 <h3>{title}</h3>
                 <p>{ai_summary}</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
             </div>
         </div>
         """
@@ -136,7 +158,8 @@ html_content = f"""<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mijn Positieve Nieuws</title>
+    <title>Jouw Persoonlijke Nieuwsboard</title>
+    <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/180/lightning-bolt.png">
     <style>
         * {{ box-sizing: border-box; }}
         body {{ 
@@ -187,9 +210,13 @@ html_content = f"""<!DOCTYPE html>
             display: flex; 
             flex-direction: column; 
             border: 1px solid #3a506b;
-            transition: transform 0.2s ease;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            cursor: pointer;
         }}
-        .card:hover {{ transform: translateY(-3px); }}
+        .card:hover {{ 
+            transform: translateY(-4px); 
+            border-color: #00b4d8;
+        }}
         .card-img-wrapper {{ position: relative; height: 170px; }}
         .card img {{ width: 100%; height: 100%; object-fit: cover; background-color: #0b132b; }}
         .badge {{ 
@@ -208,11 +235,84 @@ html_content = f"""<!DOCTYPE html>
         .card-content {{ padding: 18px; flex-grow: 1; display: flex; flex-direction: column; }}
         h3 {{ margin: 0 0 10px 0; font-size: 1.05rem; line-height: 1.35; color: #caf0f8; }}
         p {{ font-size: 0.9rem; color: #cbd5e1; line-height: 1.5; margin: 0; flex-grow: 1; }}
+        
+        .read-more {{ 
+            margin-top: 12px; 
+            font-size: 0.82rem; 
+            color: #00b4d8; 
+            font-weight: 700; 
+            display: inline-block;
+        }}
+
+        /* Modal Overlay voor Volledig Bericht */
+        .modal-overlay {{
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(11, 19, 43, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }}
+        .modal-container {{
+            max-width: 680px;
+            margin: 30px auto;
+            background: #1c2541;
+            border-radius: 16px;
+            border: 1px solid #00b4d8;
+            box-shadow: 0 10px 30px rgba(0,180,216,0.3);
+            overflow: hidden;
+            animation: fadeIn 0.25s ease-out;
+        }}
+        @keyframes fadeIn {{
+            from {{ opacity: 0; transform: translateY(15px); }}
+            to {{ opacity: 1; transform: translateY(0); }}
+        }}
+        .modal-header-img {{ width: 100%; height: 240px; object-fit: cover; }}
+        .modal-body {{ padding: 25px; }}
+        .modal-badge {{ background: #00b4d8; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }}
+        .modal-title {{ font-size: 1.4rem; color: #ffffff; margin: 15px 0; line-height: 1.3; }}
+        .modal-ai-box {{
+            background: #0b132b;
+            border-left: 4px solid #00b4d8;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #90e0ef;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }}
+        .modal-full-text {{ font-size: 1rem; color: #e0e6ed; line-height: 1.6; margin-bottom: 25px; }}
+        .modal-actions {{
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            border-top: 1px solid #3a506b;
+            padding-top: 20px;
+        }}
+        .btn {{
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }}
+        .btn-back {{ background: #3a506b; color: #ffffff; }}
+        .btn-back:hover {{ background: #4f6d91; }}
+        .btn-source {{ background: #00b4d8; color: #ffffff; flex-grow: 1; text-align: center; }}
+        .btn-source:hover {{ background: #0096c7; }}
     </style>
 </head>
 <body>
     <header>
-        <h1>⚡ JOUW ENERGIEKE NIEUWSBOARD</h1>
+        <h1>⚡ JOUW PERSOONLIJKE NIEUWSBOARD</h1>
         <p>Positief • Krachtig • Elke 5 min geüpdatet</p>
     </header>
     
@@ -234,6 +334,57 @@ html_content = f"""<!DOCTYPE html>
     <div class="grid">
         {articles_html}
     </div>
+
+    <!-- Modal View voor Volledig Bericht -->
+    <div id="modalOverlay" class="modal-overlay" onclick="closeModalOnOverlay(event)">
+        <div class="modal-container">
+            <img id="modalImg" class="modal-header-img" src="" alt="Nieuws afbeelding">
+            <div class="modal-body">
+                <span id="modalBadge" class="modal-badge"></span>
+                <h2 id="modalTitle" class="modal-title"></h2>
+                <div id="modalAiBox" class="modal-ai-box"></div>
+                <div id="modalFullText" class="modal-full-text"></div>
+                <div class="modal-actions">
+                    <button class="btn btn-back" onclick="closeModal()">&larr; Terug naar overzicht</button>
+                    <a id="modalSourceLink" class="btn btn-source" href="#" target="_blank" rel="noopener">Bekijk bron op de website &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const articlesData = {json.dumps(modal_data)};
+
+        function openArticle(id) {{
+            const article = articlesData[id];
+            if (!article) return;
+
+            document.getElementById('modalImg').src = article.img;
+            document.getElementById('modalBadge').innerText = article.category;
+            document.getElementById('modalTitle').innerText = article.title;
+            document.getElementById('modalAiBox').innerHTML = '⚡ <b>Positieve AI-samenvatting:</b><br>' + article.ai_summary;
+            document.getElementById('modalFullText').innerText = article.full_text;
+            document.getElementById('modalSourceLink').href = article.original_link;
+
+            document.getElementById('modalOverlay').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }}
+
+        function closeModal() {{
+            document.getElementById('modalOverlay').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }}
+
+        function closeModalOnOverlay(e) {{
+            if (e.target.id === 'modalOverlay') {{
+                closeModal();
+            }}
+        }}
+
+        document.addEventListener('keydown', function(e) {{
+            if (e.key === 'Escape') closeModal();
+        }});
+    </script>
 </body>
 </html>
 """
@@ -241,4 +392,4 @@ html_content = f"""<!DOCTYPE html>
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
 
-print("index.html succesvol gegenereerd inclusief Fitness & Resistance Training!")
+print("index.html succesvol gegenereerd voor Jouw Persoonlijke Nieuwsboard!")
