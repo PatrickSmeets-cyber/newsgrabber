@@ -208,6 +208,18 @@ html_content = f"""<!DOCTYPE html>
             border-left: 4px solid #00b4d8; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
         }}
+        .widget-clickable {{
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+        }}
+        .widget-clickable:hover {{
+            background-color: #25335a;
+            transform: translateY(-2px);
+            border-left-color: #90e0ef;
+        }}
+        .widget-clickable:active {{
+            transform: scale(0.98);
+        }}
         .widget-title {{ font-size: 0.8rem; text-transform: uppercase; color: #90e0ef; font-weight: bold; margin-bottom: 5px; }}
         .widget-body {{ font-size: 0.95rem; line-height: 1.4; color: #ffffff; }}
 
@@ -331,9 +343,9 @@ html_content = f"""<!DOCTYPE html>
     </header>
     
     <div class="widget-bar">
-        <div class="widget">
-            <div class="widget-title">🕒 Laatste Update</div>
-            <div class="widget-body"><b>{last_updated}</b><br><small style="opacity:0.8">Ververst elke 5 min</small></div>
+        <div class="widget widget-clickable" onclick="window.location.reload();">
+            <div class="widget-title">🔄 Laatste Update</div>
+            <div class="widget-body"><b>{last_updated}</b><br><small style="opacity:0.8">Tik hier om pagina te verversen ↻</small></div>
         </div>
         <div class="widget">
             <div class="widget-title">🌡️ Weer Midden-Limburg</div>
@@ -410,4 +422,4 @@ html_content = f"""<!DOCTYPE html>
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
 
-print("index.html succesvol tegenover de nieuwste specificaties gegenereerd!")
+print("index.html succesvol gegenereerd inclusief klikbare ververs-widget!")
