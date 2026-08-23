@@ -1,26 +1,45 @@
 name: Update Nieuwspagina
 on:
   schedule:
-    - cron: '0 5 * * *' # Elke dag om 07:00 Nederlandse tijd
+    - cron: '0 5 * * *'
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
+
       - name: Run Generator
         env:
           AI_API_KEY: ${{ secrets.AI_API_KEY }}
         run: |
           pip install feedparser requests
           python generate.py
-      - name: Deploy to GitHub Pages
-        uses: Peaceiris/actions-gh-pages@v3
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
