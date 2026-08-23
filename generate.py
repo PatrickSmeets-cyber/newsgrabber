@@ -19,8 +19,9 @@ FEEDS = {
         "https://www.nu.nl/rss/Algemeen"
     ],
     "Midden-Limburg": [
-        "https://www.l1.nl/rss",
-        "https://www.limburger.nl/rss/regio/midden-limburg"
+        "https://feeds.nos.nl/nosnieuwsregiolimburg",
+        "https://www.nu.nl/rss/Limburg",
+        "https://www.l1nieuws.nl/rss"
     ],
     "Wiskunde & Wetenschap": [
         "https://www.nu.nl/rss/Wetenschap",
