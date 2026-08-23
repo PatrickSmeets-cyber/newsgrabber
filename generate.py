@@ -3,8 +3,14 @@ import urllib.request
 import json
 import os
 import re
+from datetime import datetime
+import zoneinfo
 
-# 1. RSS Feeds met fallbacks per rubriek
+# 0. Nederlandse tijdstempel bepalen
+tz = zoneinfo.ZoneInfo("Europe/Amsterdam")
+last_updated = datetime.now(tz).strftime("%d-%m-%Y om %H:%M uur")
+
+# 1. RSS Feeds met fallbacks per rubriek (Inclusief Weert de Gekste & Fitness)
 FEEDS = {
     "Wereld": [
         "https://feeds.nos.nl/nosnieuwsbuitenland",
@@ -161,11 +167,14 @@ html_content = f"""<!DOCTYPE html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jouw Persoonlijke Nieuwsboard</title>
-    <!-- Standaard iOS Touch Icons voor iPhone en iPad -->
+    
+    <!-- iOS Icons voor iPhone en iPad -->
     <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/180/lightning-bolt.png?v=2">
     <link rel="apple-touch-icon" sizes="152x152" href="https://img.icons8.com/fluency/180/lightning-bolt.png?v=2">
     <link rel="apple-touch-icon" sizes="180x180" href="https://img.icons8.com/fluency/180/lightning-bolt.png?v=2">
-    <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/180/lightning-bolt.png?v=2">    <style>
+    <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/180/lightning-bolt.png?v=2">
+
+    <style>
         * {{ box-sizing: border-box; }}
         body {{ 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
@@ -184,11 +193,11 @@ html_content = f"""<!DOCTYPE html>
             box-shadow: 0 8px 20px rgba(0, 180, 216, 0.2);
         }}
         header h1 {{ margin: 0; font-size: 1.8rem; font-weight: 800; letter-spacing: 0.5px; }}
-        header p {{ margin: 5px 0 0 0; opacity: 0.9; font-size: 0.95rem; }}
+        header p {{ margin: 6px 0 0 0; opacity: 0.95; font-size: 0.95rem; }}
         
         .widget-bar {{ 
             display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
             gap: 15px; 
             margin-bottom: 25px; 
         }}
@@ -318,17 +327,21 @@ html_content = f"""<!DOCTYPE html>
 <body>
     <header>
         <h1>⚡ JOUW PERSOONLIJKE NIEUWSBOARD</h1>
-        <p>Positief • Krachtig • Elke 5 min geüpdatet</p>
+        <p>Positief • Krachtig • Laatst bijgewerkt: <b>{last_updated}</b></p>
     </header>
     
     <div class="widget-bar">
+        <div class="widget">
+            <div class="widget-title">🕒 Laatste Update</div>
+            <div class="widget-body"><b>{last_updated}</b><br><small style="opacity:0.8">Ververst elke 5 min</small></div>
+        </div>
         <div class="widget">
             <div class="widget-title">🌡️ Weer Midden-Limburg</div>
             <div class="widget-body"><b>{weather_temp}°C</b> — {weather_desc}</div>
         </div>
         <div class="widget">
-            <div class="widget-title">💡 Praktische Tip van de Dag</div>
-            <div class="widget-body">Focus bij krachttraining op progressive overload: verhoog geleidelijk het gewicht, herhalingen of controle.</div>
+            <div class="widget-title">💡 Tip van de Dag</div>
+            <div class="widget-body">Focus bij krachttraining op progressive overload: verhoog geleidelijk gewicht of herhalingen.</div>
         </div>
         <div class="widget">
             <div class="widget-title">✨ Motiverende Spreuk</div>
@@ -340,7 +353,7 @@ html_content = f"""<!DOCTYPE html>
         {articles_html}
     </div>
 
-    <!-- Modal View voor Volledig Bericht -->
+    <!-- Modal View -->
     <div id="modalOverlay" class="modal-overlay" onclick="closeModalOnOverlay(event)">
         <div class="modal-container">
             <img id="modalImg" class="modal-header-img" src="" alt="Nieuws afbeelding">
@@ -397,4 +410,4 @@ html_content = f"""<!DOCTYPE html>
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
 
-print("index.html succesvol gegenereerd voor Jouw Persoonlijke Nieuwsboard!")
+print("index.html succesvol tegenover de nieuwste specificaties gegenereerd!")
