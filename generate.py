@@ -91,7 +91,7 @@ BACKGROUND_POOL = [
     }
 ]
 
-# 3. Uitgebreid weer ophalen voor Midden-Limburg (24u trend + weekverwachting)
+# 3. Uitgebreid weer ophalen voor Midden-Limburg
 weather_html_summary = "Weergegevens niet beschikbaar."
 try:
     url_w = "https://api.open-meteo.com/v1/forecast?latitude=51.19&longitude=5.99&current_weather=true&hourly=temperature_2m,precipitation_probability&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FAmsterdam"
@@ -100,14 +100,12 @@ try:
     
     cur_temp = round(w_data['current_weather']['temperature'])
     
-    # 24u verwachting (gemiddelde temperatuur en max neerslagkans komende 24u)
     hourly_temps = w_data['hourly']['temperature_2m'][:24]
     hourly_precip = w_data['hourly']['precipitation_probability'][:24]
     max_24h_temp = round(max(hourly_temps))
     min_24h_temp = round(min(hourly_temps))
     max_24h_precip = max(hourly_precip)
     
-    # Rest van de week
     daily_dates = w_data['daily']['time']
     daily_max = w_data['daily']['temperature_2m_max']
     daily_min = w_data['daily']['temperature_2m_min']
@@ -130,7 +128,13 @@ except Exception as e:
     print(f"Weer ophalen mislukt: {e}")
     weather_html_summary = "Weergegevens momenteel niet beschikbaar."
 
-# 4. Nieuws en Achtergronden verwerken
+# Helper om Markdown koppen en vetgedrukte tekst om te zetten naar schone HTML
+def clean_markdown(text):
+    text = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', text)
+    text = re.sub(r'### (.*?)\n', r'<h4 style="color:#00b4d8; margin-top:15px; margin-bottom:5px;">\1</h4>', text)
+    text = re.sub(r'\* (.*?)\n', r'• \1<br>', text)
+    return text
+
 articles_html = ""
 modal_data = {}
 api_key = os.environ.get("AI_API_KEY", "").strip()
@@ -140,15 +144,14 @@ def strip_tags(text):
 
 article_id = 0
 
-# A. Kies 3 willekeurige achtergrondonderwerpen & genereer een compleet AI-dossier
+# A. Kies 3 willekeurige achtergrondonderwerpen
 selected_backgrounds = random.sample(BACKGROUND_POOL, 3)
 
 for item in selected_backgrounds:
     article_id += 1
     category = "Achtergrond & Meningsvorming"
-    
-    summary = f"Synthese en verdieping van feiten en standpunten over: {item['topic']}."
-    full_text = "Dossier wordt gegenereerd..."
+    summary = f"Synthese van feiten en standpunten over: {item['topic']}."
+    full_text = "Er is momenteel geen gedetailleerd dossier beschikbaar."
 
     if api_key:
         try:
@@ -163,28 +166,27 @@ for item in selected_backgrounds:
                 f"### Introductie\n"
                 f"[Een heldere, feitelijke introductie van de situatie en waarom dit nu speelt]\n\n"
                 f"### Details & Nuances\n"
-                f"[Diepgaandere analyse met zowel de voordelen/kansen als de risico's/voorbeelden/perspectieven]\n\n"
+                f"[Diepgaandere analyse met voor- en nadelen, kansen en risico's]\n\n"
                 f"### Betrouwbaarheidswaarde\n"
-                f"Score: [bv. 8.5/10] - [Korte toelichting waarom deze analyse betrouwbaar is op basis van data en consensus]\n\n"
+                f"Score: 8.5/10 - [Toelichting op basis van data en consensus]\n\n"
                 f"### Gebruikte Bronnen & Referenties\n"
                 f"* [Lijst met relevante instanties, beleidsstukken of onderzoeksinstellingen]"
             )
             
-            url_api = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+            # Correct officieel endpoint voor Gemini 1.5 Flash
+            url_api = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
             data = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode('utf-8')
             req = urllib.request.Request(url_api, data=data, headers={'Content-Type': 'application/json'})
-            response = urllib.request.urlopen(req, timeout=12)
+            
+            response = urllib.request.urlopen(req, timeout=15)
             res_json = json.loads(response.read().decode())
             
             ai_out = res_json['candidates'][0]['content']['parts'][0]['text'].strip()
-            
-            # Mooie html formatting voor markdown koppen
-            formatted_text = ai_out.replace("### ", "\n\n<b>").replace("\n* ", "\n• ")
-            
+            full_text = clean_markdown(ai_out)
             summary = item['topic']
-            full_text = formatted_text
         except Exception as ai_err:
-            print(f"AI dossier fout: {ai_err}")
+            print(f"AI dossier fout bij '{item['title']}': {ai_err}")
+            full_text = f"<b>Niet gelukt om live AI-dossier op te halen.</b><br>Onderwerp: {item['topic']}. Controleer of AI_API_KEY correct is ingesteld op GitHub Actions."
 
     modal_data[str(article_id)] = {
         "title": item["title"],
@@ -257,11 +259,10 @@ for category, urls in FEEDS.items():
                     "Jij bent een redacteur van een positief, energiek nieuwsdashboard. "
                     "Herschrijf het onderstaande bericht in maximaal 2 korte, krachtige zinnen. "
                     "Richt je primair op positief nieuws, kansen, oplossingen, innovaties of menselijke vooruitgang. "
-                    "Als het oorspronkelijke bericht neutraal of negatief is, belicht dan de constructieve kant, geleerde lessen of mogelijke oplossingen in een hoopvolle, energieke en positieve toon."
                     f"{extra_prompt} Bericht: {title} - {clean_summary}"
                 )
                 
-                url_api = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+                url_api = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
                 data = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode('utf-8')
                 req = urllib.request.Request(url_api, data=data, headers={'Content-Type': 'application/json'})
                 response = urllib.request.urlopen(req, timeout=8)
@@ -446,7 +447,7 @@ html_content = f"""<!DOCTYPE html>
             font-size: 0.95rem;
             line-height: 1.4;
         }}
-        .modal-full-text {{ font-size: 0.95rem; color: #e0e6ed; line-height: 1.6; margin-bottom: 25px; white-space: pre-line; }}
+        .modal-full-text {{ font-size: 0.95rem; color: #e0e6ed; line-height: 1.6; margin-bottom: 25px; }}
         .modal-actions {{
             display: flex;
             gap: 12px;
@@ -530,7 +531,7 @@ html_content = f"""<!DOCTYPE html>
             document.getElementById('modalBadge').innerText = article.category;
             document.getElementById('modalTitle').innerText = article.title;
             document.getElementById('modalAiBox').innerHTML = '⚡ <b>Focus / Topic:</b><br>' + article.ai_summary;
-            document.getElementById('modalFullText').innerText = article.full_text;
+            document.getElementById('modalFullText').innerHTML = article.full_text;
 
             const sourceBtn = document.getElementById('modalSourceLink');
             if (article.is_background) {{
@@ -566,4 +567,4 @@ html_content = f"""<!DOCTYPE html>
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
 
-print("index.html succesvol gegenereerd met verrijkt weer en complete AI-achtergronddossiers!")
+print("index.html succesvol gegenereerd!")
