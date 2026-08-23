@@ -173,7 +173,7 @@ html_content = f"""<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jouw Persoonlijke Nieuwsboard</title>
+    <title>Patrick’s Nieuwsboard</title>
     
     <!-- iOS Icons voor iPhone en iPad -->
     <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/180/lightning-bolt.png?v=2">
@@ -345,7 +345,7 @@ html_content = f"""<!DOCTYPE html>
 </head>
 <body>
     <header>
-        <h1>⚡ JOUW PERSOONLIJKE NIEUWSBOARD</h1>
+        <h1>⚡ Patrick’s Nieuwsboard</h1>
         <p>Positief • Krachtig • Laatst bijgewerkt: <b>{last_updated}</b></p>
     </header>
     
@@ -429,4 +429,4 @@ html_content = f"""<!DOCTYPE html>
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
 
-print("index.html succesvol gegenereerd met gevarieerde nieuwsselectie!")
+print("index.html succesvol gegenereerd voor Patrick’s Nieuwsboard!")
