@@ -11,19 +11,22 @@ import zoneinfo
 tz = zoneinfo.ZoneInfo("Europe/Amsterdam")
 last_updated = datetime.now(tz).strftime("%d-%m-%Y om %H:%M uur")
 
-# 1. RSS Feeds met meerdere bronnen per rubriek
+# 1. RSS Feeds met objectieve bronnen per rubriek
 FEEDS = {
     "Wereld": [
         "https://feeds.nos.nl/nosnieuwsbuitenland",
-        "https://www.nu.nl/rss/Buitenland"
+        "https://www.nu.nl/rss/Buitenland",
+        "http://feeds.bbci.co.uk/news/world/rss.xml"
     ],
     "Europa": [
         "https://feeds.nos.nl/nosnieuwseuropa",
-        "https://www.nu.nl/rss/Buitenland"
+        "https://www.bnr.nl/rss/nieuws",
+        "https://rss.dw.com/rdf/rss-en-all"
     ],
     "Nederland": [
         "https://feeds.nos.nl/nosnieuwsbinnenland",
-        "https://www.nu.nl/rss/Algemeen"
+        "https://www.rtlnieuws.nl/rss.xml",
+        "https://www.trouw.nl/rss.xml"
     ],
     "Midden-Limburg": [
         "https://www.weertdegekste.nl/feed/",
@@ -54,7 +57,47 @@ FEEDS = {
     ]
 }
 
-# 2. Weer ophalen voor Midden-Limburg (Roermond / Weert)
+# 2. Pool van Achtergrondonderwerpen (hier worden er elke run willekeurig 3 uit gekozen)
+BACKGROUND_POOL = [
+    {
+        "title": "Generatieve AI op de Arbeidsmarkt",
+        "topic": "AI en werkgelegenheid",
+        "img": "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=600",
+        "link": "https://www.rijksoverheid.nl/onderwerpen/waardengedreven-digitaliseren"
+    },
+    {
+        "title": "Energietransitie & Het Volle Stroomnet",
+        "topic": "Netcongestie en duurzame energie",
+        "img": "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600",
+        "link": "https://www.tno.nl/nl/duurzaam/energietransitie/"
+    },
+    {
+        "title": "Dilemma op de Woningmarkt",
+        "topic": "Binnenstedelijk bouwen vs bouwen in het groen",
+        "img": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600",
+        "link": "https://www.cbs.nl/nl-nl/dossier/dossier-huisvesting"
+    },
+    {
+        "title": "Kernenergie als Maatregel voor het Klimaat",
+        "topic": "Bouw van nieuwe kerncentrales in Nederland",
+        "img": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600",
+        "link": "https://www.rijksoverheid.nl/onderwerpen/kernenergie"
+    },
+    {
+        "title": "Regulering van Sociale Media voor Jeugd",
+        "topic": "Leeftijdsgrenzen en algoritmes op telefoons van jongeren",
+        "img": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600",
+        "link": "https://www.autoriteitpersoonsgegevens.nl/"
+    },
+    {
+        "title": "Rekeningrijden en Mobiliteit",
+        "topic": "Betalen naar gebruik vs wegenbelasting",
+        "img": "https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=600",
+        "link": "https://www.rijksoverheid.nl/onderwerpen/mobiliteit"
+    }
+]
+
+# 3. Weer ophalen voor Midden-Limburg
 weather_temp = "18"
 weather_desc = "Licht bewolkt"
 try:
@@ -68,7 +111,7 @@ try:
 except Exception as e:
     print(f"Weer ophalen mislukt: {e}")
 
-# 3. Nieuws verzamelen met random shuffling
+# 4. Nieuws en Achtergronden verwerken
 articles_html = ""
 modal_data = {}
 api_key = os.environ.get("AI_API_KEY", "").strip()
@@ -78,10 +121,61 @@ def strip_tags(text):
 
 article_id = 0
 
+# A. Kies 3 willekeurige achtergrondonderwerpen
+selected_backgrounds = random.sample(BACKGROUND_POOL, 3)
+
+for item in selected_backgrounds:
+    article_id += 1
+    category = "Achtergrond & Meningsvorming"
+    
+    summary = f"Verdieping en objectieve perspectieven over: {item['topic']}."
+    full_text = f"Onderwerp: {item['title']}\n\nDit is een belangrijk maatschappelijk vraagstuk. Klik op de bronknop hieronder om recente onderzoeken en achtergronden te raadplegen."
+
+    # Gebruik AI om direct voor- en tegenperspectieven te genereren voor dit specifieke onderwerp
+    if api_key:
+        try:
+            prompt = (
+                f"Jij bent een objectieve nieuws-analist. Geef een korte neutraler samenvatting (1 zin) "
+                f"en daarna twee beknopte perspectieven (Perspectief A en Perspectief B) "
+                f"waarmee de lezer een onderbouwde mening kan vormen over de kwestie: '{item['topic']}'."
+            )
+            url_api = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+            data = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode('utf-8')
+            req = urllib.request.Request(url_api, data=data, headers={'Content-Type': 'application/json'})
+            response = urllib.request.urlopen(req, timeout=8)
+            res_json = json.loads(response.read().decode())
+            ai_out = res_json['candidates'][0]['content']['parts'][0]['text'].strip()
+            summary = item['title']
+            full_text = ai_out
+        except Exception as ai_err:
+            print(f"AI dossier fout: {ai_err}")
+
+    modal_data[str(article_id)] = {
+        "title": item["title"],
+        "category": category,
+        "img": item["img"],
+        "ai_summary": summary,
+        "full_text": full_text,
+        "original_link": item["link"]
+    }
+    
+    articles_html += f"""
+    <div class="card card-featured" onclick="openArticle('{article_id}')">
+        <div class="card-img-wrapper">
+            <img src="{item['img']}" alt="{category}">
+            <span class="badge badge-featured">{category}</span>
+        </div>
+        <div class="card-content">
+            <h3>{item['title']}</h3>
+            <p>{summary}</p>
+            <div class="read-more">Lees achtergrond & perspectieven &rarr;</div>
+        </div>
+    </div>
+    """
+
+# B. Verzamel regulier nieuws per categorie
 for category, urls in FEEDS.items():
     pool_items = []
-    
-    # Verzamel items uit alle feeds in deze categorie
     for url in urls:
         try:
             feed = feedparser.parse(url)
@@ -90,7 +184,6 @@ for category, urls in FEEDS.items():
         except Exception as err:
             print(f"Fout bij ophalen {url}: {err}")
             
-    # Kies willekeurig 3 unieke artikelen uit de poel
     if len(pool_items) >= 3:
         category_items = random.sample(pool_items, 3)
     else:
@@ -118,7 +211,6 @@ for category, urls in FEEDS.items():
 
         ai_summary = clean_summary[:140] + "..."
 
-        # AI Positieve Herschrijving en filtering
         if api_key:
             try:
                 extra_prompt = ""
@@ -127,7 +219,7 @@ for category, urls in FEEDS.items():
                 
                 prompt = (
                     "Jij bent een redacteur van een positief, energiek nieuwsdashboard. "
-                    "Herschrijf het onderstaande bericht in maximaal 2 korte, krachtige zinnen. "
+                    "Herschrijf het onderstaande bericht in maximiaal 2 korte, krachtige zinnen. "
                     "Richt je primair op positief nieuws, kansen, oplossingen, innovaties of menselijke vooruitgang. "
                     "Als het oorspronkelijke bericht neutraal of negatief is, belicht dan de constructieve kant, geleerde lessen of mogelijke oplossingen in een hoopvolle, energieke en positieve toon."
                     f"{extra_prompt} Bericht: {title} - {clean_summary}"
@@ -142,7 +234,6 @@ for category, urls in FEEDS.items():
             except Exception as ai_err:
                 print(f"AI fout bij {category} item {idx}: {ai_err}")
 
-        # Opslaan voor het volledige berichtvenster
         modal_data[str(article_id)] = {
             "title": title,
             "category": category,
@@ -152,7 +243,6 @@ for category, urls in FEEDS.items():
             "original_link": link
         }
 
-        # Bouw de klikbare kaart
         articles_html += f"""
         <div class="card" onclick="openArticle('{article_id}')">
             <div class="card-img-wrapper">
@@ -167,7 +257,7 @@ for category, urls in FEEDS.items():
         </div>
         """
 
-# 4. Volledige HTML
+# 5. Volledige HTML
 html_content = f"""<!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -175,10 +265,7 @@ html_content = f"""<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patrick’s Nieuwsboard</title>
     
-    <!-- iOS Icons voor iPhone en iPad -->
     <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/180/lightning-bolt.png?v=2">
-    <link rel="apple-touch-icon" sizes="152x152" href="https://img.icons8.com/fluency/180/lightning-bolt.png?v=2">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://img.icons8.com/fluency/180/lightning-bolt.png?v=2">
     <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/180/lightning-bolt.png?v=2">
 
     <style>
@@ -217,15 +304,11 @@ html_content = f"""<!DOCTYPE html>
         }}
         .widget-clickable {{
             cursor: pointer;
-            transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+            transition: transform 0.2s ease, background-color 0.2s ease;
         }}
         .widget-clickable:hover {{
             background-color: #25335a;
             transform: translateY(-2px);
-            border-left-color: #90e0ef;
-        }}
-        .widget-clickable:active {{
-            transform: scale(0.98);
         }}
         .widget-title {{ font-size: 0.8rem; text-transform: uppercase; color: #90e0ef; font-weight: bold; margin-bottom: 5px; }}
         .widget-body {{ font-size: 0.95rem; line-height: 1.4; color: #ffffff; }}
@@ -246,9 +329,16 @@ html_content = f"""<!DOCTYPE html>
             transition: transform 0.2s ease, border-color 0.2s ease;
             cursor: pointer;
         }}
+        .card-featured {{
+            border: 1px solid #ffb703;
+            background: #1e293b;
+        }}
         .card:hover {{ 
             transform: translateY(-4px); 
             border-color: #00b4d8;
+        }}
+        .card-featured:hover {{
+            border-color: #ffb703;
         }}
         .card-img-wrapper {{ position: relative; height: 170px; }}
         .card img {{ width: 100%; height: 100%; object-fit: cover; background-color: #0b132b; }}
@@ -265,6 +355,10 @@ html_content = f"""<!DOCTYPE html>
             backdrop-filter: blur(4px);
             text-transform: uppercase;
         }}
+        .badge-featured {{
+            background: rgba(255, 183, 3, 0.95);
+            color: #000000;
+        }}
         .card-content {{ padding: 18px; flex-grow: 1; display: flex; flex-direction: column; }}
         h3 {{ margin: 0 0 10px 0; font-size: 1.05rem; line-height: 1.35; color: #caf0f8; }}
         p {{ font-size: 0.9rem; color: #cbd5e1; line-height: 1.5; margin: 0; flex-grow: 1; }}
@@ -277,7 +371,6 @@ html_content = f"""<!DOCTYPE html>
             display: inline-block;
         }}
 
-        /* Modal Overlay voor Volledig Bericht */
         .modal-overlay {{
             display: none;
             position: fixed;
@@ -316,7 +409,7 @@ html_content = f"""<!DOCTYPE html>
             font-size: 0.95rem;
             line-height: 1.4;
         }}
-        .modal-full-text {{ font-size: 1rem; color: #e0e6ed; line-height: 1.6; margin-bottom: 25px; }}
+        .modal-full-text {{ font-size: 1rem; color: #e0e6ed; line-height: 1.6; margin-bottom: 25px; whitespace: pre-line; }}
         .modal-actions {{
             display: flex;
             gap: 12px;
@@ -352,7 +445,7 @@ html_content = f"""<!DOCTYPE html>
     <div class="widget-bar">
         <div class="widget widget-clickable" onclick="window.location.reload();">
             <div class="widget-title">🔄 Laatste Update</div>
-            <div class="widget-body"><b>{last_updated}</b><br><small style="opacity:0.8">Tik hier om pagina te verversen ↻</small></div>
+            <div class="widget-body"><b>{last_updated}</b><br><small style="opacity:0.8">Tik hier om te verversen ↻</small></div>
         </div>
         <div class="widget">
             <div class="widget-title">🌡️ Weer Midden-Limburg</div>
@@ -399,7 +492,7 @@ html_content = f"""<!DOCTYPE html>
             document.getElementById('modalImg').src = article.img;
             document.getElementById('modalBadge').innerText = article.category;
             document.getElementById('modalTitle').innerText = article.title;
-            document.getElementById('modalAiBox').innerHTML = '⚡ <b>Positieve AI-samenvatting:</b><br>' + article.ai_summary;
+            document.getElementById('modalAiBox').innerHTML = '⚡ <b>Samenvatting / Kern:</b><br>' + article.ai_summary;
             document.getElementById('modalFullText').innerText = article.full_text;
             document.getElementById('modalSourceLink').href = article.original_link;
 
@@ -429,4 +522,4 @@ html_content = f"""<!DOCTYPE html>
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
 
-print("index.html succesvol gegenereerd voor Patrick’s Nieuwsboard!")
+print("index.html succesvol gegenereerd met dynamisch wisselende achtergrondonderwerpen!")
