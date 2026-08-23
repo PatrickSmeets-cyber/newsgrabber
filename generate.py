@@ -19,9 +19,10 @@ FEEDS = {
         "https://www.nu.nl/rss/Algemeen"
     ],
     "Midden-Limburg": [
-        "https://feeds.nos.nl/nosnieuwsregiolimburg",
-        "https://www.nu.nl/rss/Limburg",
-        "https://www.l1nieuws.nl/rss"
+        "https://www.weertdegekste.nl/feed/",
+        "https://www.nederweert24.nl/feed/",
+        "https://www.vmlnieuws.nl/feed/",
+        "https://www.l1nieuws.nl/rss/nieuws"
     ],
     "Wiskunde & Wetenschap": [
         "https://www.nu.nl/rss/Wetenschap",
