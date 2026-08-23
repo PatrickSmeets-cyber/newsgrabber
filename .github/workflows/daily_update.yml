@@ -1,0 +1,26 @@
+name: Update Nieuwspagina
+on:
+  schedule:
+    - cron: '0 5 * * *' # Elke dag om 07:00 Nederlandse tijd
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Run Generator
+        env:
+          AI_API_KEY: ${{ secrets.AI_API_KEY }}
+        run: |
+          pip install feedparser requests
+          python generate.py
+      - name: Deploy to GitHub Pages
+        uses: Peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
