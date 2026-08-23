@@ -57,59 +57,78 @@ FEEDS = {
     ]
 }
 
-# 2. Pool van Achtergrondonderwerpen (hier worden er elke run willekeurig 3 uit gekozen)
+# 2. Pool van Achtergrondonderwerpen
 BACKGROUND_POOL = [
     {
         "title": "Generatieve AI op de Arbeidsmarkt",
-        "topic": "AI en werkgelegenheid",
-        "img": "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=600",
-        "link": "https://www.rijksoverheid.nl/onderwerpen/waardengedreven-digitaliseren"
+        "topic": "De impact van AI op kantoorwerk, productiviteit en werkgelegenheid",
+        "img": "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=600"
     },
     {
         "title": "Energietransitie & Het Volle Stroomnet",
-        "topic": "Netcongestie en duurzame energie",
-        "img": "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600",
-        "link": "https://www.tno.nl/nl/duurzaam/energietransitie/"
+        "topic": "Netcongestie, de grenzen van het elektriciteitsnet en verduurzaming",
+        "img": "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600"
     },
     {
         "title": "Dilemma op de Woningmarkt",
-        "topic": "Binnenstedelijk bouwen vs bouwen in het groen",
-        "img": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600",
-        "link": "https://www.cbs.nl/nl-nl/dossier/dossier-huisvesting"
+        "topic": "Binnenstedelijk bouwen ten opzichte van uitbreiden in het groen",
+        "img": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600"
     },
     {
-        "title": "Kernenergie als Maatregel voor het Klimaat",
-        "topic": "Bouw van nieuwe kerncentrales in Nederland",
-        "img": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600",
-        "link": "https://www.rijksoverheid.nl/onderwerpen/kernenergie"
+        "title": "Kernenergie in het Nederlandse Klimaatbeleid",
+        "topic": "De rol van nieuwe kerncentrales vs zon- en windenergie",
+        "img": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600"
     },
     {
         "title": "Regulering van Sociale Media voor Jeugd",
-        "topic": "Leeftijdsgrenzen en algoritmes op telefoons van jongeren",
-        "img": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600",
-        "link": "https://www.autoriteitpersoonsgegevens.nl/"
+        "topic": "Leeftijdsgrenzen, mentale gezondheid en algoritmes op telefoons",
+        "img": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600"
     },
     {
-        "title": "Rekeningrijden en Mobiliteit",
-        "topic": "Betalen naar gebruik vs wegenbelasting",
-        "img": "https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=600",
-        "link": "https://www.rijksoverheid.nl/onderwerpen/mobiliteit"
+        "title": "Rekeningrijden en Toekomst van Mobiliteit",
+        "topic": "Betalen naar gebruik, wegenbelasting en de vergroening van het wagenpark",
+        "img": "https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=600"
     }
 ]
 
-# 3. Weer ophalen voor Midden-Limburg
-weather_temp = "18"
-weather_desc = "Licht bewolkt"
+# 3. Uitgebreid weer ophalen voor Midden-Limburg (24u trend + weekverwachting)
+weather_html_summary = "Weergegevens niet beschikbaar."
 try:
-    w_res = urllib.request.urlopen("https://api.open-meteo.com/v1/forecast?latitude=51.19&longitude=5.99&current_weather=true", timeout=5).read()
-    w_data = json.loads(w_res)['current_weather']
-    weather_temp = str(w_data['temperature'])
-    code = w_data.get('weathercode', 0)
-    if code in [0, 1]: weather_desc = "Zonnig"
-    elif code in [2, 3]: weather_desc = "Half bewolkt"
-    elif code >= 51: weather_desc = "Kans op regen"
+    url_w = "https://api.open-meteo.com/v1/forecast?latitude=51.19&longitude=5.99&current_weather=true&hourly=temperature_2m,precipitation_probability&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FAmsterdam"
+    w_res = urllib.request.urlopen(url_w, timeout=5).read()
+    w_data = json.loads(w_res)
+    
+    cur_temp = round(w_data['current_weather']['temperature'])
+    
+    # 24u verwachting (gemiddelde temperatuur en max neerslagkans komende 24u)
+    hourly_temps = w_data['hourly']['temperature_2m'][:24]
+    hourly_precip = w_data['hourly']['precipitation_probability'][:24]
+    max_24h_temp = round(max(hourly_temps))
+    min_24h_temp = round(min(hourly_temps))
+    max_24h_precip = max(hourly_precip)
+    
+    # Rest van de week
+    daily_dates = w_data['daily']['time']
+    daily_max = w_data['daily']['temperature_2m_max']
+    daily_min = w_data['daily']['temperature_2m_min']
+    
+    week_str_list = []
+    days_map = ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"]
+    for i in range(1, min(6, len(daily_dates))):
+        dt = datetime.strptime(daily_dates[i], "%Y-%m-%d")
+        day_name = days_map[dt.weekday()]
+        week_str_list.append(f"{day_name}: {round(daily_min[i])}°/{round(daily_max[i])}°C")
+    
+    week_summary = " | ".join(week_str_list)
+
+    weather_html_summary = f"""
+    <b>Nu: {cur_temp}°C</b><br>
+    <small><b>Komende 24u:</b> {min_24h_temp}°C tot {max_24h_temp}°C (Regenkans: {max_24h_precip}%)</small><br>
+    <small><b>Deze week:</b> {week_summary}</small>
+    """
 except Exception as e:
     print(f"Weer ophalen mislukt: {e}")
+    weather_html_summary = "Weergegevens momenteel niet beschikbaar."
 
 # 4. Nieuws en Achtergronden verwerken
 articles_html = ""
@@ -121,32 +140,49 @@ def strip_tags(text):
 
 article_id = 0
 
-# A. Kies 3 willekeurige achtergrondonderwerpen
+# A. Kies 3 willekeurige achtergrondonderwerpen & genereer een compleet AI-dossier
 selected_backgrounds = random.sample(BACKGROUND_POOL, 3)
 
 for item in selected_backgrounds:
     article_id += 1
     category = "Achtergrond & Meningsvorming"
     
-    summary = f"Verdieping en objectieve perspectieven over: {item['topic']}."
-    full_text = f"Onderwerp: {item['title']}\n\nDit is een belangrijk maatschappelijk vraagstuk. Klik op de bronknop hieronder om recente onderzoeken en achtergronden te raadplegen."
+    summary = f"Synthese en verdieping van feiten en standpunten over: {item['topic']}."
+    full_text = "Dossier wordt gegenereerd..."
 
-    # Gebruik AI om direct voor- en tegenperspectieven te genereren voor dit specifieke onderwerp
     if api_key:
         try:
             prompt = (
-                f"Jij bent een objectieve nieuws-analist. Geef een korte neutraler samenvatting (1 zin) "
-                f"en daarna twee beknopte perspectieven (Perspectief A en Perspectief B) "
-                f"waarmee de lezer een onderbouwde mening kan vormen over de kwestie: '{item['topic']}'."
+                f"Schrijf een compleet, op zichzelf staand achtergronddossier over het onderwerp: '{item['topic']}'. "
+                f"Gebruik inzichten uit meerdere objectieve bronnen (zoals CBS, TNO, Rijksoverheid, CPB, EU-rapporten en wetenschappelijke studies). "
+                f"Structureer het antwoord exact als volgt:\n\n"
+                f"### Take-aways\n"
+                f"* [Kernpunt 1]\n"
+                f"* [Kernpunt 2]\n"
+                f"* [Kernpunt 3]\n\n"
+                f"### Introductie\n"
+                f"[Een heldere, feitelijke introductie van de situatie en waarom dit nu speelt]\n\n"
+                f"### Details & Nuances\n"
+                f"[Diepgaandere analyse met zowel de voordelen/kansen als de risico's/voorbeelden/perspectieven]\n\n"
+                f"### Betrouwbaarheidswaarde\n"
+                f"Score: [bv. 8.5/10] - [Korte toelichting waarom deze analyse betrouwbaar is op basis van data en consensus]\n\n"
+                f"### Gebruikte Bronnen & Referenties\n"
+                f"* [Lijst met relevante instanties, beleidsstukken of onderzoeksinstellingen]"
             )
+            
             url_api = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
             data = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode('utf-8')
             req = urllib.request.Request(url_api, data=data, headers={'Content-Type': 'application/json'})
-            response = urllib.request.urlopen(req, timeout=8)
+            response = urllib.request.urlopen(req, timeout=12)
             res_json = json.loads(response.read().decode())
+            
             ai_out = res_json['candidates'][0]['content']['parts'][0]['text'].strip()
-            summary = item['title']
-            full_text = ai_out
+            
+            # Mooie html formatting voor markdown koppen
+            formatted_text = ai_out.replace("### ", "\n\n<b>").replace("\n* ", "\n• ")
+            
+            summary = item['topic']
+            full_text = formatted_text
         except Exception as ai_err:
             print(f"AI dossier fout: {ai_err}")
 
@@ -156,7 +192,7 @@ for item in selected_backgrounds:
         "img": item["img"],
         "ai_summary": summary,
         "full_text": full_text,
-        "original_link": item["link"]
+        "is_background": True
     }
     
     articles_html += f"""
@@ -168,7 +204,7 @@ for item in selected_backgrounds:
         <div class="card-content">
             <h3>{item['title']}</h3>
             <p>{summary}</p>
-            <div class="read-more">Lees achtergrond & perspectieven &rarr;</div>
+            <div class="read-more">Open compleet dossier &rarr;</div>
         </div>
     </div>
     """
@@ -219,7 +255,7 @@ for category, urls in FEEDS.items():
                 
                 prompt = (
                     "Jij bent een redacteur van een positief, energiek nieuwsdashboard. "
-                    "Herschrijf het onderstaande bericht in maximiaal 2 korte, krachtige zinnen. "
+                    "Herschrijf het onderstaande bericht in maximaal 2 korte, krachtige zinnen. "
                     "Richt je primair op positief nieuws, kansen, oplossingen, innovaties of menselijke vooruitgang. "
                     "Als het oorspronkelijke bericht neutraal of negatief is, belicht dan de constructieve kant, geleerde lessen of mogelijke oplossingen in een hoopvolle, energieke en positieve toon."
                     f"{extra_prompt} Bericht: {title} - {clean_summary}"
@@ -240,7 +276,8 @@ for category, urls in FEEDS.items():
             "img": img_url,
             "ai_summary": ai_summary,
             "full_text": clean_summary,
-            "original_link": link
+            "original_link": link,
+            "is_background": False
         }
 
         articles_html += f"""
@@ -291,7 +328,7 @@ html_content = f"""<!DOCTYPE html>
         
         .widget-bar {{ 
             display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
             gap: 15px; 
             margin-bottom: 25px; 
         }}
@@ -311,7 +348,7 @@ html_content = f"""<!DOCTYPE html>
             transform: translateY(-2px);
         }}
         .widget-title {{ font-size: 0.8rem; text-transform: uppercase; color: #90e0ef; font-weight: bold; margin-bottom: 5px; }}
-        .widget-body {{ font-size: 0.95rem; line-height: 1.4; color: #ffffff; }}
+        .widget-body {{ font-size: 0.9rem; line-height: 1.4; color: #ffffff; }}
 
         .grid {{ 
             display: grid; 
@@ -409,7 +446,7 @@ html_content = f"""<!DOCTYPE html>
             font-size: 0.95rem;
             line-height: 1.4;
         }}
-        .modal-full-text {{ font-size: 1rem; color: #e0e6ed; line-height: 1.6; margin-bottom: 25px; whitespace: pre-line; }}
+        .modal-full-text {{ font-size: 0.95rem; color: #e0e6ed; line-height: 1.6; margin-bottom: 25px; white-space: pre-line; }}
         .modal-actions {{
             display: flex;
             gap: 12px;
@@ -430,7 +467,7 @@ html_content = f"""<!DOCTYPE html>
             justify-content: center;
             transition: background 0.2s;
         }}
-        .btn-back {{ background: #3a506b; color: #ffffff; }}
+        .btn-back {{ background: #3a506b; color: #ffffff; flex-grow: 1; }}
         .btn-back:hover {{ background: #4f6d91; }}
         .btn-source {{ background: #00b4d8; color: #ffffff; flex-grow: 1; text-align: center; }}
         .btn-source:hover {{ background: #0096c7; }}
@@ -448,8 +485,8 @@ html_content = f"""<!DOCTYPE html>
             <div class="widget-body"><b>{last_updated}</b><br><small style="opacity:0.8">Tik hier om te verversen ↻</small></div>
         </div>
         <div class="widget">
-            <div class="widget-title">🌡️ Weer Midden-Limburg</div>
-            <div class="widget-body"><b>{weather_temp}°C</b> — {weather_desc}</div>
+            <div class="widget-title">🌤️ Weer Midden-Limburg & Verwachting</div>
+            <div class="widget-body">{weather_html_summary}</div>
         </div>
         <div class="widget">
             <div class="widget-title">💡 Tip van de Dag</div>
@@ -476,7 +513,7 @@ html_content = f"""<!DOCTYPE html>
                 <div id="modalFullText" class="modal-full-text"></div>
                 <div class="modal-actions">
                     <button class="btn btn-back" onclick="closeModal()">&larr; Terug naar overzicht</button>
-                    <a id="modalSourceLink" class="btn btn-source" href="#" target="_blank" rel="noopener">Bekijk bron op de website &rarr;</a>
+                    <a id="modalSourceLink" class="btn btn-source" href="#" target="_blank" rel="noopener">Bekijk origineel op de website &rarr;</a>
                 </div>
             </div>
         </div>
@@ -492,9 +529,16 @@ html_content = f"""<!DOCTYPE html>
             document.getElementById('modalImg').src = article.img;
             document.getElementById('modalBadge').innerText = article.category;
             document.getElementById('modalTitle').innerText = article.title;
-            document.getElementById('modalAiBox').innerHTML = '⚡ <b>Samenvatting / Kern:</b><br>' + article.ai_summary;
+            document.getElementById('modalAiBox').innerHTML = '⚡ <b>Focus / Topic:</b><br>' + article.ai_summary;
             document.getElementById('modalFullText').innerText = article.full_text;
-            document.getElementById('modalSourceLink').href = article.original_link;
+
+            const sourceBtn = document.getElementById('modalSourceLink');
+            if (article.is_background) {{
+                sourceBtn.style.display = 'none';
+            }} else {{
+                sourceBtn.style.display = 'inline-flex';
+                sourceBtn.href = article.original_link;
+            }}
 
             document.getElementById('modalOverlay').style.display = 'block';
             document.body.style.overflow = 'hidden';
@@ -522,4 +566,4 @@ html_content = f"""<!DOCTYPE html>
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
 
-print("index.html succesvol gegenereerd met dynamisch wisselende achtergrondonderwerpen!")
+print("index.html succesvol gegenereerd met verrijkt weer en complete AI-achtergronddossiers!")
