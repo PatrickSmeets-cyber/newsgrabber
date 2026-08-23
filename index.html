@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patrick’s Nieuwsboard</title>
+    
+    <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/180/lightning-bolt.png?v=2">
+    <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/180/lightning-bolt.png?v=2">
+
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background-color: #0b132b; 
+            margin: 0; 
+            padding: 20px; 
+            color: #e0e6ed; 
+        }
+        header { 
+            text-align: center; 
+            padding: 25px 15px; 
+            background: linear-gradient(135deg, #1c2541, #3a506b, #00b4d8); 
+            color: #ffffff; 
+            border-radius: 16px; 
+            margin-bottom: 25px; 
+            box-shadow: 0 8px 20px rgba(0, 180, 216, 0.2);
+        }
+        header h1 { margin: 0; font-size: 1.8rem; font-weight: 800; letter-spacing: 0.5px; }
+        header p { margin: 6px 0 0 0; opacity: 0.95; font-size: 0.95rem; }
+        
+        .widget-bar { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+            gap: 15px; 
+            margin-bottom: 25px; 
+        }
+        .widget { 
+            background: #1c2541; 
+            padding: 16px; 
+            border-radius: 12px; 
+            border-left: 4px solid #00b4d8; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+        }
+        .widget-clickable {
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        .widget-clickable:hover {
+            background-color: #25335a;
+            transform: translateY(-2px);
+        }
+        .widget-title { font-size: 0.8rem; text-transform: uppercase; color: #90e0ef; font-weight: bold; margin-bottom: 5px; }
+        .widget-body { font-size: 0.9rem; line-height: 1.4; color: #ffffff; }
+
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); 
+            gap: 20px; 
+        }
+        .card { 
+            background: #1c2541; 
+            border-radius: 14px; 
+            overflow: hidden; 
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2); 
+            display: flex; 
+            flex-direction: column; 
+            border: 1px solid #3a506b;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            cursor: pointer;
+        }
+        .card-featured {
+            border: 1px solid #ffb703;
+            background: #1e293b;
+        }
+        .card:hover { 
+            transform: translateY(-4px); 
+            border-color: #00b4d8;
+        }
+        .card-featured:hover {
+            border-color: #ffb703;
+        }
+        .card-img-wrapper { position: relative; height: 170px; }
+        .card img { width: 100%; height: 100%; object-fit: cover; background-color: #0b132b; }
+        .badge { 
+            position: absolute; 
+            top: 12px; 
+            left: 12px; 
+            background: rgba(0, 180, 216, 0.9); 
+            color: #ffffff; 
+            padding: 4px 10px; 
+            border-radius: 20px; 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            backdrop-filter: blur(4px);
+            text-transform: uppercase;
+        }
+        .badge-featured {
+            background: rgba(255, 183, 3, 0.95);
+            color: #000000;
+        }
+        .card-content { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; }
+        h3 { margin: 0 0 10px 0; font-size: 1.05rem; line-height: 1.35; color: #caf0f8; }
+        p { font-size: 0.9rem; color: #cbd5e1; line-height: 1.5; margin: 0; flex-grow: 1; }
+        
+        .read-more { 
+            margin-top: 12px; 
+            font-size: 0.82rem; 
+            color: #00b4d8; 
+            font-weight: 700; 
+            display: inline-block;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(11, 19, 43, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .modal-container {
+            max-width: 680px;
+            margin: 30px auto;
+            background: #1c2541;
+            border-radius: 16px;
+            border: 1px solid #00b4d8;
+            box-shadow: 0 10px 30px rgba(0,180,216,0.3);
+            overflow: hidden;
+            animation: fadeIn 0.25s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .modal-header-img { width: 100%; height: 240px; object-fit: cover; }
+        .modal-body { padding: 25px; }
+        .modal-badge { background: #00b4d8; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
+        .modal-title { font-size: 1.4rem; color: #ffffff; margin: 15px 0; line-height: 1.3; }
+        .modal-ai-box {
+            background: #0b132b;
+            border-left: 4px solid #00b4d8;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #90e0ef;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        .modal-full-text { font-size: 0.95rem; color: #e0e6ed; line-height: 1.6; margin-bottom: 25px; }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            border-top: 1px solid #3a506b;
+            padding-top: 20px;
+        }
+        .btn {
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .btn-back { background: #3a506b; color: #ffffff; flex-grow: 1; }
+        .btn-back:hover { background: #4f6d91; }
+        .btn-source { background: #00b4d8; color: #ffffff; flex-grow: 1; text-align: center; }
+        .btn-source:hover { background: #0096c7; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>⚡ Patrick’s Nieuwsboard</h1>
+        <p>Positief • Krachtig • Laatst bijgewerkt: <b>23-08-2026 om 21:57 uur</b></p>
+    </header>
+    
+    <div class="widget-bar">
+        <div class="widget widget-clickable" onclick="window.location.reload();">
+            <div class="widget-title">🔄 Laatste Update</div>
+            <div class="widget-body"><b>23-08-2026 om 21:57 uur</b><br><small style="opacity:0.8">Tik hier om te verversen ↻</small></div>
+        </div>
+        <div class="widget">
+            <div class="widget-title">🌤️ Weer Midden-Limburg & Verwachting</div>
+            <div class="widget-body">
+    <b>Nu: 18°C</b><br>
+    <small><b>Komende 24u:</b> 12°C tot 22°C (Regenkans: 6%)</small><br>
+    <small><b>Deze week:</b> Ma: 12°/25°C | Di: 15°/24°C | Wo: 16°/25°C | Do: 18°/28°C | Vr: 17°/21°C</small>
+    </div>
+        </div>
+        <div class="widget">
+            <div class="widget-title">💡 Tip van de Dag</div>
+            <div class="widget-body">Focus bij krachttraining op progressive overload: verhoog geleidelijk gewicht of herhalingen.</div>
+        </div>
+        <div class="widget">
+            <div class="widget-title">✨ Motiverende Spreuk</div>
+            <div class="widget-body">"Kleine dagelijkse vorderingen leiden op termijn tot gigantische resultaten."</div>
+        </div>
+    </div>
+
+    <div class="grid">
+        
+    <div class="card card-featured" onclick="openArticle('1')">
+        <div class="card-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600" alt="Achtergrond & Meningsvorming">
+            <span class="badge badge-featured">Achtergrond & Meningsvorming</span>
+        </div>
+        <div class="card-content">
+            <h3>Energietransitie & Het Volle Stroomnet</h3>
+            <p>Synthese van feiten en standpunten over: Netcongestie, de grenzen van het elektriciteitsnet en verduurzamingsuitdagingen.</p>
+            <div class="read-more">Open compleet dossier &rarr;</div>
+        </div>
+    </div>
+    
+    <div class="card card-featured" onclick="openArticle('2')">
+        <div class="card-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600" alt="Achtergrond & Meningsvorming">
+            <span class="badge badge-featured">Achtergrond & Meningsvorming</span>
+        </div>
+        <div class="card-content">
+            <h3>Kernenergie in het Nederlandse Klimaatbeleid</h3>
+            <p>Synthese van feiten en standpunten over: De rol van nieuwe kerncentrales vs zon- en windenergie.</p>
+            <div class="read-more">Open compleet dossier &rarr;</div>
+        </div>
+    </div>
+    
+    <div class="card card-featured" onclick="openArticle('3')">
+        <div class="card-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=600" alt="Achtergrond & Meningsvorming">
+            <span class="badge badge-featured">Achtergrond & Meningsvorming</span>
+        </div>
+        <div class="card-content">
+            <h3>Rekeningrijden en Toekomst van Mobiliteit</h3>
+            <p>Synthese van feiten en standpunten over: Betalen naar gebruik, wegenbelasting en de vergroening van het wagenpark.</p>
+            <div class="read-more">Open compleet dossier &rarr;</div>
+        </div>
+    </div>
+    
+        <div class="card" onclick="openArticle('4')">
+            <div class="card-img-wrapper">
+                <img src="https://images.cdn.nos.nl/5/F/H/w/3/6/n73u2Xe5RLJboyHcTtLWVnx3Riga8DXq3aeTWPt/5x3x880x495-880x495.webp" alt="Wereld" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Wereld</span>
+            </div>
+            <div class="card-content">
+                <h3>'Ongelukkig foutje': medaille marathon Sydney toont stadion in München</h3>
+                <p>Deelnemers aan de marathon van Sydney krijgen volgende week zondag een wel heel bijzondere medaille na het finishen. Op het eremetaal staan ...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('5')">
+            <div class="card-img-wrapper">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Wereld" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Wereld</span>
+            </div>
+            <div class="card-content">
+                <h3>DR Congo and M23 rebels agree roadmap for peace talks</h3>
+                <p>Representatives met in Switzerland to work out next steps to resolve the conflict....</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('6')">
+            <div class="card-img-wrapper">
+                <img src="https://images.cdn.nos.nl/6/B/d/G/F/8/uCL7R7r3msavAfEJLohYjpG5NJJzyumbvMyCktf/0x107x4000x2250-1024x576.webp" alt="Wereld" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Wereld</span>
+            </div>
+            <div class="card-content">
+                <h3>Discussies in Spanje over of het zorgsysteem in Ceuta de migranten aankan</h3>
+                <p>Duizenden migranten zwerven nog op straat in Ceuta. De inwoners van de Spaanse exclave in Noord-Afrika ervaren overlast, voelen zich soms on...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('7')">
+            <div class="card-img-wrapper">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Europa" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Europa</span>
+            </div>
+            <div class="card-content">
+                <h3>Zelenskyy repeats Ukraine not behind Nord Stream attack</h3>
+                <p>Volodymyr Zelenskyy said Ukraine was assisting German authorities with their investigation into the Nord Stream explosions. A second Ukraini...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('8')">
+            <div class="card-img-wrapper">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Europa" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Europa</span>
+            </div>
+            <div class="card-content">
+                <h3>Guinea: Garbage collapse at landfill kills dozens</h3>
+                <p>Heavy seasonal rains caused a mound of garbage to collapse, burying dozens of people and nearby homes before the break of dawn....</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('9')">
+            <div class="card-img-wrapper">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Europa" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Europa</span>
+            </div>
+            <div class="card-content">
+                <h3>Could Russia's growing fuel crisis help end the Ukraine war?</h3>
+                <p>Empty pumps, long waits: Attacks on oil refineries have left Russia increasingly short of fuel. Dissident Russian economists say growing ang...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('10')">
+            <div class="card-img-wrapper">
+                <img src="https://redactie.rtl.nl/sites/default/files/ANP230826100-1.jpg?itok=R0eNrKMP&width=1024&height=576&impolicy=semi_dynamic" alt="Nederland" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Nederland</span>
+            </div>
+            <div class="card-content">
+                <h3>KNVB bekijkt eigen protocol na vuurwerk bij Cambuur - Feyenoord</h3>
+                <p>Het competitiebestuur betaald voetbal gaat het eigen protocol bij ongeregeldheden nog eens goed bekijken na het vuurwerkincident vandaag bij...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('11')">
+            <div class="card-img-wrapper">
+                <img src="https://images.cdn.nos.nl/2/G/C/q/o/s/UJmXtG5KvyaUqrBbSeL5kz17JLpFtxQXUuFHSmS/251x102x2320x1305-1024x576.webp" alt="Nederland" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Nederland</span>
+            </div>
+            <div class="card-content">
+                <h3>Diamanten zijn voor altijd, of toch niet? 'Jongeren hebben andere prioriteiten'</h3>
+                <p>De wereldwijde diamantsector zit in zwaar weer, merken ook juweliers en diamantairs in Nederland. 's Werelds toonaangevendste diamantbedrijf...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('12')">
+            <div class="card-img-wrapper">
+                <img src="https://image.trouw.nl/276988463/feature-crop/320/320/afbeelding" alt="Nederland" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Nederland</span>
+            </div>
+            <div class="card-content">
+                <h3>Lowlands zoekt een nieuwe koers, en bezoekers merken dat meteen</h3>
+                <p>Geen samenvatting beschikbaar....</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('13')">
+            <div class="card-img-wrapper">
+                <img src="https://www.weertdegekste.nl/wp-content/uploads/2026/08/Bieb-Stramproy-230826001.jpg" alt="Midden-Limburg" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Midden-Limburg</span>
+            </div>
+            <div class="card-content">
+                <h3>Bieb Stramproy bestaat tien jaar: ‘En daar zijn we gruuëts op!’</h3>
+                <p>De Bieb in Stramproy bestaat tien jaar. Dankzij de inzet van een grote groep vrijwilligers kan Stramproy al een decennium gebruikmaken van d...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('14')">
+            <div class="card-img-wrapper">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Midden-Limburg" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Midden-Limburg</span>
+            </div>
+            <div class="card-content">
+                <h3>Vacatures in Nederweert | Nieuwe jobs in de regio Nederweert</h3>
+                <p>Vacature24, het vacatureplatform van Nederweert24 en Meijel24, biedt een actueel en gevarieerd aanbod aan lokale vacatures. Of het nu gaat o...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('15')">
+            <div class="card-img-wrapper">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Midden-Limburg" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Midden-Limburg</span>
+            </div>
+            <div class="card-content">
+                <h3>Ook laatste F1-race in Zandvoort voor DJ Admin uit Roermond: ‘We gingen de wereld over’</h3>
+                <p>Het einde van de Dutch Grand Prix in Zandvoort betekent ook het einde van de prachtige opdracht die de Roermondse DJ Admin daar ieder jaar h...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('16')">
+            <div class="card-img-wrapper">
+                <img src="https://images.nu.nl/m/qrtxk6lab7lc_sqr256/1018/0/1810/1810/sterrenkundigen-vinden-bewijs-voor-echte-black-hole-sun.jpg" alt="Wiskunde & Wetenschap" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Wiskunde & Wetenschap</span>
+            </div>
+            <div class="card-content">
+                <h3>Sterrenkundigen vinden bewijs voor echte 'Black Hole Sun'</h3>
+                <p>Astronomen hebben bewijs gevonden voor het bestaan van een zwartegatster. Zo'n ster kan mogelijk een verklaring bieden voor mysterieuze rode...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('17')">
+            <div class="card-img-wrapper">
+                <img src="https://images.nu.nl/m/spsx7tka06d1_sqr256/1041/66/2091/2091/melkweg-slokte-118-miljard-jaar-geleden-ander-sterrenstelsel-op.jpg" alt="Wiskunde & Wetenschap" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Wiskunde & Wetenschap</span>
+            </div>
+            <div class="card-content">
+                <h3>Melkweg slokte 11,8 miljard jaar geleden ander sterrenstelsel op</h3>
+                <p>De Melkweg slokte 11,8 miljard jaar geleden een kleiner sterrenstelsel op, blijkt uit nieuw onderzoek. Het is voor zover bekend de vroegste ...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('18')">
+            <div class="card-img-wrapper">
+                <img src="https://images.nu.nl/m/vnpxyj3ad9bi_sqr256/987/5/1912/1912/ster-die-met-25000-kilometer-per-seconde-beweegt-voelt-draaiing-van-zwart-gat.jpg" alt="Wiskunde & Wetenschap" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Wiskunde & Wetenschap</span>
+            </div>
+            <div class="card-content">
+                <h3>Ster die met 25.000 kilometer per seconde beweegt 'voelt' draaiing van zwart gat</h3>
+                <p>Astronomen hebben dicht bij het zwarte gat in het centrum van de Melkweg een ster ontdekt die 25.000 kilometer per seconde beweegt. De ster ...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('19')">
+            <div class="card-img-wrapper">
+                <img src="https://images.nu.nl/m/lbvxj5ha9aj3_sqr256/450/0/1023/1023/ai-fraude-zit-verzekeraars-vaker-dwars-uiteindelijk-gaat-premie-omhoog.jpg" alt="Technologie" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Technologie</span>
+            </div>
+            <div class="card-content">
+                <h3>AI-fraude zit verzekeraars vaker dwars: 'Uiteindelijk gaat premie omhoog'</h3>
+                <p>Fraudeurs gebruiken steeds vaker kunstmatige intelligentie om verzekeraars op te lichten, bijvoorbeeld door facturen en schadefoto's te verv...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('20')">
+            <div class="card-img-wrapper">
+                <img src="https://webp.br.cdn.pxr.nl/news/2026/08/23/50118e5dfd2bdede3c065a133aa4d69b22e23dc0.jpg?width=1200" alt="Technologie" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Technologie</span>
+            </div>
+            <div class="card-content">
+                <h3>De voordelen en nadelen van de camerabrillen van Meta</h3>
+                <p>Het lijkt een gewoon montuur, maar er gaat een camera in schuil. Enerzijds blijkt Meta met veel meer slimme brillen te willen komen, anderzi...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('21')">
+            <div class="card-img-wrapper">
+                <img src="https://webp.br.cdn.pxr.nl/news/2026/08/23/6168dae9dbbb1e2e912fd5e2ec844fccebcc120f.jpg?width=1200" alt="Technologie" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Technologie</span>
+            </div>
+            <div class="card-content">
+                <h3>'Lelijke' koefilm gaat viraal en wordt een van de meest winstgevende films ooit</h3>
+                <p>Wat begon als het grootste lachertje van het internet, is opeens veranderd in een historisch kaskrakersucces. De Chinese 3D-animatiefilm Niu...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('22')">
+            <div class="card-img-wrapper">
+                <img src="https://images.nu.nl/m/fh8xvn3apzid_sqr256/449/0/1438/1438/de-crash-van-verstappen-rijdersfout-of-ook-gewoon-een-beetje-pech.jpg" alt="Sport" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Sport</span>
+            </div>
+            <div class="card-content">
+                <h3>Explainer | De crash van Verstappen: rijdersfout of ook gewoon een beetje pech?</h3>
+                <p>Geen samenvatting beschikbaar....</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('23')">
+            <div class="card-img-wrapper">
+                <img src="https://images.nu.nl/m/1c2xx8xawa6t_sqr256/826/0/3779/3779/pogacar-doet-zijn-fietsbril-cadeau-aan-zoontje-van-aert-sorry-dat-ik-niet-overnam.jpg" alt="Sport" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Sport</span>
+            </div>
+            <div class="card-content">
+                <h3>Pogacar doet zijn fietsbril cadeau aan zoontje Van Aert: 'Sorry dat ik niet overnam'</h3>
+                <p>Tadej Pogacar heeft zich na de tweede etappe van de Vuelta a España verontschuldigd bij Wout van Aert. De Sloveen weigerde mee te werken tij...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('24')">
+            <div class="card-img-wrapper">
+                <img src="https://images.nu.nl/m/sq5xoukaldtb_sqr256/844/5/2995/2995/mercedes-ziet-mclaren-als-bedreiging-en-ons-ontwikkelingsbudget-is-op.jpg" alt="Sport" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Sport</span>
+            </div>
+            <div class="card-content">
+                <h3>Mercedes ziet McLaren als bedreiging: 'En ons ontwikkelingsbudget is op'</h3>
+                <p>Voor de tweede race op rij moest Mercedes zijn meerdere erkennen in McLaren, dat met Lando Norris in Zandvoort de laatste Nederlandse Grand ...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('25')">
+            <div class="card-img-wrapper">
+                <img src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600" alt="Fitness & Resistance Training" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600';">
+                <span class="badge">Fitness & Resistance Training</span>
+            </div>
+            <div class="card-content">
+                <h3>Onderzoek: veroorzaken milkshakes een ‘dopamine rush’ zoals drugs?</h3>
+                <p>Er wordt vaak gezegd dat ongezond voedsel, zoals milkshakes of snacks met veel suiker en vet, ons brein op dezelfde manier zou prikkelen als...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('26')">
+            <div class="card-img-wrapper">
+                <img src="https://images.nu.nl/m/evnxq6uasycs_sqr256/1553/0/3766/3766/handel-in-gemummificeerde-resten-schaadt-gezondheid-de-echte-mummievloek.jpg" alt="Fitness & Resistance Training" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600';">
+                <span class="badge">Fitness & Resistance Training</span>
+            </div>
+            <div class="card-content">
+                <h3>Handel in gemummificeerde resten schaadt gezondheid: 'De echte mummievloek'</h3>
+                <p>De handel in gemummificeerde menselijke resten kan ernstige gezondheidsrisico's met zich meebrengen. Wetenschappers waarschuwen onder meer d...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('27')">
+            <div class="card-img-wrapper">
+                <img src="https://images.nu.nl/m/gdwx6yuatxhu_sqr256/2043/1511/3347/3347/ruim-60000-mensen-met-ernstige-psychische-aandoeningen-buiten-beeld-ggz.jpg" alt="Fitness & Resistance Training" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600';">
+                <span class="badge">Fitness & Resistance Training</span>
+            </div>
+            <div class="card-content">
+                <h3>Ruim 60.000 mensen met ernstige psychische aandoeningen buiten beeld ggz</h3>
+                <p>Een kwart van de mensen met ernstige psychische aandoeningen krijgt geen zorg en is buiten beeld van de geestelijke gezondheidszorg. Het gaa...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('28')">
+            <div class="card-img-wrapper">
+                <img src="https://hooiberg.speld.nl/wp-content/uploads/2026/08/karin-site_f8731f1c912528037b4e1d8f1bab9695_2000.jpg" alt="Humor & Luchtig" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Humor & Luchtig</span>
+            </div>
+            <div class="card-content">
+                <h3>Vandaag is een mooie dag voor Karin (56) om zich te ergeren aan rokers op het terras</h3>
+                <p>De zon schijnt, de vogeltjes fluiten: de perfecte dag voor de 56-jarige Karin uit Arnhem om naar het terras te gaan om zich daar te ergeren ...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('29')">
+            <div class="card-img-wrapper">
+                <img src="https://images.nu.nl/m/wu1xnuqal9k0_sqr256/405/0/1080/1080/medaille-van-marathon-sydney-beeldt-verkeerd-stadion-af.jpg" alt="Humor & Luchtig" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Humor & Luchtig</span>
+            </div>
+            <div class="card-content">
+                <h3>Medaille van marathon Sydney beeldt verkeerd stadion af</h3>
+                <p>Op de deelnemersmedaille van de marathon van Sydney is het verkeerde stadion gegraveerd, schrijft BBC. Op de medaille is de Allianz Arena in...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('30')">
+            <div class="card-img-wrapper">
+                <img src="https://images.nu.nl/m/l7vx71cas9tj_sqr256/353/529/3114/3114/chinese-robot-breekt-wereldrecord-van-usain-bolt-op-100-meter-sprint.jpg" alt="Humor & Luchtig" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Humor & Luchtig</span>
+            </div>
+            <div class="card-content">
+                <h3>Chinese robot breekt wereldrecord van Usain Bolt op 100 meter sprint</h3>
+                <p>Een Chinese robot heeft sneller gelopen dan het wereldrecord van Usain Bolt op de 100 meter sprint. De robot deed 9,32 seconden over de afst...</p>
+                <div class="read-more">Lees volledig bericht &rarr;</div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Modal View -->
+    <div id="modalOverlay" class="modal-overlay" onclick="closeModalOnOverlay(event)">
+        <div class="modal-container">
+            <img id="modalImg" class="modal-header-img" src="" alt="Nieuws afbeelding">
+            <div class="modal-body">
+                <span id="modalBadge" class="modal-badge"></span>
+                <h2 id="modalTitle" class="modal-title"></h2>
+                <div id="modalAiBox" class="modal-ai-box"></div>
+                <div id="modalFullText" class="modal-full-text"></div>
+                <div class="modal-actions">
+                    <button class="btn btn-back" onclick="closeModal()">&larr; Terug naar overzicht</button>
+                    <a id="modalSourceLink" class="btn btn-source" href="#" target="_blank" rel="noopener">Bekijk origineel op de website &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const articlesData = {"1": {"title": "Energietransitie & Het Volle Stroomnet", "category": "Achtergrond & Meningsvorming", "img": "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600", "ai_summary": "Synthese van feiten en standpunten over: Netcongestie, de grenzen van het elektriciteitsnet en verduurzamingsuitdagingen.", "full_text": "<b>Niet gelukt om live AI-dossier op te halen.</b><br>Fout: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements.', 'status': 'NOT_FOUND'}}", "is_background": true}, "2": {"title": "Kernenergie in het Nederlandse Klimaatbeleid", "category": "Achtergrond & Meningsvorming", "img": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600", "ai_summary": "Synthese van feiten en standpunten over: De rol van nieuwe kerncentrales vs zon- en windenergie.", "full_text": "<b>Niet gelukt om live AI-dossier op te halen.</b><br>Fout: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements.', 'status': 'NOT_FOUND'}}", "is_background": true}, "3": {"title": "Rekeningrijden en Toekomst van Mobiliteit", "category": "Achtergrond & Meningsvorming", "img": "https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=600", "ai_summary": "Synthese van feiten en standpunten over: Betalen naar gebruik, wegenbelasting en de vergroening van het wagenpark.", "full_text": "<b>Niet gelukt om live AI-dossier op te halen.</b><br>Fout: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements.', 'status': 'NOT_FOUND'}}", "is_background": true}, "4": {"title": "'Ongelukkig foutje': medaille marathon Sydney toont stadion in M\u00fcnchen", "category": "Wereld", "img": "https://images.cdn.nos.nl/5/F/H/w/3/6/n73u2Xe5RLJboyHcTtLWVnx3Riga8DXq3aeTWPt/5x3x880x495-880x495.webp", "ai_summary": "Deelnemers aan de marathon van Sydney krijgen volgende week zondag een wel heel bijzondere medaille na het finishen. Op het eremetaal staan ...", "full_text": "Deelnemers aan de marathon van Sydney krijgen volgende week zondag een wel heel bijzondere medaille na het finishen. Op het eremetaal staan bekende gebouwen en bezienswaardigheden in de Australische stad afgebeeld, met \u00e9\u00e9n uitzondering: de Allianz Arena uit de Duitse stad M\u00fcnchen.\n        De organisatie van de marathon presenteerde de medaille afgelopen week vol trots op Instagram. In de details van het ontwerp kunnen deelnemers \"het verhaal van het parcours ontdekken\", zo stond in het bericht. \"Een prachtige skyline van Sydney brengt het parcours tot leven, met de bezienswaardigheden die de lopers onderweg tegenkomen, beginnend bij de Sydney Harbour Bridge en eindigend bij het wereldberoemde Sydney Opera House.\"\n        Volgers merkten in het ontwerp al snel een eigenaardigheid op. Rechtsonder staat een ovaal gebouw met ruitvormig patroon dat verdacht veel op de Alllianz Arena in M\u00fcnchen lijkt. Sydney heeft zelf een Allianz Stadium, dat er heel anders uitziet.\n        Verschillende hardloopwebsites schreven over de verwisseling en ook de BBC maakte er melding van. De organisatie van de marathon heeft nu erkend dat de medaille \"iets te veel internationale invloed\" bevat door het afbeelden van het verkeerde stadion.\n        \"We rennen hier niet van weg, het was een ongelukkig foutje. Het gaf iedereen dit weekend in ieder geval iets om over te praten\", luidt de sportieve reactie van de TCS Sydney Marathon. Het communicatieteam van de Allianz Arena liet op sociale media weten blij verrast te zijn: \"Wauw, deze stond niet op onze bingokaart!\", aldus de Duitsers.\n        Geen tijd voor nieuwe batch\n        Omdat het hardloopevenement volgende week al gehouden wordt, krijgen deelnemers daadwerkelijk de medaille met daarop het Duitse stadion uitgereikt, bevestigt de organisatie van de marathon.\n        De andere zijde van de medaille is trouwens ook bijzonder: die is goud- en indigokleurig en ontworpen door Aboriginal-kunstenaar Ambrose Killian. Hij heeft laten weten dat hij niet betrokken was bij het skyline-ontwerp waar de fout in geslopen is.\n        Aan de start van de marathon in Sydney op 30 augustus worden 40.000 lopers verwacht. Het evenement behoort sinds kort tot de zogeheten World Marathon Majors, de zeven bekendste en meest prestigieuze marathons ter wereld. Daardoor voegt Sydney zich in het rijtje met Berlijn, Tokio, New York, Boston, Chicago, Londen en volgend jaar ook Kaapstad.", "original_link": "https://nos.nl/l/2628057", "is_background": false}, "5": {"title": "DR Congo and M23 rebels agree roadmap for peace talks", "category": "Wereld", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Representatives met in Switzerland to work out next steps to resolve the conflict....", "full_text": "Representatives met in Switzerland to work out next steps to resolve the conflict.", "original_link": "https://www.bbc.co.uk/news/articles/cre4e1q3wewo?at_medium=RSS&at_campaign=rss", "is_background": false}, "6": {"title": "Discussies in Spanje over of het zorgsysteem in Ceuta de migranten aankan", "category": "Wereld", "img": "https://images.cdn.nos.nl/6/B/d/G/F/8/uCL7R7r3msavAfEJLohYjpG5NJJzyumbvMyCktf/0x107x4000x2250-1024x576.webp", "ai_summary": "Duizenden migranten zwerven nog op straat in Ceuta. De inwoners van de Spaanse exclave in Noord-Afrika ervaren overlast, voelen zich soms on...", "full_text": "Duizenden migranten zwerven nog op straat in Ceuta. De inwoners van de Spaanse exclave in Noord-Afrika ervaren overlast, voelen zich soms onveilig en ook het zorgsysteem krijgt het zwaar te verduren. Want een systeem dat normaal 80.000 mensen bedient, moet nu ineens voor zo'n 10 procent extra mensen zorgen.\n        De ingang van de eerste hulp wordt door militairen bewaakt. Het lijkt er op dat wie het nodig heeft naar binnen mag, maar buiten staan ook migranten die zeggen niet of slecht te worden geholpen.\n        Op een betonnen bankje voor het ziekenhuis ligt een jongeman onder een rood dekentje. Zijn vrienden lopen zenuwachtig rond. \"Hij is aangereden door een motor\", vertelt een van hen. \"Ze hebben hem gisteren binnen verzorgd, maar bijna direct ook weer op straat gezet.\"\n        Andere mannen met duidelijke verwondingen en blauwe plekken proberen langs de militairen te lopen. Ze worden tegengehouden. Ze zeggen dat ze door de politie zijn geslagen. Ook is hun paspoort afgepakt. Uiteindelijk mogen ze in het ziekenhuis een rapport laten opmaken van hun mishandeling.\n        Politiek\n        Al rijdend door de exclave wordt snel duidelijk waarom de druk op de zorg steeds verder toeneemt. Duizenden mensen slapen buiten en zwerven overdag over straat. Stromend water is beperkt aanwezig en ziektes verspreiden zich snel. Het Spaanse ministerie van Volksgezondheid wil zo snel mogelijk vaccins voor ziekten als waterpokken, polio en tetanus naar Ceuta brengen.\n        Ondertussen eist oppositieleider Alberto Feij\u00f3o (Partido Popular) een lockdown om het verspreiden van dezelfde ziekten te voorkomen. De vraag wat er moet gaan gebeuren met de gezondheidszorg in de exclave wordt steeds urgenter. Want hoe langer migranten op straat zwerven, hoe groter de kans op ziektes en verwondingen door agressie.\n        Migranten die de overtocht niet overleefden worden vaak anoniem begraven, is te zien in deze video van Nieuwsuur: \n        Zo'n week geleden bezocht de Spaanse minister van Volksgezondheid de exclave. Na een bezoek aan het ziekhuis zei ze dat de helft van de ziekenhuisbedden nog leeg stond en de situatie dus niet alarmerend was. Maar de lokale overheid van Ceuta (Partido Popular) schetst een heel ander beeld. Volgens hen kan het zorgsysteem het niet meer aan.\n        Viceburgemeester Kissy Chandiramani: \"Het is ook wat artsen, verpleegkundigen en het zorgpersoneel zeggen. Je hoeft maar naar ze te luisteren en je hoort dat het systeem op instorten staat.\" Ze maakt zich zorgen om de situatie in de exclave en vindt dat de regering in Madrid en de Europese Unie meer moeten doen om te helpen.\n        Het is moeilijk zicht krijgen op hoe de situatie in het ziekenhuis echt is. Het heeft geen communicatieafdeling en zegt de NOS daarom niet te woord te willen staan. Ook de vertegenwoordiger van de centrale regering in Ceuta had geen tijd voor een interview. De verantwoordelijkheden binnen het zorgsysteem op de exclave zijn verdeeld tussen de nationale en de lokale regering.\n        Tentenkamp\n        Niet al te ver van het ziekenhuis ligt industrieterrein El Tarajal. Het is omgebouwd tot een tentenkamp. Met karton, dekens en pallets zijn tegen de gebouwen ge\u00efmproviseerde tenten opgezet. Stromend water is er niet. Overdag is het snikheet en 's nachts is het koud. Het is een plek waar ziektes zich snel kunnen verspreiden. Het is de woonplek voor een paar honderd migranten. Vooral mannen, maar ook vrouwen en kinderen vullen hier hun dagen.\n        Patricia Ruiz de Irizar werkt daar namens Dokters van de Wereld. \"We zien luchtweginfecties, dermatologische infecties en hoe langer het duurt ook steeds meer mentale gezondheidsproblemen.\" Ze staan met een camper op het terrein, naast een busje van het Rode Kruis. Voor de camper staat een rij aan mensen. Een man met een snee in zijn voet krijgt een verband. Naast hem wordt een jongen die last heeft van huidirritaties geholpen.\n        De druk op de zorg was vlak na de bestorming eind vorige maand het hoogst. Maar naarmate de tijd verstrijkt, zullen de gezondheidsproblemen ook toenemen. Dat lijkt het enige waar iedereen het over eens is.\n        Ook Ruiz de Irizar spreekt van een humanitaire noodsituatie en denkt dat de gezondheidssituatie steeds slechter zal worden. \"We maken ons zorgen omdat we zien dat deze mensen niet de hulp krijgen die ze nodig hebben.\"", "original_link": "https://nos.nl/l/2628053", "is_background": false}, "7": {"title": "Zelenskyy repeats Ukraine not behind Nord Stream attack", "category": "Europa", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Volodymyr Zelenskyy said Ukraine was assisting German authorities with their investigation into the Nord Stream explosions. A second Ukraini...", "full_text": "Volodymyr Zelenskyy said Ukraine was assisting German authorities with their investigation into the Nord Stream explosions. A second Ukrainian national was arrested in connection with the blasts.", "original_link": "https://www.dw.com/en/zelenskyy-repeats-ukraine-not-behind-nord-stream-attack/a-78478791?maca=en-rss-en-all-1573-rdf", "is_background": false}, "8": {"title": "Guinea: Garbage collapse at landfill kills dozens", "category": "Europa", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Heavy seasonal rains caused a mound of garbage to collapse, burying dozens of people and nearby homes before the break of dawn....", "full_text": "Heavy seasonal rains caused a mound of garbage to collapse, burying dozens of people and nearby homes before the break of dawn.", "original_link": "https://www.dw.com/en/guinea-garbage-collapse-at-landfill-kills-dozens/a-78478597?maca=en-rss-en-all-1573-rdf", "is_background": false}, "9": {"title": "Could Russia's growing fuel crisis help end the Ukraine war?", "category": "Europa", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Empty pumps, long waits: Attacks on oil refineries have left Russia increasingly short of fuel. Dissident Russian economists say growing ang...", "full_text": "Empty pumps, long waits: Attacks on oil refineries have left Russia increasingly short of fuel. Dissident Russian economists say growing anger about shortages among ordinary Russians could help end the Ukraine war.", "original_link": "https://www.dw.com/en/could-russia-s-growing-fuel-crisis-help-end-the-ukraine-war/a-78472138?maca=en-rss-en-all-1573-rdf", "is_background": false}, "10": {"title": "KNVB bekijkt eigen protocol na vuurwerk bij Cambuur - Feyenoord", "category": "Nederland", "img": "https://redactie.rtl.nl/sites/default/files/ANP230826100-1.jpg?itok=R0eNrKMP&width=1024&height=576&impolicy=semi_dynamic", "ai_summary": "Het competitiebestuur betaald voetbal gaat het eigen protocol bij ongeregeldheden nog eens goed bekijken na het vuurwerkincident vandaag bij...", "full_text": "Het competitiebestuur betaald voetbal gaat het eigen protocol bij ongeregeldheden nog eens goed bekijken na het vuurwerkincident vandaag bij SC Cambuur - Feyenoord. Vijf supporters van de thuisclub raakten gewond, maar het duel werd uitgespeeld omdat geen speler of official werd geraakt.", "original_link": "https://www.rtl.nl/nieuws/sport/artikel/5642185/knvb-bekijkt-eigen-protocol-na-vuurwerk-bij-cambuur-feyenoord", "is_background": false}, "11": {"title": "Diamanten zijn voor altijd, of toch niet? 'Jongeren hebben andere prioriteiten'", "category": "Nederland", "img": "https://images.cdn.nos.nl/2/G/C/q/o/s/UJmXtG5KvyaUqrBbSeL5kz17JLpFtxQXUuFHSmS/251x102x2320x1305-1024x576.webp", "ai_summary": "De wereldwijde diamantsector zit in zwaar weer, merken ook juweliers en diamantairs in Nederland. 's Werelds toonaangevendste diamantbedrijf...", "full_text": "De wereldwijde diamantsector zit in zwaar weer, merken ook juweliers en diamantairs in Nederland. 's Werelds toonaangevendste diamantbedrijf, De Beers, kondigde vorige maand aan de grootste diamantmijn in Zuid-Afrika voor twee jaar te sluiten. De Venetia-mijn levert ongeveer 40 procent van de jaarlijkse diamantproductie van Zuid-Afrika.\n        De maatregel is een reactie op de langdurige terugval van de markt voor natuurlijke diamanten. Dat blijkt ook uit de handelscijfers van Antwerpen, de diamanthoofdstad van Europa, waar de diamanthandel de afgelopen jaren fors tegenviel. Vorig jaar nam de handel met 22 procent af.\n        Afrika-correspondent Elles van Gelder:\n        \"Zuid-Afrika heeft te maken met grote werkloosheid en dit zet banen nog verder onder druk. Hoeveel banen er verdwijnen is nog niet vastgesteld, maar er wordt gesproken over ruim 1200. De grootste mijnwerkersvakbond van Zuid-Afrika NUM spreekt van een verwoestende klap voor werknemers en hun gezinnen mede omdat Venetia een van de belangrijkste werkgevers is in de regio. Als De Beers werknemers ontslaat, voelen niet alleen de gezinnen van de mijnwerkers dit maar ook leveranciers van de mijn en winkels in die gemeenschap.\n        Mijnvakbond NUM is boos over dit besluit. Volgens de vakbond weet De Beers al langer dat de diamantmarkt in problemen verkeert en moet het bedrijf eerst andere manieren zoeken om kosten te besparen.\n        De diamantmijnen in Zuid-Afrika hebben de afgelopen tien jaar meer dan 7000 banen verloren. Dat is een daling van 38 procent. Dit komt dus niet uit de lucht vallen.\"\n        Rob van Beurden, diamanthandelaar en directeur van Diamond House in Antwerpen, zegt dat de waarde van natuurlijke diamanten sinds maart 2022 bijna is gehalveerd. Vooral stenen lager dan twee karaat vinden moeilijk aftrek.\n        Daar zijn verschillende oorzaken voor, waaronder de populariteit van synthetische diamanten. Deze kweekdiamanten worden in laboratoria gemaakt en zijn nauwelijks van natuurlijke varianten te onderscheiden. Vooral jongeren staan open voor deze alternatieven, merkt ook Van Beurden.\n        \"Generatie Z en millennials hebben een ander bestedingspatroon dan oudere generaties\", zegt Van Beurden. \"Ze besteden hun geld liever aan kleurstenen, zilver of ervaringen zoals festivals of een lange reis. Hun prioriteiten liggen elders.\"\n        Er zijn natuurlijk wel uitzonderingen. \"Zo blijft er ook nog een groep jonge kopers die een diamant zien als een investering of waardevast product dat later aan de kleinkinderen kan worden doorgegeven.\"\n        Ook zogenoemde gerecyclede diamanten zijn in trek, merkt Van Beurden op. Dat zijn edelstenen die een tweede leven krijgen bij jonge stellen die gaan trouwen. \"Ze erven bijvoorbeeld een oude diamant van hun moeder of grootmoeder en laten die opnieuw slijpen of in een montuur naar eigen keuze plaatsen.\"\n        Subtieler\n        Robert den Haag, juwelier en inkoper bij Klumpers in Leidschendam, ziet dat de marktomstandigheden veranderen. \"Sieraden met diamanten vinden sommige jongeren te klassiek. Bij nieuwe merken, zoals Miss Spring, zie je veel subtiele kleurstenen. Vooral voor ringen zijn die in opkomst.\"\n        Voor de peridoot, een olijfgroene edelsteen, ben je bovendien een stuk minder geld kwijt, zegt Den Haag. Ook saffieren, robijnen en blauwe spinellen zijn populair. Voor trouwringen blijft de diamant voor veel klanten echter favoriet.\n        Dat de natuurlijke diamant zijn glans heeft verloren, is vooral te merken in de Verenigde Staten, zegt zowel Van Beurden als Den Haag. Daar zijn de synthetische of lab-grown diamanten inmiddels goed voor ruim 50 procent van de verkochte verlovingsringen.\n        Ecologisch verantwoord\n        Dankzij kweekdiamanten is de diamant niet langer alleen weggelegd voor welgestelden. Zeeman verkocht vorig jaar bijvoorbeeld een lab-grown diamant van 0,10 tot 0,12 karaat voor 30 euro. Dat is goed nieuws voor consumenten, maar deze ontwikkeling kent ook een keerzijde.\n        \"Er komen steeds meer fabrieken voor lab-grown diamanten, met name in China en India, die elkaar kapot concurreren\", zegt Van Beurden. \"Op een gegeven moment implodeert die markt.\" Inmiddels komt zo'n 20 procent van alle verkochte diamanten uit een fabriek, zegt Federatie Goud en Zilver, de branchevereniging voor ondernemers in onder andere edelstenen.\n        Naast de prijs maakt ook de lagere ecologische voetafdruk synthetische diamanten aantrekkelijk. \"Dat klopte in het begin\", zegt Van Beurden. Toen was die voetafdruk aanzienlijk kleiner dan die van natuurlijke diamanten. \"Maar inmiddels is het zo'n massaproduct geworden.\"\n        Juwelier Den Haag hoopt na enkele moeilijke jaren voor de diamantmarkt op een omslag. Daarvoor kijkt hij naar de diamantprijzen, die vorige maand een lichte stijging lieten zien. \"De diamant gaat het echt wel winnen.\"", "original_link": "https://nos.nl/l/2627948", "is_background": false}, "12": {"title": "Lowlands zoekt een nieuwe koers, en bezoekers merken dat meteen", "category": "Nederland", "img": "https://image.trouw.nl/276988463/feature-crop/320/320/afbeelding", "ai_summary": "Geen samenvatting beschikbaar....", "full_text": "Geen samenvatting beschikbaar.", "original_link": "https://www.trouw.nl/cultuur-media/lowlands-zoekt-een-nieuwe-koers-en-bezoekers-merken-dat-meteen~b13b6eaf3/", "is_background": false}, "13": {"title": "Bieb Stramproy bestaat tien jaar: \u2018En daar zijn we gruu\u00ebts op!\u2019", "category": "Midden-Limburg", "img": "https://www.weertdegekste.nl/wp-content/uploads/2026/08/Bieb-Stramproy-230826001.jpg", "ai_summary": "De Bieb in Stramproy bestaat tien jaar. Dankzij de inzet van een grote groep vrijwilligers kan Stramproy al een decennium gebruikmaken van d...", "full_text": "De Bieb in Stramproy bestaat tien jaar. Dankzij de inzet van een grote groep vrijwilligers kan Stramproy al een decennium gebruikmaken van de Bieb. En daar zijn ze in Stramproy \u2018gruu\u00ebts\u2019 op. Het jubileum werd vandaag samen met de vrijwilligers gevierd. Voor het jubileumuitstapje kwamen de vrijwilligers bij elkaar voor een stadswandeling met gids in [&#8230;]", "original_link": "https://www.weertdegekste.nl/2026/08/bieb-stramproy-bestaat-tien-jaar-en-daar-zijn-we-gruuets-op/", "is_background": false}, "14": {"title": "Vacatures in Nederweert | Nieuwe jobs in de regio Nederweert", "category": "Midden-Limburg", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Vacature24, het vacatureplatform van Nederweert24 en Meijel24, biedt een actueel en gevarieerd aanbod aan lokale vacatures. Of het nu gaat o...", "full_text": "Vacature24, het vacatureplatform van Nederweert24 en Meijel24, biedt een actueel en gevarieerd aanbod aan lokale vacatures. Of het nu gaat om een eerste baan of een volgende stap in je carri\u00e8re, er zijn mogelijkheden op elk niveau en in uiteenlopende sectoren.\nHet bericht Vacatures in Nederweert | Nieuwe jobs in de regio Nederweert verscheen eerst op Nederweert24.", "original_link": "https://www.nederweert24.nl/2026/08/23/vacatures-in-nederweert-nieuwe-jobs-in-de-regio-nederweert-10/", "is_background": false}, "15": {"title": "Ook laatste F1-race in Zandvoort voor DJ Admin uit Roermond: \u2018We gingen de wereld over\u2019", "category": "Midden-Limburg", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Het einde van de Dutch Grand Prix in Zandvoort betekent ook het einde van de prachtige opdracht die de Roermondse DJ Admin daar ieder jaar h...", "full_text": "Het einde van de Dutch Grand Prix in Zandvoort betekent ook het einde van de prachtige opdracht die de Roermondse DJ Admin daar ieder jaar heeft. Sinds de terugkeer van de race op de Formule 1-kalender staat hij achter de draaitafel in het indrukwekkende arena-gedeelte van het circuit. &#8220;Het voelt alsof ik uit mijn kantoor &#8230;\nHet bericht Ook laatste F1-race in Zandvoort voor DJ Admin uit Roermond: &#8216;We gingen de wereld over&#8217; verscheen eerst op VML Nieuws.", "original_link": "https://vmlnieuws.nl/roermond/ook-laatste-f1-race-in-zandvoort-voor-dj-admin-uit-roermond-we-gingen-de-wereld-over/?utm_source=rss&utm_medium=rss&utm_campaign=ook-laatste-f1-race-in-zandvoort-voor-dj-admin-uit-roermond-we-gingen-de-wereld-over", "is_background": false}, "16": {"title": "Sterrenkundigen vinden bewijs voor echte 'Black Hole Sun'", "category": "Wiskunde & Wetenschap", "img": "https://images.nu.nl/m/qrtxk6lab7lc_sqr256/1018/0/1810/1810/sterrenkundigen-vinden-bewijs-voor-echte-black-hole-sun.jpg", "ai_summary": "Astronomen hebben bewijs gevonden voor het bestaan van een zwartegatster. Zo'n ster kan mogelijk een verklaring bieden voor mysterieuze rode...", "full_text": "Astronomen hebben bewijs gevonden voor het bestaan van een zwartegatster. Zo'n ster kan mogelijk een verklaring bieden voor mysterieuze rode vlekken in het heelal.", "original_link": "https://www.nu.nl/wetenschap/6406513/sterrenkundigen-vinden-bewijs-voor-echte-black-hole-sun.html", "is_background": false}, "17": {"title": "Melkweg slokte 11,8 miljard jaar geleden ander sterrenstelsel op", "category": "Wiskunde & Wetenschap", "img": "https://images.nu.nl/m/spsx7tka06d1_sqr256/1041/66/2091/2091/melkweg-slokte-118-miljard-jaar-geleden-ander-sterrenstelsel-op.jpg", "ai_summary": "De Melkweg slokte 11,8 miljard jaar geleden een kleiner sterrenstelsel op, blijkt uit nieuw onderzoek. Het is voor zover bekend de vroegste ...", "full_text": "De Melkweg slokte 11,8 miljard jaar geleden een kleiner sterrenstelsel op, blijkt uit nieuw onderzoek. Het is voor zover bekend de vroegste samensmelting van onze Melkweg met een ander stelsel.", "original_link": "https://www.nu.nl/wetenschap/6406680/melkweg-slokte-118-miljard-jaar-geleden-ander-sterrenstelsel-op.html", "is_background": false}, "18": {"title": "Ster die met 25.000 kilometer per seconde beweegt 'voelt' draaiing van zwart gat", "category": "Wiskunde & Wetenschap", "img": "https://images.nu.nl/m/vnpxyj3ad9bi_sqr256/987/5/1912/1912/ster-die-met-25000-kilometer-per-seconde-beweegt-voelt-draaiing-van-zwart-gat.jpg", "ai_summary": "Astronomen hebben dicht bij het zwarte gat in het centrum van de Melkweg een ster ontdekt die 25.000 kilometer per seconde beweegt. De ster ...", "full_text": "Astronomen hebben dicht bij het zwarte gat in het centrum van de Melkweg een ster ontdekt die 25.000 kilometer per seconde beweegt. De ster \"voelt\" daardoor de draaiing van het gat.", "original_link": "https://www.nu.nl/wetenschap/6406717/ster-die-met-25000-kilometer-per-seconde-beweegt-voelt-draaiing-van-zwart-gat.html", "is_background": false}, "19": {"title": "AI-fraude zit verzekeraars vaker dwars: 'Uiteindelijk gaat premie omhoog'", "category": "Technologie", "img": "https://images.nu.nl/m/lbvxj5ha9aj3_sqr256/450/0/1023/1023/ai-fraude-zit-verzekeraars-vaker-dwars-uiteindelijk-gaat-premie-omhoog.jpg", "ai_summary": "Fraudeurs gebruiken steeds vaker kunstmatige intelligentie om verzekeraars op te lichten, bijvoorbeeld door facturen en schadefoto's te verv...", "full_text": "Fraudeurs gebruiken steeds vaker kunstmatige intelligentie om verzekeraars op te lichten, bijvoorbeeld door facturen en schadefoto's te vervalsen. Onderzoekers proberen valse claims te onderscheppen. Als dat niet lukt, betalen we allemaal de prijs doordat premies stijgen.", "original_link": "https://www.nu.nl/tech/6407072/ai-fraude-zit-verzekeraars-vaker-dwars-uiteindelijk-gaat-premie-omhoog.html", "is_background": false}, "20": {"title": "De voordelen en nadelen van de camerabrillen van Meta", "category": "Technologie", "img": "https://webp.br.cdn.pxr.nl/news/2026/08/23/50118e5dfd2bdede3c065a133aa4d69b22e23dc0.jpg?width=1200", "ai_summary": "Het lijkt een gewoon montuur, maar er gaat een camera in schuil. Enerzijds blijkt Meta met veel meer slimme brillen te willen komen, anderzi...", "full_text": "Het lijkt een gewoon montuur, maar er gaat een camera in schuil. Enerzijds blijkt Meta met veel meer slimme brillen te willen komen, anderzijds staan er steeds meer mensen op die daar echt niet op zitten te wachten. Dit zijn de voordelen en nadelen van Meta\u2019s camerabril.&nbsp;", "original_link": "https://www.bright.nl/plusplus/2126492/de-voordelen-en-nadelen-van-de-camerabrillen-van-meta.html", "is_background": false}, "21": {"title": "'Lelijke' koefilm gaat viraal en wordt een van de meest winstgevende films ooit", "category": "Technologie", "img": "https://webp.br.cdn.pxr.nl/news/2026/08/23/6168dae9dbbb1e2e912fd5e2ec844fccebcc120f.jpg?width=1200", "ai_summary": "Wat begon als het grootste lachertje van het internet, is opeens veranderd in een historisch kaskrakersucces. De Chinese 3D-animatiefilm Niu...", "full_text": "Wat begon als het grootste lachertje van het internet, is opeens veranderd in een historisch kaskrakersucces. De Chinese 3D-animatiefilm Niu Lai (Daar komt de koe) werd door een moeder en haar zoon gemaakt met een geschat budget van slechts 200 dollar. Inmiddels heeft de krakkemikkige productie miljoenen dollars opgehaald in de Chinese bioscopen.", "original_link": "https://www.bright.nl/nieuws/2126574/lelijke-koefilm-gaat-viraal-en-wordt-een-van-de-meest-winstgevende-films-ooit.html", "is_background": false}, "22": {"title": "Explainer | De crash van Verstappen: rijdersfout of ook gewoon een beetje pech?", "category": "Sport", "img": "https://images.nu.nl/m/fh8xvn3apzid_sqr256/449/0/1438/1438/de-crash-van-verstappen-rijdersfout-of-ook-gewoon-een-beetje-pech.jpg", "ai_summary": "Geen samenvatting beschikbaar....", "full_text": "Geen samenvatting beschikbaar.", "original_link": "https://www.nu.nl/329570/video/de-crash-van-verstappen-rijdersfout-of-ook-gewoon-een-beetje-pech.html", "is_background": false}, "23": {"title": "Pogacar doet zijn fietsbril cadeau aan zoontje Van Aert: 'Sorry dat ik niet overnam'", "category": "Sport", "img": "https://images.nu.nl/m/1c2xx8xawa6t_sqr256/826/0/3779/3779/pogacar-doet-zijn-fietsbril-cadeau-aan-zoontje-van-aert-sorry-dat-ik-niet-overnam.jpg", "ai_summary": "Tadej Pogacar heeft zich na de tweede etappe van de Vuelta a Espa\u00f1a verontschuldigd bij Wout van Aert. De Sloveen weigerde mee te werken tij...", "full_text": "Tadej Pogacar heeft zich na de tweede etappe van de Vuelta a Espa\u00f1a verontschuldigd bij Wout van Aert. De Sloveen weigerde mee te werken tijdens een aanval van de Belg. Als goedmakertje gaf hij zijn fietsbril aan het zoontje van Van Aert.", "original_link": "https://www.nu.nl/wielrennen/6407298/pogacar-doet-zijn-fietsbril-cadeau-aan-zoontje-van-aert-sorry-dat-ik-niet-overnam.html", "is_background": false}, "24": {"title": "Mercedes ziet McLaren als bedreiging: 'En ons ontwikkelingsbudget is op'", "category": "Sport", "img": "https://images.nu.nl/m/sq5xoukaldtb_sqr256/844/5/2995/2995/mercedes-ziet-mclaren-als-bedreiging-en-ons-ontwikkelingsbudget-is-op.jpg", "ai_summary": "Voor de tweede race op rij moest Mercedes zijn meerdere erkennen in McLaren, dat met Lando Norris in Zandvoort de laatste Nederlandse Grand ...", "full_text": "Voor de tweede race op rij moest Mercedes zijn meerdere erkennen in McLaren, dat met Lando Norris in Zandvoort de laatste Nederlandse Grand Prix won. Volgens teambaas Toto Wolff is er bovendien geen geld meer om de auto nog flink te ontwikkelen.", "original_link": "https://www.nu.nl/formule-1/6407294/mercedes-ziet-mclaren-als-bedreiging-en-ons-ontwikkelingsbudget-is-op.html", "is_background": false}, "25": {"title": "Onderzoek: veroorzaken milkshakes een \u2018dopamine rush\u2019 zoals drugs?", "category": "Fitness & Resistance Training", "img": "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600", "ai_summary": "Er wordt vaak gezegd dat ongezond voedsel, zoals milkshakes of snacks met veel suiker en vet, ons brein op dezelfde manier zou prikkelen als...", "full_text": "Er wordt vaak gezegd dat ongezond voedsel, zoals milkshakes of snacks met veel suiker en vet, ons brein op dezelfde manier zou prikkelen als drugs als hero\u00efne. Wetenschappers hebben dit theoretisch onderbouwd [1]. Maar klopt dat wel? Een recente gecontroleerde studie bij 50 volwassenen geeft een ander beeld [2]. Studie in het kort Onderzoekers lieten [&#8230;]\nThe post Onderzoek: veroorzaken milkshakes een \u2018dopamine rush\u2019 zoals drugs? appeared first on FIT.nl.", "original_link": "https://www.fit.nl/voeding/dopamine-milkshake", "is_background": false}, "26": {"title": "Handel in gemummificeerde resten schaadt gezondheid: 'De echte mummievloek'", "category": "Fitness & Resistance Training", "img": "https://images.nu.nl/m/evnxq6uasycs_sqr256/1553/0/3766/3766/handel-in-gemummificeerde-resten-schaadt-gezondheid-de-echte-mummievloek.jpg", "ai_summary": "De handel in gemummificeerde menselijke resten kan ernstige gezondheidsrisico's met zich meebrengen. Wetenschappers waarschuwen onder meer d...", "full_text": "De handel in gemummificeerde menselijke resten kan ernstige gezondheidsrisico's met zich meebrengen. Wetenschappers waarschuwen onder meer dat slapende schimmels in 'mummies' gevaarlijk kunnen zijn voor mensen die ermee in contact komen.", "original_link": "https://www.nu.nl/gezondheid/6406033/handel-in-gemummificeerde-resten-schaadt-gezondheid-de-echte-mummievloek.html", "is_background": false}, "27": {"title": "Ruim 60.000 mensen met ernstige psychische aandoeningen buiten beeld ggz", "category": "Fitness & Resistance Training", "img": "https://images.nu.nl/m/gdwx6yuatxhu_sqr256/2043/1511/3347/3347/ruim-60000-mensen-met-ernstige-psychische-aandoeningen-buiten-beeld-ggz.jpg", "ai_summary": "Een kwart van de mensen met ernstige psychische aandoeningen krijgt geen zorg en is buiten beeld van de geestelijke gezondheidszorg. Het gaa...", "full_text": "Een kwart van de mensen met ernstige psychische aandoeningen krijgt geen zorg en is buiten beeld van de geestelijke gezondheidszorg. Het gaat naar schatting om 62.500 volwassenen, meldt de Nederlandse ggz in een nieuw rapport.", "original_link": "https://www.nu.nl/gezondheid/6406061/ruim-60000-mensen-met-ernstige-psychische-aandoeningen-buiten-beeld-ggz.html", "is_background": false}, "28": {"title": "Vandaag is een mooie dag voor Karin (56) om zich te ergeren aan rokers op het terras", "category": "Humor & Luchtig", "img": "https://hooiberg.speld.nl/wp-content/uploads/2026/08/karin-site_f8731f1c912528037b4e1d8f1bab9695_2000.jpg", "ai_summary": "De zon schijnt, de vogeltjes fluiten: de perfecte dag voor de 56-jarige Karin uit Arnhem om naar het terras te gaan om zich daar te ergeren ...", "full_text": "De zon schijnt, de vogeltjes fluiten: de perfecte dag voor de 56-jarige Karin uit Arnhem om naar het terras te gaan om zich daar te ergeren aan rokers.", "original_link": "https://speld.nl/2026/08/23/vandaag-is-een-mooie-dag-voor-karin-56-om-zich-te-ergeren-aan-rokers-op-het-terras/", "is_background": false}, "29": {"title": "Medaille van marathon Sydney beeldt verkeerd stadion af", "category": "Humor & Luchtig", "img": "https://images.nu.nl/m/wu1xnuqal9k0_sqr256/405/0/1080/1080/medaille-van-marathon-sydney-beeldt-verkeerd-stadion-af.jpg", "ai_summary": "Op de deelnemersmedaille van de marathon van Sydney is het verkeerde stadion gegraveerd, schrijft BBC. Op de medaille is de Allianz Arena in...", "full_text": "Op de deelnemersmedaille van de marathon van Sydney is het verkeerde stadion gegraveerd, schrijft BBC. Op de medaille is de Allianz Arena in M\u00fcnchen te zien in plaats van het Allianz Stadium in Sydney, waarlangs het parcours loopt.", "original_link": "https://www.nu.nl/opmerkelijk/6407165/medaille-van-marathon-sydney-beeldt-verkeerd-stadion-af.html", "is_background": false}, "30": {"title": "Chinese robot breekt wereldrecord van Usain Bolt op 100 meter sprint", "category": "Humor & Luchtig", "img": "https://images.nu.nl/m/l7vx71cas9tj_sqr256/353/529/3114/3114/chinese-robot-breekt-wereldrecord-van-usain-bolt-op-100-meter-sprint.jpg", "ai_summary": "Een Chinese robot heeft sneller gelopen dan het wereldrecord van Usain Bolt op de 100 meter sprint. De robot deed 9,32 seconden over de afst...", "full_text": "Een Chinese robot heeft sneller gelopen dan het wereldrecord van Usain Bolt op de 100 meter sprint. De robot deed 9,32 seconden over de afstand. Dat is ruim een kwartseconde sneller dan de toptijd uit 2009.", "original_link": "https://www.nu.nl/opmerkelijk/6407182/chinese-robot-breekt-wereldrecord-van-usain-bolt-op-100-meter-sprint.html", "is_background": false}};
+
+        function openArticle(id) {
+            const article = articlesData[id];
+            if (!article) return;
+
+            document.getElementById('modalImg').src = article.img;
+            document.getElementById('modalBadge').innerText = article.category;
+            document.getElementById('modalTitle').innerText = article.title;
+            document.getElementById('modalAiBox').innerHTML = '⚡ <b>Focus / Topic:</b><br>' + article.ai_summary;
+            document.getElementById('modalFullText').innerHTML = article.full_text;
+
+            const sourceBtn = document.getElementById('modalSourceLink');
+            if (article.is_background) {
+                sourceBtn.style.display = 'none';
+            } else {
+                sourceBtn.style.display = 'inline-flex';
+                sourceBtn.href = article.original_link;
+            }
+
+            document.getElementById('modalOverlay').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function closeModalOnOverlay(e) {
+            if (e.target.id === 'modalOverlay') {
+                closeModal();
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+</body>
+</html>
