@@ -2,13 +2,21 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="300">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patrick’s Nieuwsboard</title>
     
+    <script>
+      // Verwijder eventuele oude ServiceWorkers die netwerkrequests kapers
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for(let registration of registrations) { registration.unregister(); }
+        });
+      }
+    </script>
+
     <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/180/lightning-bolt.png?v=2">
     <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/180/lightning-bolt.png?v=2">
 
@@ -30,7 +38,7 @@
             margin-bottom: 25px; 
             box-shadow: 0 8px 20px rgba(0, 180, 216, 0.2);
         }
-        header h1 { margin: 0; font-size: 1.8rem; font-weight: 800; letter-spacing: 0.5px; }
+        header h1 { margin: 0; font-size: 1.8rem; font-weight: 800; }
         header p { margin: 6px 0 0 0; opacity: 0.95; font-size: 0.95rem; }
         
         .widget-bar { 
@@ -46,21 +54,8 @@
             border-left: 4px solid #00b4d8; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
         }
-        .widget-clickable {
-            cursor: pointer;
-            transition: transform 0.2s ease, background-color 0.2s ease;
-        }
-        .widget-clickable:hover {
-            background-color: #25335a;
-            transform: translateY(-2px);
-        }
-        .spin-icon {
-            display: inline-block;
-            transition: transform 0.5s ease;
-        }
-        .widget-clickable:hover .spin-icon {
-            transform: rotate(180deg);
-        }
+        .widget-clickable { cursor: pointer; }
+        .widget-clickable:hover { background-color: #25335a; }
         .widget-title { font-size: 0.8rem; text-transform: uppercase; color: #90e0ef; font-weight: bold; margin-bottom: 5px; }
         .widget-body { font-size: 0.9rem; line-height: 1.4; color: #ffffff; }
 
@@ -77,50 +72,27 @@
             display: flex; 
             flex-direction: column; 
             border: 1px solid #3a506b;
-            transition: transform 0.2s ease, border-color 0.2s ease;
             cursor: pointer;
         }
-        .card-featured {
-            border: 1px solid #ffb703;
-            background: #1e293b;
-        }
-        .card:hover { 
-            transform: translateY(-4px); 
-            border-color: #00b4d8;
-        }
-        .card-featured:hover {
-            border-color: #ffb703;
-        }
+        .card-featured { border: 1px solid #ffb703; background: #1e293b; }
         .card-img-wrapper { position: relative; height: 170px; }
         .card img { width: 100%; height: 100%; object-fit: cover; background-color: #0b132b; }
         .badge { 
             position: absolute; 
-            top: 12px; 
-            left: 12px; 
+            top: 12px; left: 12px; 
             background: rgba(0, 180, 216, 0.9); 
             color: #ffffff; 
             padding: 4px 10px; 
             border-radius: 20px; 
             font-size: 0.75rem; 
             font-weight: 700; 
-            backdrop-filter: blur(4px);
             text-transform: uppercase;
         }
-        .badge-featured {
-            background: rgba(255, 183, 3, 0.95);
-            color: #000000;
-        }
+        .badge-featured { background: rgba(255, 183, 3, 0.95); color: #000000; }
         .card-content { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; }
         h3 { margin: 0 0 10px 0; font-size: 1.05rem; line-height: 1.35; color: #caf0f8; }
         p { font-size: 0.9rem; color: #cbd5e1; line-height: 1.5; margin: 0; flex-grow: 1; }
-        
-        .read-more { 
-            margin-top: 12px; 
-            font-size: 0.82rem; 
-            color: #00b4d8; 
-            font-weight: 700; 
-            display: inline-block;
-        }
+        .read-more { margin-top: 12px; font-size: 0.82rem; color: #00b4d8; font-weight: 700; }
 
         .modal-overlay {
             display: none;
@@ -138,68 +110,33 @@
             background: #1c2541;
             border-radius: 16px;
             border: 1px solid #00b4d8;
-            box-shadow: 0 10px 30px rgba(0,180,216,0.3);
             overflow: hidden;
-            animation: fadeIn 0.25s ease-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         .modal-header-img { width: 100%; height: 240px; object-fit: cover; }
         .modal-body { padding: 25px; }
-        .modal-badge { background: #00b4d8; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
-        .modal-title { font-size: 1.4rem; color: #ffffff; margin: 15px 0; line-height: 1.3; }
-        .modal-ai-box {
-            background: #0b132b;
-            border-left: 4px solid #00b4d8;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            color: #90e0ef;
-            font-size: 0.95rem;
-            line-height: 1.4;
-        }
+        .modal-badge { background: #00b4d8; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
+        .modal-title { font-size: 1.4rem; color: #ffffff; margin: 15px 0; }
+        .modal-ai-box { background: #0b132b; border-left: 4px solid #00b4d8; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; color: #90e0ef; }
         .modal-full-text { font-size: 0.95rem; color: #e0e6ed; line-height: 1.6; margin-bottom: 25px; }
-        .modal-actions {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            border-top: 1px solid #3a506b;
-            padding-top: 20px;
-        }
-        .btn {
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-        }
+        .modal-actions { display: flex; gap: 12px; border-top: 1px solid #3a506b; padding-top: 20px; }
+        .btn { padding: 12px 20px; border-radius: 10px; font-size: 0.9rem; font-weight: bold; cursor: pointer; border: none; text-decoration: none; }
         .btn-back { background: #3a506b; color: #ffffff; flex-grow: 1; }
-        .btn-back:hover { background: #4f6d91; }
         .btn-source { background: #00b4d8; color: #ffffff; flex-grow: 1; text-align: center; }
-        .btn-source:hover { background: #0096c7; }
     </style>
 </head>
 <body>
     <header>
         <h1>⚡ Patrick’s Nieuwsboard</h1>
-        <p>Positief • Krachtig • Laatst bijgewerkt: <b>24-08-2026 om 06:50 uur</b></p>
+        <p>Positief • Krachtig • Laatst bijgewerkt: <b id="lastUpdated">24-08-2026 om 06:57 uur</b></p>
     </header>
     
     <div class="widget-bar">
         <div class="widget widget-clickable" onclick="forceRefresh();">
-            <div class="widget-title"><span class="spin-icon">🔄</span> Status & Verversen</div>
-            <div class="widget-body"><b>24-08-2026 om 06:50 uur</b><br><small style="color:#00b4d8;">Klik hier om te verversen ↻</small></div>
+            <div class="widget-title">🔄 Status & Verversen</div>
+            <div class="widget-body"><b>24-08-2026 om 06:57 uur</b><br><small style="color:#00b4d8;">Klik hier om direct te verversen ↻</small></div>
         </div>
         <div class="widget">
-            <div class="widget-title">🌤️ Weer Midden-Limburg & Verwachting</div>
+            <div class="widget-title">🌤️ Weer Midden-Limburg</div>
             <div class="widget-body">
     <b>Nu: 12°C</b><br>
     <small><b>Komende 24u:</b> 12°C tot 24°C (Regenkans: 0%)</small><br>
@@ -226,31 +163,31 @@
         <div class="card-content">
             <h3>Kernenergie in het Nederlandse Klimaatbeleid</h3>
             <p>Synthese van feiten en standpunten over: De rol van nieuwe kerncentrales vs zon- en windenergie.</p>
-            <div class="read-more">Open compleet dossier &rarr;</div>
+            <div class="read-more">Open dossier &rarr;</div>
         </div>
     </div>
     
     <div class="card card-featured" onclick="openArticle('2')">
         <div class="card-img-wrapper">
-            <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600" alt="Achtergrond & Meningsvorming">
+            <img src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=600" alt="Achtergrond & Meningsvorming">
             <span class="badge badge-featured">Achtergrond & Meningsvorming</span>
         </div>
         <div class="card-content">
-            <h3>Energietransitie & Het Volle Stroomnet</h3>
-            <p>Synthese van feiten en standpunten over: Netcongestie, de grenzen van het elektriciteitsnet en verduurzamingsuitdagingen.</p>
-            <div class="read-more">Open compleet dossier &rarr;</div>
+            <h3>Rekeningrijden en Toekomst van Mobiliteit</h3>
+            <p>Synthese van feiten en standpunten over: Betalen naar gebruik, wegenbelasting en de vergroening van het wagenpark.</p>
+            <div class="read-more">Open dossier &rarr;</div>
         </div>
     </div>
     
     <div class="card card-featured" onclick="openArticle('3')">
         <div class="card-img-wrapper">
-            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600" alt="Achtergrond & Meningsvorming">
+            <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600" alt="Achtergrond & Meningsvorming">
             <span class="badge badge-featured">Achtergrond & Meningsvorming</span>
         </div>
         <div class="card-content">
-            <h3>Dilemma op de Woningmarkt</h3>
-            <p>Synthese van feiten en standpunten over: Binnenstedelijk bouwen ten opzichte van uitbreiden in het groen.</p>
-            <div class="read-more">Open compleet dossier &rarr;</div>
+            <h3>Regulering van Sociale Media voor Jeugd</h3>
+            <p>Synthese van feiten en standpunten over: Leeftijdsgrenzen, mentale gezondheid en algoritmes op telefoons.</p>
+            <div class="read-more">Open dossier &rarr;</div>
         </div>
     </div>
     
@@ -260,21 +197,21 @@
                 <span class="badge">Wereld</span>
             </div>
             <div class="card-content">
-                <h3>Trump says Canada wants 'benefits' of being US state after trade talks collapse</h3>
-                <p>Canada's PM said he was "reluctantly" announcing retaliatory tariffs and accused the US of starting a trade war....</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <h3>Grote natuurbrand bij Amerikaanse gokstad, evacuaties in stad en ziekenhuis</h3>
+                <p>In de Amerikaanse staat Nevada woedt een grote natuurbrand vlakbij de gokstad Reno. Onder meer een ziekenhuis en een deel van de stad zijn g...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
         <div class="card" onclick="openArticle('5')">
             <div class="card-img-wrapper">
-                <img src="https://images.nu.nl/m/9vvxtbjau3lm_sqr256/586/0/2800/2800/zeker-dertig-doden-door-instorten-vuilnisbelt-in-guinee.jpg" alt="Wereld" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Wereld" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
                 <span class="badge">Wereld</span>
             </div>
             <div class="card-content">
-                <h3>Zeker dertig doden door instorten vuilnisbelt in Guinee</h3>
-                <p>In Guinee zijn zondag zeker dertig mensen omgekomen nadat zij bedolven zijn geraakt onder een golf van afval. Dat gebeurde nadat een vuilnis...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <h3>Geen Russische ambassadeur meer in VK om Britse steun aan Oekraïne</h3>
+                <p>Rusland heeft vorige maand zijn ambassadeur uit het Verenigd Koninkrijk teruggetrokken. Dat heeft de Russische ambassade in Londen bevestigd...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
@@ -284,9 +221,9 @@
                 <span class="badge">Wereld</span>
             </div>
             <div class="card-content">
-                <h3>Shein aims for almost $27bn valuation in stock market debut</h3>
-                <p>The fast-fashion giant's shares are due to start trading in Hong Kong on 1 September....</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <h3>Stadion van München staat op medaille van Marathon Sydney: 'Ongelukkig foutje'</h3>
+                <p>Niet het Allianz Stadion in Sydney maar de gelijknamige arena in het Duitse München staat op de medaille die finishers van de marathon in Sy...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
@@ -296,9 +233,9 @@
                 <span class="badge">Europa</span>
             </div>
             <div class="card-content">
-                <h3>Kazakhstan parliamentary vote cements president's power</h3>
-                <p>Candidates from seven state-approved parties took part in the election, while opposition parties were banned. As Central Asia's largest nati...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <h3>Ukraine news: UK PM Burnham to visit Kyiv in show of support</h3>
+                <p>Andy Burnham's first trip abroad as PM will see him co-chair a meeting of the Coalition of the Willing and meet with Volodymyr Zelenskyy. Th...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
@@ -308,9 +245,9 @@
                 <span class="badge">Europa</span>
             </div>
             <div class="card-content">
-                <h3>Greece: Migrants clash with police at detention center</h3>
-                <p>Clashes broke out between police and people at a migrant detention center in northern Greece, with 35 having escaped the facility before hal...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <h3>Norway: King Harald's health has 'deteriorated,' palace says</h3>
+                <p>The 89-year-old King of Norway is Europe's oldest reigning monarch. He has been suffering from a blood condition....</p>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
@@ -320,45 +257,45 @@
                 <span class="badge">Europa</span>
             </div>
             <div class="card-content">
-                <h3>Norway: King Harald's health has 'deteriorated,' palace says</h3>
-                <p>The 89-year-old King of Norway is Europe's oldest reigning monarch. He has been suffering from a blood condition....</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <h3>Greece: Migrants clash with police at detention center</h3>
+                <p>Clashes broke out between police and people at a migrant detention center in northern Greece, with 35 having escaped the facility before hal...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
         <div class="card" onclick="openArticle('10')">
             <div class="card-img-wrapper">
-                <img src="https://redactie.rtl.nl/sites/default/files/content/images/2026/08/24/Scherm%C2%ADafbeelding%202026-08-24%20om%2006.11.43.png?itok=ZLBLwvOv&offsetX=0&offsetY=26&cropWidth=1048&cropHeight=589&width=1024&height=576&impolicy=dynamic" alt="Nederland" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <img src="https://image.trouw.nl/276890320/feature-crop/320/320/afbeelding" alt="Nederland" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
                 <span class="badge">Nederland</span>
             </div>
             <div class="card-content">
-                <h3>Meerdere gewonden bij groot ongeluk met touringcar op A28 bij Wezep, snelweg afgesloten</h3>
-                <p>Op de A28 ter hoogte van het Gelderse Wezep is vannacht een ernstig ongeluk gebeurd tussen een touringcar en een bestelbus. Dat gebeurde ron...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <h3>Advocaten roepen de EU op het Strafhof te beschermen tegen ontwrichtende Amerikaanse sancties</h3>
+                <p>Geen samenvatting....</p>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
         <div class="card" onclick="openArticle('11')">
             <div class="card-img-wrapper">
-                <img src="https://images.cdn.nos.nl/3/G/E/2/H/Y/sKoueN984z7o4MYMmE2swC87Cq9P1Y6SzT2Bt1n/8x419x3984x2241-1024x576.webp" alt="Nederland" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
-                <span class="badge">Nederland</span>
-            </div>
-            <div class="card-content">
-                <h3>Zandvoorts zwanenzang: afscheid van Formule 1 nu tribunes nog vol zitten</h3>
-                <p>Met een snelle crash van Max Verstappen en een zege van Lando Norris kwam er zondag na zes edities een einde aan de Formule 1 in Zandvoort. ...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
-            </div>
-        </div>
-        
-        <div class="card" onclick="openArticle('12')">
-            <div class="card-img-wrapper">
-                <img src="https://redactie.rtl.nl/sites/default/files/content/images/2026/08/21/occasion.jpg?itok=odoEylFV&offsetX=204&offsetY=95&cropWidth=793&cropHeight=446&width=1024&height=576&impolicy=dynamic" alt="Nederland" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Nederland" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
                 <span class="badge">Nederland</span>
             </div>
             <div class="card-content">
                 <h3>We kopen steeds vaker een stokoude auto en hier komt dat door</h3>
                 <p>Nederlanders kopen steeds meer een auto die flink op leeftijd is. Vorig jaar was meer dan 23 procent van de verkochte personenwagens (nieuw ...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <div class="read-more">Lees bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('12')">
+            <div class="card-img-wrapper">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Nederland" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Nederland</span>
+            </div>
+            <div class="card-content">
+                <h3>Nieuwe behandeling endeldarmkanker biedt vaak betere kwaliteit van leven</h3>
+                <p>Wie tot voor kort de diagnose endeldarmkanker kreeg, had om te genezen en te overleven maar één optie: een chirurgische ingreep waarbij de h...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
@@ -368,141 +305,141 @@
                 <span class="badge">Midden-Limburg</span>
             </div>
             <div class="card-content">
-                <h3>Bjorn onder vuur tijdens keiharde Dadchelor in Breda</h3>
-                <p>Vandaag wordt het menens voor Bjorn Bastiaans. Voordat hij binnenkort vader wordt, hebben zijn vrienden hem meegenomen naar Breda voor een o...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <h3>Van een 100 kilometer lange wandeltocht tot Guido Dieteren in Rondje Limburg</h3>
+                <p>Van een 100 kilometer lange wandeltocht voor mentale gezondheid en de Limburgse dialecten tot een groot concert in Roermond, bijzondere hobb...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
         <div class="card" onclick="openArticle('14')">
             <div class="card-img-wrapper">
-                <img src="https://www.weertdegekste.nl/wp-content/uploads/2026/08/Gaslek-Budel-230826000.jpg" alt="Midden-Limburg" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Midden-Limburg" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
                 <span class="badge">Midden-Limburg</span>
             </div>
             <div class="card-content">
-                <h3>Gasleiding beschadigd tijdens graafwerkzaamheden in Budel</h3>
-                <p>Budel – De brandweer werd zondag rond 12.50 uur gealarmeerd vanwege een gaslekkage aan de Fabrieksstraat in Budel. Tijdens graafwerkzaamhede...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <h3>Veerkrachtig VVV wint van De Graafschap</h3>
+                <p>VVV Venlo heeft zondagmiddag met 2-1 van De Graafschap gewonnen. Een goed gevulde Koel zag VVV op een vroege achterstand komen na slordig ui...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
         <div class="card" onclick="openArticle('15')">
             <div class="card-img-wrapper">
-                <img src="https://www.weertdegekste.nl/wp-content/uploads/2026/08/Bieb-Stramproy-230826001.jpg" alt="Midden-Limburg" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Midden-Limburg" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
                 <span class="badge">Midden-Limburg</span>
             </div>
             <div class="card-content">
-                <h3>Bieb Stramproy bestaat tien jaar: ‘En daar zijn we gruuëts op!’</h3>
-                <p>De Bieb in Stramproy bestaat tien jaar. Dankzij de inzet van een grote groep vrijwilligers kan Stramproy al een decennium gebruikmaken van d...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <h3>Twee gewonden bij ongeluk in Maastricht</h3>
+                <p>Bij een aanrijding bij de afrit van de A79 in Maastricht zijn zondagavond twee mensen gewond geraakt...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
         <div class="card" onclick="openArticle('16')">
             <div class="card-img-wrapper">
-                <img src="https://images.nu.nl/m/nqexaukacx9b_sqr256/71/0/339/339/python-ondergaat-als-eerste-slang-kankerbehandeling-met-elektrische-schokken.jpg" alt="Wiskunde & Wetenschap" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
-                <span class="badge">Wiskunde & Wetenschap</span>
-            </div>
-            <div class="card-content">
-                <h3>Python ondergaat als eerste slang kankerbehandeling met elektrische schokken</h3>
-                <p>Een python uit de Britse dierentuin Chester Zoo heeft een behandeling met elektrochemotherapie gekregen voor een tumor in haar kaak. Ze zou ...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
-            </div>
-        </div>
-        
-        <div class="card" onclick="openArticle('17')">
-            <div class="card-img-wrapper">
-                <img src="https://images.nu.nl/m/spsx7tka06d1_sqr256/1041/66/2091/2091/melkweg-slokte-118-miljard-jaar-geleden-ander-sterrenstelsel-op.jpg" alt="Wiskunde & Wetenschap" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Wiskunde & Wetenschap" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
                 <span class="badge">Wiskunde & Wetenschap</span>
             </div>
             <div class="card-content">
                 <h3>Melkweg slokte 11,8 miljard jaar geleden ander sterrenstelsel op</h3>
                 <p>De Melkweg slokte 11,8 miljard jaar geleden een kleiner sterrenstelsel op, blijkt uit nieuw onderzoek. Het is voor zover bekend de vroegste ...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
-        <div class="card" onclick="openArticle('18')">
+        <div class="card" onclick="openArticle('17')">
             <div class="card-img-wrapper">
-                <img src="https://images.nu.nl/m/9oxxpnra9s3u_sqr256/1416/0/5760/5760/archeologen-in-peru-vinden-skelet-van-persoon-die-mogelijk-ritueel-geofferd-werd.jpg" alt="Wiskunde & Wetenschap" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Wiskunde & Wetenschap" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
                 <span class="badge">Wiskunde & Wetenschap</span>
             </div>
             <div class="card-content">
                 <h3>Archeologen in Peru vinden skelet van persoon die mogelijk ritueel geofferd werd</h3>
                 <p>Archeologen in Peru hebben dinsdag de resten gevonden van iemand die honderden jaren geleden vermoedelijk ritueel geofferd is. Het skelet we...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <div class="read-more">Lees bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('18')">
+            <div class="card-img-wrapper">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Wiskunde & Wetenschap" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Wiskunde & Wetenschap</span>
+            </div>
+            <div class="card-content">
+                <h3>Ster die met 25.000 kilometer per seconde beweegt 'voelt' draaiing van zwart gat</h3>
+                <p>Astronomen hebben dicht bij het zwarte gat in het centrum van de Melkweg een ster ontdekt die 25.000 kilometer per seconde beweegt. De ster ...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
         <div class="card" onclick="openArticle('19')">
             <div class="card-img-wrapper">
-                <img src="https://webp.br.cdn.pxr.nl/news/2026/08/24/c644152e14e7a02de2bbde70c59e0519cdbe634d.jpg?width=1200" alt="Technologie" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Technologie" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
                 <span class="badge">Technologie</span>
             </div>
             <div class="card-content">
                 <h3>Roblox heeft te weinig gedaan om volwassenen bij kinderen weg te houden</h3>
                 <p>De makers van Roblox hebben er moeite mee om te zorgen dat kwaadwillende volwassenen geen contact kunnen opnemen met kinderen. Het zal meer ...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
         <div class="card" onclick="openArticle('20')">
             <div class="card-img-wrapper">
-                <img src="https://images.nu.nl/m/mhox8sqac5vs_sqr256/1309/0/4619/4619/europees-deel-tiktok-boekt-voor-het-eerst-winst-maar-rechtszaken-kostten-veel.jpg" alt="Technologie" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Technologie" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
                 <span class="badge">Technologie</span>
             </div>
             <div class="card-content">
-                <h3>Europees deel TikTok boekt voor het eerst winst, maar rechtszaken kostten veel</h3>
-                <p>Het Europese onderdeel van TikTok heeft vorig jaar voor het eerst winst geboekt, dankzij de grote toestroom van gebruikers. Tegelijkertijd z...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <h3>Meta wil mogelijk een fysieke kill switch op zijn brillen zetten</h3>
+                <p>Meta’s slimme brillen liggen volop onder vuur: er zijn veel privacyzorgen. Daardoor is het al heel moeilijk om het ledje dat aangeeft dat de...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
         <div class="card" onclick="openArticle('21')">
             <div class="card-img-wrapper">
-                <img src="https://webp.br.cdn.pxr.nl/news/2026/08/11/9e8d5a866f41123d205780bdd049d1ad71d76096.jpg?width=1200" alt="Technologie" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Technologie" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
                 <span class="badge">Technologie</span>
             </div>
             <div class="card-content">
-                <h3>AI-topman schetst doemscenario: 'bereid je voor op hardnekkige cyberaanvallen'</h3>
-                <p>Topman Chris Lehane (Chief Global Affairs Officer) van OpenAI roept de buitenwereld op zich voor te bereiden op 'aanhoudende en hardnekkige'...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <h3>Zo voorkom je dat Instagram je gegevens gebruikt voor AI en gepersonaliseerde advertenties</h3>
+                <p>Wie een product zoekt op een externe website, ziet daar enkele minuten later een advertentie voor op Instagram. Volgens Meta luistert de app...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
         <div class="card" onclick="openArticle('22')">
             <div class="card-img-wrapper">
-                <img src="https://images.nu.nl/m/ofexy24a6fpn_sqr256/934/3/2780/2780/talent-rottgering-plaatst-zich-voor-het-eerst-voor-atp-toernooi-buiten-nederland.jpg" alt="Sport" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
-                <span class="badge">Sport</span>
-            </div>
-            <div class="card-content">
-                <h3>Talent Röttgering plaatst zich voor het eerst voor ATP-toernooi buiten Nederland</h3>
-                <p>Tennistalent Mees Röttgering doet komende week voor het eerst mee aan een ATP-toernooi buiten Nederland. De negentienjarige Nederlander kwal...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
-            </div>
-        </div>
-        
-        <div class="card" onclick="openArticle('23')">
-            <div class="card-img-wrapper">
-                <img src="https://images.nu.nl/m/i7vxevca86uj_sqr256/185/313/3916/3916/lammers-denkt-dat-volgende-gp-nederland-niet-weer-36-jaar-op-zich-laat-wachten.jpg" alt="Sport" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
-                <span class="badge">Sport</span>
-            </div>
-            <div class="card-content">
-                <h3>Lammers denkt dat volgende GP Nederland niet weer 36 jaar op zich laat wachten</h3>
-                <p>Jan Lammers kijkt met trots en weemoed terug op de voorlopig laatste Grand Prix van Nederland. De sportief directeur noemt de sloteditie van...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
-            </div>
-        </div>
-        
-        <div class="card" onclick="openArticle('24')">
-            <div class="card-img-wrapper">
-                <img src="https://images.nu.nl/m/u05x9r1a0kb4_sqr256/959/0/2238/2238/spaanse-wk-held-ferran-torres-voorkomt-nederlaag-psg-bij-debuut-mika-godts.jpg" alt="Sport" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Sport" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
                 <span class="badge">Sport</span>
             </div>
             <div class="card-content">
                 <h3>Spaanse WK-held Ferran Torres voorkomt nederlaag PSG bij debuut Mika Godts</h3>
                 <p>Mika Godts heeft zondagavond tegen Stade Rennais zijn debuut voor Paris Saint-Germain gemaakt. De Champions League-winnaar speelde in de eer...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <div class="read-more">Lees bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('23')">
+            <div class="card-img-wrapper">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Sport" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Sport</span>
+            </div>
+            <div class="card-content">
+                <h3>Talent Röttgering plaatst zich voor het eerst voor ATP-toernooi buiten Nederland</h3>
+                <p>Tennistalent Mees Röttgering doet komende week voor het eerst mee aan een ATP-toernooi buiten Nederland. De negentienjarige Nederlander kwal...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('24')">
+            <div class="card-img-wrapper">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Sport" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Sport</span>
+            </div>
+            <div class="card-content">
+                <h3>FC Barcelona begint seizoen met klinkende zege en ziet debutanten schitteren</h3>
+                <p>FC Barcelona is zondag goed begonnen aan het nieuwe seizoen in La Liga. De Catalanen haalden met 0-5 uit bij Elche. Debutanten Karim Adeyemi...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
@@ -514,19 +451,19 @@
             <div class="card-content">
                 <h3>Je eerste triatlon: zo bereid je je slim voor</h3>
                 <p>Droom je ervan om je eerste triatlon te doen, maar weet je niet waar je moet beginnen? Dan ben je niet de enige. Veel sporters vragen zich a...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
         <div class="card" onclick="openArticle('26')">
             <div class="card-img-wrapper">
-                <img src="https://images.nu.nl/m/hi3xggxaq3ge_sqr256/571/1/3399/3399/veel-ouders-van-zeer-vroeg-geboren-babys-hebben-ptss-klachten.jpg" alt="Fitness & Resistance Training" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600';">
+                <img src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600" alt="Fitness & Resistance Training" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600';">
                 <span class="badge">Fitness & Resistance Training</span>
             </div>
             <div class="card-content">
-                <h3>Veel ouders van zeer vroeg geboren baby's hebben PTSS-klachten</h3>
-                <p>Ruim een derde van de moeders en ongeveer een op de zes vaders van te vroeg geboren baby's heeft na de geboorte symptomen van een posttrauma...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <h3>Lowlands-bezoekers staan haar af voor kankeronderzoek: 'Ik heb toch genoeg'</h3>
+                <p>Een container, een kappersstoel en een schaar: op Lowlands laten honderden festivalgangers dit weekend een pluk haar afknippen. Niet voor ee...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
@@ -536,84 +473,96 @@
                 <span class="badge">Fitness & Resistance Training</span>
             </div>
             <div class="card-content">
-                <h3>Slaap je slechter door te veel CO₂ in je slaapkamer?</h3>
-                <p>Voldoende en kwalitatieve slaap is essentieel voor je herstel als sporter. De focus ligt gelukkig steeds meer op licht, geluid en temperatuu...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <h3>Heb je een calorieoverschot nodig voor spieropbouw?</h3>
+                <p>Moet je “bulken” om spiermassa op te bouwen? Het korte antwoord: in veel gevallen is dit niet nodig (met een uitzondering). Welke dit is, le...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
         <div class="card" onclick="openArticle('28')">
             <div class="card-img-wrapper">
-                <img src="https://images.nu.nl/m/l7vx71cas9tj_sqr256/353/529/3114/3114/chinese-robot-breekt-wereldrecord-van-usain-bolt-op-100-meter-sprint.jpg" alt="Humor & Luchtig" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Humor & Luchtig" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
                 <span class="badge">Humor & Luchtig</span>
             </div>
             <div class="card-content">
-                <h3>Chinese robot breekt wereldrecord van Usain Bolt op 100 meter sprint</h3>
-                <p>Een Chinese robot heeft sneller gelopen dan het wereldrecord van Usain Bolt op de 100 meter sprint. De robot deed 9,32 seconden over de afst...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <h3>5 dingen waaraan mannen kunnen zien dat de vrouw die hard voor ze uit loopt geïnteresseerd in ze is</h3>
+                <p>Voor veel mannen blijft het een ingewikkelde situatie: je loopt ‘s nachts over straat en er loopt een vrouw steeds iets harder voor je uit....</p>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
         <div class="card" onclick="openArticle('29')">
             <div class="card-img-wrapper">
-                <img src="https://hooiberg.speld.nl/wp-content/uploads/2026/08/gebroken-sleutel-site-v2_fbf1cbcf4d2cba61e3ba69a0ca92fb83_2000.jpg" alt="Humor & Luchtig" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
-                <span class="badge">Humor & Luchtig</span>
-            </div>
-            <div class="card-content">
-                <h3>Einde festivalseizoen voor Pepijn (30) na gebroken sleutel</h3>
-                <p>De 30-jarige Pepijn uit Amsterdam zal dit jaar niet meer naar feestjes of festivals gaan....</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
-            </div>
-        </div>
-        
-        <div class="card" onclick="openArticle('30')">
-            <div class="card-img-wrapper">
-                <img src="https://images.nu.nl/m/zzcx04zau3ex_sqr256/585/0/2330/2330/gedeeltelijke-maansverduistering-op-komst-in-nederland.jpg" alt="Humor & Luchtig" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Humor & Luchtig" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
                 <span class="badge">Humor & Luchtig</span>
             </div>
             <div class="card-content">
                 <h3>Gedeeltelijke maansverduistering op komst in Nederland</h3>
                 <p>Volgende week is in de nacht van donderdag op vrijdag een gedeeltelijke maansverduistering te zien in een groot deel van Nederland. De maan ...</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <div class="read-more">Lees bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('30')">
+            <div class="card-img-wrapper">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Humor & Luchtig" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <span class="badge">Humor & Luchtig</span>
+            </div>
+            <div class="card-content">
+                <h3>​Nieuw seizoen Boer zoekt Vrouw speelt zich grotendeels af op snelweg</h3>
+                <p>Het vijftiende seizoen van Boer zoekt Vrouw speelt zich grotendeels af op de snelweg....</p>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
     </div>
 
-    <!-- Modal View -->
     <div id="modalOverlay" class="modal-overlay" onclick="closeModalOnOverlay(event)">
         <div class="modal-container">
-            <img id="modalImg" class="modal-header-img" src="" alt="Nieuws afbeelding">
+            <img id="modalImg" class="modal-header-img" src="" alt="Nieuws">
             <div class="modal-body">
                 <span id="modalBadge" class="modal-badge"></span>
                 <h2 id="modalTitle" class="modal-title"></h2>
                 <div id="modalAiBox" class="modal-ai-box"></div>
                 <div id="modalFullText" class="modal-full-text"></div>
                 <div class="modal-actions">
-                    <button class="btn btn-back" onclick="closeModal()">&larr; Terug naar overzicht</button>
-                    <a id="modalSourceLink" class="btn btn-source" href="#" target="_blank" rel="noopener">Bekijk origineel op de website &rarr;</a>
+                    <button class="btn btn-back" onclick="closeModal()">&larr; Terug</button>
+                    <a id="modalSourceLink" class="btn btn-source" href="#" target="_blank" rel="noopener">Bekijk origineel &rarr;</a>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const articlesData = {"1": {"title": "Kernenergie in het Nederlandse Klimaatbeleid", "category": "Achtergrond & Meningsvorming", "img": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600", "ai_summary": "Synthese van feiten en standpunten over: De rol van nieuwe kerncentrales vs zon- en windenergie.", "full_text": "<b>Kon geen AI-dossier genereren.<\/b><br>Fout: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.6-flash for the latest features and improvements.', 'status': 'NOT_FOUND'}}", "is_background": true}, "2": {"title": "Energietransitie & Het Volle Stroomnet", "category": "Achtergrond & Meningsvorming", "img": "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600", "ai_summary": "Synthese van feiten en standpunten over: Netcongestie, de grenzen van het elektriciteitsnet en verduurzamingsuitdagingen.", "full_text": "<b>Kon geen AI-dossier genereren.<\/b><br>Fout: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.6-flash for the latest features and improvements.', 'status': 'NOT_FOUND'}}", "is_background": true}, "3": {"title": "Dilemma op de Woningmarkt", "category": "Achtergrond & Meningsvorming", "img": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600", "ai_summary": "Synthese van feiten en standpunten over: Binnenstedelijk bouwen ten opzichte van uitbreiden in het groen.", "full_text": "<b>Kon geen AI-dossier genereren.<\/b><br>Fout: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.6-flash for the latest features and improvements.', 'status': 'NOT_FOUND'}}", "is_background": true}, "4": {"title": "Trump says Canada wants 'benefits' of being US state after trade talks collapse", "category": "Wereld", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Canada's PM said he was \"reluctantly\" announcing retaliatory tariffs and accused the US of starting a trade war....", "full_text": "Canada's PM said he was \"reluctantly\" announcing retaliatory tariffs and accused the US of starting a trade war.", "original_link": "https://www.bbc.co.uk/news/articles/cx272np7vgyo?at_medium=RSS&at_campaign=rss", "is_background": false}, "5": {"title": "Zeker dertig doden door instorten vuilnisbelt in Guinee", "category": "Wereld", "img": "https://images.nu.nl/m/9vvxtbjau3lm_sqr256/586/0/2800/2800/zeker-dertig-doden-door-instorten-vuilnisbelt-in-guinee.jpg", "ai_summary": "In Guinee zijn zondag zeker dertig mensen omgekomen nadat zij bedolven zijn geraakt onder een golf van afval. Dat gebeurde nadat een vuilnis...", "full_text": "In Guinee zijn zondag zeker dertig mensen omgekomen nadat zij bedolven zijn geraakt onder een golf van afval. Dat gebeurde nadat een vuilnisbelt was ingestort. Het precieze dodental is nog onbekend.", "original_link": "https://www.nu.nl/buitenland/6407282/zeker-dertig-doden-door-instorten-vuilnisbelt-in-guinee.html", "is_background": false}, "6": {"title": "Shein aims for almost $27bn valuation in stock market debut", "category": "Wereld", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "The fast-fashion giant's shares are due to start trading in Hong Kong on 1 September....", "full_text": "The fast-fashion giant's shares are due to start trading in Hong Kong on 1 September.", "original_link": "https://www.bbc.co.uk/news/articles/cdeweewjdxno?at_medium=RSS&at_campaign=rss", "is_background": false}, "7": {"title": "Kazakhstan parliamentary vote cements president's power", "category": "Europa", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Candidates from seven state-approved parties took part in the election, while opposition parties were banned. As Central Asia's largest nati...", "full_text": "Candidates from seven state-approved parties took part in the election, while opposition parties were banned. As Central Asia's largest nation, Kazakhstan maintains a delicate balance between Russia and the West.", "original_link": "https://www.dw.com/en/kazakhstan-parliamentary-vote-cements-president-s-power/a-78474598?maca=en-rss-en-all-1573-rdf", "is_background": false}, "8": {"title": "Greece: Migrants clash with police at detention center", "category": "Europa", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Clashes broke out between police and people at a migrant detention center in northern Greece, with 35 having escaped the facility before hal...", "full_text": "Clashes broke out between police and people at a migrant detention center in northern Greece, with 35 having escaped the facility before half of them were detained again.", "original_link": "https://www.dw.com/en/greece-migrants-clash-with-police-at-detention-center/a-78478650?maca=en-rss-en-all-1573-rdf", "is_background": false}, "9": {"title": "Norway: King Harald's health has 'deteriorated,' palace says", "category": "Europa", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "The 89-year-old King of Norway is Europe's oldest reigning monarch. He has been suffering from a blood condition....", "full_text": "The 89-year-old King of Norway is Europe's oldest reigning monarch. He has been suffering from a blood condition.", "original_link": "https://www.dw.com/en/norway-king-harald-s-health-has-deteriorated-palace-says/a-78479515?maca=en-rss-en-all-1573-rdf", "is_background": false}, "10": {"title": "Meerdere gewonden bij groot ongeluk met touringcar op A28 bij Wezep, snelweg afgesloten", "category": "Nederland", "img": "https://redactie.rtl.nl/sites/default/files/content/images/2026/08/24/Scherm%C2%ADafbeelding%202026-08-24%20om%2006.11.43.png?itok=ZLBLwvOv&offsetX=0&offsetY=26&cropWidth=1048&cropHeight=589&width=1024&height=576&impolicy=dynamic", "ai_summary": "Op de A28 ter hoogte van het Gelderse Wezep is vannacht een ernstig ongeluk gebeurd tussen een touringcar en een bestelbus. Dat gebeurde ron...", "full_text": "Op de A28 ter hoogte van het Gelderse Wezep is vannacht een ernstig ongeluk gebeurd tussen een touringcar en een bestelbus. Dat gebeurde rond 04.15 uur. De touringcar belandde op zijn zijkant, de bestelbus brak doormidden. Meerdere personen zijn gewond geraakt, al is het exacte aantal niet duidelijk.", "original_link": "https://www.rtl.nl/nieuws/binnenland/artikel/5642281/touringcar-raakt-van-snelweg-a28-bij-wezep", "is_background": false}, "11": {"title": "Zandvoorts zwanenzang: afscheid van Formule 1 nu tribunes nog vol zitten", "category": "Nederland", "img": "https://images.cdn.nos.nl/3/G/E/2/H/Y/sKoueN984z7o4MYMmE2swC87Cq9P1Y6SzT2Bt1n/8x419x3984x2241-1024x576.webp", "ai_summary": "Met een snelle crash van Max Verstappen en een zege van Lando Norris kwam er zondag na zes edities een einde aan de Formule 1 in Zandvoort. ...", "full_text": "Met een snelle crash van Max Verstappen en een zege van Lando Norris kwam er zondag na zes edities een einde aan de Formule 1 in Zandvoort. Op het kleine circuit tussen de duinen werd de afgelopen zes jaar het grootste sportevenement op Nederlandse bodem georganiseerd.\n        Dat werd elk jaar opnieuw een groot feest, maar zondagavond beklijfde toch ook het gevoel: het is mooi geweest. Of, zoals de organisatie het zelf in aanloop naar de Final Lap steeds noemde: \"We stoppen op ons hoogtepunt.\"\n        Sportief directeur Jan Lammers zegt na afloop dat hij heeft genoten van de laatste race. \"Ik vond dit de leukste editie, omdat emoties heel eerlijk zijn. Iedereen die er misschien iets van vond, denkt nu: wacht even, dit was helemaal te gek.\"\n        Daar deed de vroege uitvalbeurt van Verstappen niks aan af volgens Lammers. \"Niet iedere Oscarwinnaar heeft een happy end. Dit is autoracen. We willen ook dat hij het probeert natuurlijk. Dit kan gewoon gebeuren.\"\n        \"Nu we weten dat hij geen letsel heeft, kan ik dit wel zeggen: ik zie liever dit dan dat-ie kleurloos zevende of achtste wordt. Voor het publiek was het natuurlijk jammer, maar ik denk dat het publiek ook wel een realistisch beeld had en dat winnen er dit keer niet in zat.\"\n        Stoppen op het hoogtepunt deed Zandvoort overigens niet helemaal. Dat vond drie jaar geleden plaats, toen Verstappen zijn derde zege op rij boekte in een volledig uitverkocht weekend.\n        Teruglopende interesse\n        In de laatste editie zaten de tribunes op zaterdag en zondag ook stampvol, met 105.000 toeschouwers. De vrijdag raakte voor het eerst niet uitverkocht, zo'n vijfduizend tickets bleven over. Bij de eerste edities was er nog een loting nodig vanwege de massale belangstelling.\n        Gevraagd naar de ietwat teruglopende interesse trok de organisatie steevast de vergelijking met andere circuits op de Formule 1-kalender, waar de tribunes bij de trainingen op vrijdag vaak grotendeels leeg blijven. \"Welk circuit doet ons dit na?\", vroeg circuitdirecteur Robert van Overdijk retorisch.\n        Maar toch: de nieuwigheid van Zandvoort is er na zes edities wel af. En met Verstappen die uitviel, was er dit weekend ook geen sprake van de euforie van de eerste edities.\n        Urenlang wachten op vrijdag en zaterdag\n        Een lange reeks artiesten zorgde wederom voor een festivalsfeer voor de toeschouwers die in hun poncho's weer en wind trotseerden. Tegelijkertijd was er dit jaar voor het eerst enige kritiek en chagrijn vanuit het publiek.\n        Vrijdag ontstond er voor de training een grote opstopping voor de hoofdtribune, waardoor veel toeschouwers urenlang voor de poort stonden te wachten voordat ze naar binnen konden.\n        En op zaterdag kwamen enkele duizenden fans te laat voor de sprintrace vanwege drukte en een kleine storing op Amsterdam Centraal. De NS zette al om 05.00 uur extra treinen in, maar kennelijk was er weinig animo om al zo vroeg naar het circuit te gaan en kwamen te veel supporters op het laatste moment.\n        Daarmee verliep de laatste editie niet vlekkeloos, nadat de organisatie in de voorgaande jaren juist alle lof had gekregen.\n        Ook op het circuit zelf viel er wat te klagen. De sprintrace op zaterdag bood bepaald niet het gehoopte spektakel. \"We hebben de saaiste sprintrace ooit gezien, met maar twee inhaalacties\", vatte voormalig Formule 1-engineer Ernest Knoors de sprintrace samen in de NOS Formule 1-podcast.\n        Op zondag was er geen sprake van een optocht. Maar net als bij de voorgaande vijf edities werd de coureur die van poleposition begon ook de winnaar.\n        Inhalen op het kleine circuit in de duinen bleek ook met de van overtakebuttons voorziene half-elektrische auto's van dit jaar schier onmogelijk. Alleen in de Tarzanbocht aan het einde van het lange rechte stuk na start-finish was er af en toe een passeeractie te zien.\n        Met een prijsuitreiking door koning Willem-Alexander en optredens van Davina Michelle en Martin Garrix zwaaide Nederland de Formule 1 uit.\n        De zwanenzang van Zandvoort komt op een moment dat de Formule 1 nog steeds erg populair is in Nederland. Het grote nieuws van dit raceweekend kwam al op donderdag, toen Verstappen onverwachts zijn contract bij Red Bull Racing verlengde tot 2030.\n        Maar wie de laatste jaren in de badplaats rondliep, voelde en proefde ook: het wordt elk jaar een heel klein beetje minder. Met de keuze om nu te stoppen voorkomt de organisatie vooral een 1985-scenario. Toen vertrok de Formule 1 zelf uit Zandvoort, waar het destijds verouderde circuit simpelweg niet meer F1-waardig was.\n        Niemand was daar toen rouwig om, in 2026 is dat wel anders, vertelt Lammers: \"Dit waren fantastische jaren, Max drie keer gewonnen, volle tribunes. Economisch is het een succes geweest en in de regio is het een succes geweest.\"", "original_link": "https://nos.nl/l/2628075", "is_background": false}, "12": {"title": "We kopen steeds vaker een stokoude auto en hier komt dat door", "category": "Nederland", "img": "https://redactie.rtl.nl/sites/default/files/content/images/2026/08/21/occasion.jpg?itok=odoEylFV&offsetX=204&offsetY=95&cropWidth=793&cropHeight=446&width=1024&height=576&impolicy=dynamic", "ai_summary": "Nederlanders kopen steeds meer een auto die flink op leeftijd is. Vorig jaar was meer dan 23 procent van de verkochte personenwagens (nieuw ...", "full_text": "Nederlanders kopen steeds meer een auto die flink op leeftijd is. Vorig jaar was meer dan 23 procent van de verkochte personenwagens (nieuw en tweedehands) 16 jaar of ouder. Dat percentage was nog niet eerder zo hoog.", "original_link": "https://www.rtl.nl/nieuws/economie/artikel/5641426/we-kopen-steeds-vaker-een-stokoude-auto", "is_background": false}, "13": {"title": "Bjorn onder vuur tijdens keiharde Dadchelor in Breda", "category": "Midden-Limburg", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Vandaag wordt het menens voor Bjorn Bastiaans. Voordat hij binnenkort vader wordt, hebben zijn vrienden hem meegenomen naar Breda voor een o...", "full_text": "Vandaag wordt het menens voor Bjorn Bastiaans. Voordat hij binnenkort vader wordt, hebben zijn vrienden hem meegenomen naar Breda voor een onvergetelijke Dadchelor.\nHet bericht Bjorn onder vuur tijdens keiharde Dadchelor in Breda verscheen eerst op Nederweert24.", "original_link": "https://www.nederweert24.nl/2026/08/23/bjorn-onder-vuur-tijdens-keiharde-dadchelor-in-breda/", "is_background": false}, "14": {"title": "Gasleiding beschadigd tijdens graafwerkzaamheden in Budel", "category": "Midden-Limburg", "img": "https://www.weertdegekste.nl/wp-content/uploads/2026/08/Gaslek-Budel-230826000.jpg", "ai_summary": "Budel \u2013 De brandweer werd zondag rond 12.50 uur gealarmeerd vanwege een gaslekkage aan de Fabrieksstraat in Budel. Tijdens graafwerkzaamhede...", "full_text": "Budel \u2013 De brandweer werd zondag rond 12.50 uur gealarmeerd vanwege een gaslekkage aan de Fabrieksstraat in Budel. Tijdens graafwerkzaamheden in de voortuin van een woning was een gasleiding beschadigd geraakt. De graafwerkzaamheden werden uitgevoerd voor de aanleg van een rioleringspijp. Daarbij raakte de gasleiding beschadigd, waarna de brandweer werd ingeschakeld. De brandweer kwam ter [&#8230;]", "original_link": "https://www.weertdegekste.nl/2026/08/gasleiding-beschadigd-tijdens-graafwerkzaamheden-in-budel/", "is_background": false}, "15": {"title": "Bieb Stramproy bestaat tien jaar: \u2018En daar zijn we gruu\u00ebts op!\u2019", "category": "Midden-Limburg", "img": "https://www.weertdegekste.nl/wp-content/uploads/2026/08/Bieb-Stramproy-230826001.jpg", "ai_summary": "De Bieb in Stramproy bestaat tien jaar. Dankzij de inzet van een grote groep vrijwilligers kan Stramproy al een decennium gebruikmaken van d...", "full_text": "De Bieb in Stramproy bestaat tien jaar. Dankzij de inzet van een grote groep vrijwilligers kan Stramproy al een decennium gebruikmaken van de Bieb. En daar zijn ze in Stramproy \u2018gruu\u00ebts\u2019 op. Het jubileum werd vandaag samen met de vrijwilligers gevierd. Voor het jubileumuitstapje kwamen de vrijwilligers bij elkaar voor een stadswandeling met gids in [&#8230;]", "original_link": "https://www.weertdegekste.nl/2026/08/bieb-stramproy-bestaat-tien-jaar-en-daar-zijn-we-gruuets-op/", "is_background": false}, "16": {"title": "Python ondergaat als eerste slang kankerbehandeling met elektrische schokken", "category": "Wiskunde & Wetenschap", "img": "https://images.nu.nl/m/nqexaukacx9b_sqr256/71/0/339/339/python-ondergaat-als-eerste-slang-kankerbehandeling-met-elektrische-schokken.jpg", "ai_summary": "Een python uit de Britse dierentuin Chester Zoo heeft een behandeling met elektrochemotherapie gekregen voor een tumor in haar kaak. Ze zou ...", "full_text": "Een python uit de Britse dierentuin Chester Zoo heeft een behandeling met elektrochemotherapie gekregen voor een tumor in haar kaak. Ze zou de eerste slang ter wereld zijn die een kankerbehandeling heeft ondergaan die normaal gesproken bij mensen wordt toegepast.", "original_link": "https://www.nu.nl/dieren/6407054/python-ondergaat-als-eerste-slang-kankerbehandeling-met-elektrische-schokken.html", "is_background": false}, "17": {"title": "Melkweg slokte 11,8 miljard jaar geleden ander sterrenstelsel op", "category": "Wiskunde & Wetenschap", "img": "https://images.nu.nl/m/spsx7tka06d1_sqr256/1041/66/2091/2091/melkweg-slokte-118-miljard-jaar-geleden-ander-sterrenstelsel-op.jpg", "ai_summary": "De Melkweg slokte 11,8 miljard jaar geleden een kleiner sterrenstelsel op, blijkt uit nieuw onderzoek. Het is voor zover bekend de vroegste ...", "full_text": "De Melkweg slokte 11,8 miljard jaar geleden een kleiner sterrenstelsel op, blijkt uit nieuw onderzoek. Het is voor zover bekend de vroegste samensmelting van onze Melkweg met een ander stelsel.", "original_link": "https://www.nu.nl/wetenschap/6406680/melkweg-slokte-118-miljard-jaar-geleden-ander-sterrenstelsel-op.html", "is_background": false}, "18": {"title": "Archeologen in Peru vinden skelet van persoon die mogelijk ritueel geofferd werd", "category": "Wiskunde & Wetenschap", "img": "https://images.nu.nl/m/9oxxpnra9s3u_sqr256/1416/0/5760/5760/archeologen-in-peru-vinden-skelet-van-persoon-die-mogelijk-ritueel-geofferd-werd.jpg", "ai_summary": "Archeologen in Peru hebben dinsdag de resten gevonden van iemand die honderden jaren geleden vermoedelijk ritueel geofferd is. Het skelet we...", "full_text": "Archeologen in Peru hebben dinsdag de resten gevonden van iemand die honderden jaren geleden vermoedelijk ritueel geofferd is. Het skelet werd gevonden aan de voet van de Huaca Pucllana, een oude lemen piramide van de Limacultuur.", "original_link": "https://www.nu.nl/wetenschap/6406763/archeologen-in-peru-vinden-skelet-van-persoon-die-mogelijk-ritueel-geofferd-werd.html", "is_background": false}, "19": {"title": "Roblox heeft te weinig gedaan om volwassenen bij kinderen weg te houden", "category": "Technologie", "img": "https://webp.br.cdn.pxr.nl/news/2026/08/24/c644152e14e7a02de2bbde70c59e0519cdbe634d.jpg?width=1200", "ai_summary": "De makers van Roblox hebben er moeite mee om te zorgen dat kwaadwillende volwassenen geen contact kunnen opnemen met kinderen. Het zal meer ...", "full_text": "De makers van Roblox hebben er moeite mee om te zorgen dat kwaadwillende volwassenen geen contact kunnen opnemen met kinderen. Het zal meer moeten doen om te zorgen dat deze mensen geen onbekende kinderen berichten kunnen sturen, stelt eSafety-commissaris van Australi\u00eb, Julie Inman Grant.&nbsp;", "original_link": "https://www.bright.nl/nieuws/2126658/roblox-heeft-te-weinig-gedaan-om-volwassenen-bij-kinderen-weg-te-houden.html", "is_background": false}, "20": {"title": "Europees deel TikTok boekt voor het eerst winst, maar rechtszaken kostten veel", "category": "Technologie", "img": "https://images.nu.nl/m/mhox8sqac5vs_sqr256/1309/0/4619/4619/europees-deel-tiktok-boekt-voor-het-eerst-winst-maar-rechtszaken-kostten-veel.jpg", "ai_summary": "Het Europese onderdeel van TikTok heeft vorig jaar voor het eerst winst geboekt, dankzij de grote toestroom van gebruikers. Tegelijkertijd z...", "full_text": "Het Europese onderdeel van TikTok heeft vorig jaar voor het eerst winst geboekt, dankzij de grote toestroom van gebruikers. Tegelijkertijd zette het bedrijf ruim 1 miljard dollar (860 miljoen euro) apart voor rechtszaken en boetes, schrijft de dochteronderneming in haar jaarverslag over 2025.", "original_link": "https://www.nu.nl/tech/6407260/europees-deel-tiktok-boekt-voor-het-eerst-winst-maar-rechtszaken-kostten-veel.html", "is_background": false}, "21": {"title": "AI-topman schetst doemscenario: 'bereid je voor op hardnekkige cyberaanvallen'", "category": "Technologie", "img": "https://webp.br.cdn.pxr.nl/news/2026/08/11/9e8d5a866f41123d205780bdd049d1ad71d76096.jpg?width=1200", "ai_summary": "Topman Chris Lehane (Chief Global Affairs Officer) van OpenAI roept de buitenwereld op zich voor te bereiden op 'aanhoudende en hardnekkige'...", "full_text": "Topman Chris Lehane (Chief Global Affairs Officer) van OpenAI roept de buitenwereld op zich voor te bereiden op 'aanhoudende en hardnekkige' cyberaanvallen die volledig door AI worden uitgevoerd.", "original_link": "https://www.bright.nl/nieuws/2126554/ai-topman-schetst-doemscenario-bereid-je-voor-op-hardnekkige-cyberaanvallen.html", "is_background": false}, "22": {"title": "Talent R\u00f6ttgering plaatst zich voor het eerst voor ATP-toernooi buiten Nederland", "category": "Sport", "img": "https://images.nu.nl/m/ofexy24a6fpn_sqr256/934/3/2780/2780/talent-rottgering-plaatst-zich-voor-het-eerst-voor-atp-toernooi-buiten-nederland.jpg", "ai_summary": "Tennistalent Mees R\u00f6ttgering doet komende week voor het eerst mee aan een ATP-toernooi buiten Nederland. De negentienjarige Nederlander kwal...", "full_text": "Tennistalent Mees R\u00f6ttgering doet komende week voor het eerst mee aan een ATP-toernooi buiten Nederland. De negentienjarige Nederlander kwalificeerde zich zondag voor het hoofdtoernooi in het Amerikaanse Winston-Salem.", "original_link": "https://www.nu.nl/tennis/6407302/talent-rottgering-plaatst-zich-voor-het-eerst-voor-atp-toernooi-buiten-nederland.html", "is_background": false}, "23": {"title": "Lammers denkt dat volgende GP Nederland niet weer 36 jaar op zich laat wachten", "category": "Sport", "img": "https://images.nu.nl/m/i7vxevca86uj_sqr256/185/313/3916/3916/lammers-denkt-dat-volgende-gp-nederland-niet-weer-36-jaar-op-zich-laat-wachten.jpg", "ai_summary": "Jan Lammers kijkt met trots en weemoed terug op de voorlopig laatste Grand Prix van Nederland. De sportief directeur noemt de sloteditie van...", "full_text": "Jan Lammers kijkt met trots en weemoed terug op de voorlopig laatste Grand Prix van Nederland. De sportief directeur noemt de sloteditie van zondag de leukste van allemaal en verwacht dat de Formule 1 ooit terugkeert naar Zandvoort.", "original_link": "https://www.nu.nl/formule-1/6407289/lammers-denkt-dat-volgende-gp-nederland-niet-weer-36-jaar-op-zich-laat-wachten.html", "is_background": false}, "24": {"title": "Spaanse WK-held Ferran Torres voorkomt nederlaag PSG bij debuut Mika Godts", "category": "Sport", "img": "https://images.nu.nl/m/u05x9r1a0kb4_sqr256/959/0/2238/2238/spaanse-wk-held-ferran-torres-voorkomt-nederlaag-psg-bij-debuut-mika-godts.jpg", "ai_summary": "Mika Godts heeft zondagavond tegen Stade Rennais zijn debuut voor Paris Saint-Germain gemaakt. De Champions League-winnaar speelde in de eer...", "full_text": "Mika Godts heeft zondagavond tegen Stade Rennais zijn debuut voor Paris Saint-Germain gemaakt. De Champions League-winnaar speelde in de eerste speelronde van de Ligue 1 gelijk na een 2-0-achterstand, met dank aan de Spaanse WK-held Ferran Torres.", "original_link": "https://www.nu.nl/voetbal/6407304/spaanse-wk-held-ferran-torres-voorkomt-nederlaag-psg-bij-debuut-mika-godts.html", "is_background": false}, "25": {"title": "Je eerste triatlon: zo bereid je je slim voor", "category": "Fitness & Resistance Training", "img": "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600", "ai_summary": "Droom je ervan om je eerste triatlon te doen, maar weet je niet waar je moet beginnen? Dan ben je niet de enige. Veel sporters vragen zich a...", "full_text": "Droom je ervan om je eerste triatlon te doen, maar weet je niet waar je moet beginnen? Dan ben je niet de enige. Veel sporters vragen zich af hoeveel ze moeten trainen, welke discipline het belangrijkst is en of ze direct een dure fiets of alle nieuwste gadgets nodig hebben. In deze aflevering van de [&#8230;]\nThe post Je eerste triatlon: zo bereid je je slim voor appeared first on FIT.nl.", "original_link": "https://www.fit.nl/cardio/triatlon-voorbereiding", "is_background": false}, "26": {"title": "Veel ouders van zeer vroeg geboren baby's hebben PTSS-klachten", "category": "Fitness & Resistance Training", "img": "https://images.nu.nl/m/hi3xggxaq3ge_sqr256/571/1/3399/3399/veel-ouders-van-zeer-vroeg-geboren-babys-hebben-ptss-klachten.jpg", "ai_summary": "Ruim een derde van de moeders en ongeveer een op de zes vaders van te vroeg geboren baby's heeft na de geboorte symptomen van een posttrauma...", "full_text": "Ruim een derde van de moeders en ongeveer een op de zes vaders van te vroeg geboren baby's heeft na de geboorte symptomen van een posttraumatische stressstoornis (PTSS), blijkt uit onderzoek in alle Nederlandse Neonatale Intensive Care Units.", "original_link": "https://www.nu.nl/gezondheid/6406661/veel-ouders-van-zeer-vroeg-geboren-babys-hebben-ptss-klachten.html", "is_background": false}, "27": {"title": "Slaap je slechter door te veel CO\u2082 in je slaapkamer?", "category": "Fitness & Resistance Training", "img": "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600", "ai_summary": "Voldoende en kwalitatieve slaap is essentieel voor je herstel als sporter. De focus ligt gelukkig steeds meer op licht, geluid en temperatuu...", "full_text": "Voldoende en kwalitatieve slaap is essentieel voor je herstel als sporter. De focus ligt gelukkig steeds meer op licht, geluid en temperatuur, maar \u00e9\u00e9n factor blijft vaak onderbelicht: de hoeveelheid CO\u2082 in de slaapkamer. Wat is het effect van een slecht geventileerde kamer op je slaapkwaliteit? Lees hier het antwoord! Wat is CO\u2082 en waarom [&#8230;]\nThe post Slaap je slechter door te veel CO\u2082 in je slaapkamer? appeared first on FIT.nl.", "original_link": "https://www.fit.nl/herstel/slapen/slaapkwaliteit-luchtkwaliteit", "is_background": false}, "28": {"title": "Chinese robot breekt wereldrecord van Usain Bolt op 100 meter sprint", "category": "Humor & Luchtig", "img": "https://images.nu.nl/m/l7vx71cas9tj_sqr256/353/529/3114/3114/chinese-robot-breekt-wereldrecord-van-usain-bolt-op-100-meter-sprint.jpg", "ai_summary": "Een Chinese robot heeft sneller gelopen dan het wereldrecord van Usain Bolt op de 100 meter sprint. De robot deed 9,32 seconden over de afst...", "full_text": "Een Chinese robot heeft sneller gelopen dan het wereldrecord van Usain Bolt op de 100 meter sprint. De robot deed 9,32 seconden over de afstand. Dat is ruim een kwartseconde sneller dan de toptijd uit 2009.", "original_link": "https://www.nu.nl/opmerkelijk/6407182/chinese-robot-breekt-wereldrecord-van-usain-bolt-op-100-meter-sprint.html", "is_background": false}, "29": {"title": "Einde festivalseizoen voor Pepijn (30) na gebroken sleutel", "category": "Humor & Luchtig", "img": "https://hooiberg.speld.nl/wp-content/uploads/2026/08/gebroken-sleutel-site-v2_fbf1cbcf4d2cba61e3ba69a0ca92fb83_2000.jpg", "ai_summary": "De 30-jarige Pepijn uit Amsterdam zal dit jaar niet meer naar feestjes of festivals gaan....", "full_text": "De 30-jarige Pepijn uit Amsterdam zal dit jaar niet meer naar feestjes of festivals gaan.", "original_link": "https://speld.nl/2026/08/23/einde-festivalseizoen-voor-pepijn-30-na-gebroken-sleutel/", "is_background": false}, "30": {"title": "Gedeeltelijke maansverduistering op komst in Nederland", "category": "Humor & Luchtig", "img": "https://images.nu.nl/m/zzcx04zau3ex_sqr256/585/0/2330/2330/gedeeltelijke-maansverduistering-op-komst-in-nederland.jpg", "ai_summary": "Volgende week is in de nacht van donderdag op vrijdag een gedeeltelijke maansverduistering te zien in een groot deel van Nederland. De maan ...", "full_text": "Volgende week is in de nacht van donderdag op vrijdag een gedeeltelijke maansverduistering te zien in een groot deel van Nederland. De maan komt dan voor ongeveer 93 procent in de kernschaduw van de aarde, meldt Weeronline.", "original_link": "https://www.nu.nl/binnenland/6407173/gedeeltelijke-maansverduistering-op-komst-in-nederland.html", "is_background": false}};
+        const articlesData = {"1": {"title": "Kernenergie in het Nederlandse Klimaatbeleid", "category": "Achtergrond & Meningsvorming", "img": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600", "ai_summary": "Synthese van feiten en standpunten over: De rol van nieuwe kerncentrales vs zon- en windenergie.", "full_text": "Er is momenteel geen gedetailleerd dossier beschikbaar.", "is_background": true}, "2": {"title": "Rekeningrijden en Toekomst van Mobiliteit", "category": "Achtergrond & Meningsvorming", "img": "https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=600", "ai_summary": "Synthese van feiten en standpunten over: Betalen naar gebruik, wegenbelasting en de vergroening van het wagenpark.", "full_text": "Er is momenteel geen gedetailleerd dossier beschikbaar.", "is_background": true}, "3": {"title": "Regulering van Sociale Media voor Jeugd", "category": "Achtergrond & Meningsvorming", "img": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600", "ai_summary": "Synthese van feiten en standpunten over: Leeftijdsgrenzen, mentale gezondheid en algoritmes op telefoons.", "full_text": "Er is momenteel geen gedetailleerd dossier beschikbaar.", "is_background": true}, "4": {"title": "Grote natuurbrand bij Amerikaanse gokstad, evacuaties in stad en ziekenhuis", "category": "Wereld", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "In de Amerikaanse staat Nevada woedt een grote natuurbrand vlakbij de gokstad Reno. Onder meer een ziekenhuis en een deel van de stad zijn g...", "full_text": "In de Amerikaanse staat Nevada woedt een grote natuurbrand vlakbij de gokstad Reno. Onder meer een ziekenhuis en een deel van de stad zijn ge\u00ebvacueerd. Zondag is al zeker 4.000 hectare in de as gelegd. Annuleren ", "original_link": "https://www.nu.nl/buitenland/6407281/grote-natuurbrand-bij-amerikaanse-gokstad-evacuaties-in-stad-en-ziekenhuis.html", "is_background": false}, "5": {"title": "Geen Russische ambassadeur meer in VK om Britse steun aan Oekra\u00efne", "category": "Wereld", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Rusland heeft vorige maand zijn ambassadeur uit het Verenigd Koninkrijk teruggetrokken. Dat heeft de Russische ambassade in Londen bevestigd...", "full_text": "Rusland heeft vorige maand zijn ambassadeur uit het Verenigd Koninkrijk teruggetrokken. Dat heeft de Russische ambassade in Londen bevestigd aan Britse media.\n        De Russische ambassadeur, Andrej Kelin, heeft volgens de ambassade al op 21 juli zijn post verlaten. Hij was zeven jaar in functie.\n        Moskou heeft tot op heden geen vervanger voor Kelin naar het VK gestuurd, schrijft de Britse krant The Times. Het is niet duidelijk wanneer dat wel gaat gebeuren. Op de ambassade in Londen zit nu slechts nog \u00e9\u00e9n hoge Russische diplomaat.\n        \"De diplomatieke relatie tussen Rusland en het VK is op alle gebieden verslechterd tot een onge\u00ebvenaard laag niveau, en dat is geheel op initiatief van Londen gebeurd\", claimt een woordvoerder van de Russische ambassade in The Guardian.\n        Volgens de woordvoerder ondernam de vertrokken ambassadeur \"veel moeite om contacten en communicatielijnen te behouden\" in het VK, maar koos de Britse regering voor \"de weg van confrontatie\" met Rusland.\n        Drones\n        Vorige week werd bekend dat Oekra\u00efne heeft gebruikgemaakt van twee drones van Britse makelij om langeafstandsaanvallen uit te voeren in Rusland. Daarop dreigde Moskou het VK met de \"onvermijdelijke gevolgen\" daarvan. Wat die gevolgen zijn, werd niet duidelijk gemaakt.\n        De Britse premier Burnham stelde toen in een reactie dat het VK niet wordt afgeschrikt door dreigementen. \"We doen wat we al lang gezegd hebben te zullen doen: we steunen Oekra\u00efne voor honderd procent in deze illegale oorlog van Vladimir Poetin.\"\n        Een woordvoerder van het Britse ministerie van Buitenlandse Zaken zegt vandaag dat het vertrek van Kelin een zaak is van het Russische ministerie. \"Wij blijven schouder aan schouder staan met Oekra\u00efne, dat het volste recht heeft om zichzelf te verdedigen tegen de illegale en niet uitgelokte invasie door Rusland.\"\n        De Russische ambassade stelt dat Kelin het VK heeft verlaten \"in de hoop dat op termijn een meer constructieve en respectvolle dialoog gevoerd kan worden, als het VK zijn beleid jegens ons land heroverweegt\".", "original_link": "https://nos.nl/l/2628066", "is_background": false}, "6": {"title": "Stadion van M\u00fcnchen staat op medaille van Marathon Sydney: 'Ongelukkig foutje'", "category": "Wereld", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Niet het Allianz Stadion in Sydney maar de gelijknamige arena in het Duitse M\u00fcnchen staat op de medaille die finishers van de marathon in Sy...", "full_text": "Niet het Allianz Stadion in Sydney maar de gelijknamige arena in het Duitse M\u00fcnchen staat op de medaille die finishers van de marathon in Sydney volgende week krijgen.  Het is een \"ongelukkig foutje\", laat de organisatie weten.", "original_link": "https://www.nu.nl/buitenland/6407301/stadion-van-munchen-staat-op-medaille-van-marathon-sydney-ongelukkig-foutje.html", "is_background": false}, "7": {"title": "Ukraine news: UK PM Burnham to visit Kyiv in show of support", "category": "Europa", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Andy Burnham's first trip abroad as PM will see him co-chair a meeting of the Coalition of the Willing and meet with Volodymyr Zelenskyy. Th...", "full_text": "Andy Burnham's first trip abroad as PM will see him co-chair a meeting of the Coalition of the Willing and meet with Volodymyr Zelenskyy. The visit comes as Ukraine marks its 35th independence day. DW has more.", "original_link": "https://www.dw.com/en/ukraine-news-uk-pm-burnham-to-visit-kyiv-in-show-of-support/live-78479580?maca=en-rss-en-all-1573-rdf", "is_background": false}, "8": {"title": "Norway: King Harald's health has 'deteriorated,' palace says", "category": "Europa", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "The 89-year-old King of Norway is Europe's oldest reigning monarch. He has been suffering from a blood condition....", "full_text": "The 89-year-old King of Norway is Europe's oldest reigning monarch. He has been suffering from a blood condition.", "original_link": "https://www.dw.com/en/norway-king-harald-s-health-has-deteriorated-palace-says/a-78479515?maca=en-rss-en-all-1573-rdf", "is_background": false}, "9": {"title": "Greece: Migrants clash with police at detention center", "category": "Europa", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Clashes broke out between police and people at a migrant detention center in northern Greece, with 35 having escaped the facility before hal...", "full_text": "Clashes broke out between police and people at a migrant detention center in northern Greece, with 35 having escaped the facility before half of them were detained again.", "original_link": "https://www.dw.com/en/greece-migrants-clash-with-police-at-detention-center/a-78478650?maca=en-rss-en-all-1573-rdf", "is_background": false}, "10": {"title": "Advocaten roepen de EU op het Strafhof te beschermen tegen ontwrichtende Amerikaanse sancties", "category": "Nederland", "img": "https://image.trouw.nl/276890320/feature-crop/320/320/afbeelding", "ai_summary": "Geen samenvatting....", "full_text": "Geen samenvatting.", "original_link": "https://www.trouw.nl/buitenland/advocaten-roepen-de-eu-op-het-strafhof-te-beschermen-tegen-ontwrichtende-amerikaanse-sancties~be6ef23c/", "is_background": false}, "11": {"title": "We kopen steeds vaker een stokoude auto en hier komt dat door", "category": "Nederland", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Nederlanders kopen steeds meer een auto die flink op leeftijd is. Vorig jaar was meer dan 23 procent van de verkochte personenwagens (nieuw ...", "full_text": "Nederlanders kopen steeds meer een auto die flink op leeftijd is. Vorig jaar was meer dan 23 procent van de verkochte personenwagens (nieuw en tweedehands) 16 jaar of ouder. Dat percentage was nog niet eerder zo hoog.", "original_link": "https://www.rtl.nl/nieuws/economie/artikel/5641426/we-kopen-steeds-vaker-een-stokoude-auto", "is_background": false}, "12": {"title": "Nieuwe behandeling endeldarmkanker biedt vaak betere kwaliteit van leven", "category": "Nederland", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Wie tot voor kort de diagnose endeldarmkanker kreeg, had om te genezen en te overleven maar \u00e9\u00e9n optie: een chirurgische ingreep waarbij de h...", "full_text": "Wie tot voor kort de diagnose endeldarmkanker kreeg, had om te genezen en te overleven maar \u00e9\u00e9n optie: een chirurgische ingreep waarbij de hele endeldarm werd verwijderd. Dat hoeft nu vaak niet meer. Groot internationaal onderzoek laat zien dat een combinatie van bestraling en chemotherapie in de meeste gevallen ook tot genezing leidt, terwijl de endeldarm behouden blijft.\n        De studie, die mede onder leiding stond van het Radboudumc, is vandaag gepubliceerd in The Lancet Oncology en heeft er samen met andere studies voor gezorgd dat de behandelrichtlijnen in Nederland zijn aangepast.\n        \"De nieuwe behandelopties zijn een enorme verbetering voor de kwaliteit van leven voor de pati\u00ebnten\", vertelt Hans de Wilt, chirurg-oncoloog en onderzoeker aan het Radboudumc. De endeldarm slaat immers de ontlasting op en geeft een signaal af wanneer het tijd is om naar het toilet te gaan.\n        \"Zonder endeldarm en in sommige gevallen de anus, heb je vaak een stoma nodig en heb je dus vaak problemen met jouw stoelgang. Maar problemen op het gebied van seksualiteit kunnen ook een gevolg zijn van deze ingreep.\"\n        'Effectief bij meerderheid pati\u00ebnten'\n        Pati\u00ebnten met vergevorderde endeldarmkanker kregen naast de verwijdering van de endeldarm al bestraling- en chemotherapie om uitzaaiingen naar de klieren weg te krijgen. Het viel De Wilt jaren geleden al op dat een klein aantal van deze pati\u00ebnten alleen al na bestraling en chemotherapie genazen.\n        De hoeveelheid pati\u00ebnten die op deze manier van hun tumor afkwamen kon niet op tegen de behandeling waarbij de endeldarm werd verwijderd. Dus de praktijk werd niet veranderd om in principe altijd het orgaan te verwijderen. Maar de vraag was geboren of pati\u00ebnten met een tumor in een vroeger stadium wel veel vaker konden genezen met combinatie van bestraling en chemotherapie.\n        Dat blijkt het geval. Ruim 500 pati\u00ebnten uit verschillende landen deden mee aan de studie. Zij konden zelf kiezen voor een operatie of een orgaansparende behandeling. De grote meerderheid van de pati\u00ebnten koos voor dat laatste. Binnen deze groep kreeg de helft een korte serie bestralingen. De anderen werden behandeld met een combinatie van meer bestralingen en chemotherapie.\n        Bij 79 procent van de pati\u00ebnten die bestraling en chemotherapie kregen, was de behandeling effectief en was opereren niet meer nodig of kon worden beperkt tot een kleine ingreep waarbij de endeldarm behouden bleef. In de groep die alleen een korte serie bestralingen kreeg, gold dit voor 61 procent.\n        'Echt verder met het leven'\n        Yvonne Treffers onderging vijf jaar geleden de gecombineerde bestraling- en chemobehandeling na een alarmerend resultaat toen ze meedeed aan het bevolkingsonderzoek naar darmkanker. Sindsdien is ze kankervrij. In september is haar laatste controle.\n        \"Ik ben zo blij dat ik toen het geluk had om in het kader van een wetenschappelijke studie voor deze behandeling te kunnen kiezen. Het vooruitzicht van een stoma en andere problemen zag ik niet zitten.\"\n        Al was de vijf weken durende behandeling met bestraling en chemo ook geen pretje. \"Met name die bestraling werd op gegeven moment heftig. Maar ook dat gaat voorbij en kun je weer echt verder met het leven. Met zo'n operatie is dat denk ik toch echt anders.\"\n        Bevolkingsonderzoek\n        Ongeveer 3500 mensen krijgen jaarlijks de diagnose endeldarmkanker. Als de ziekte op tijd wordt opgemerkt is de kans dus groot dat een orgaanbesparende behandeling voldoende is. Uit eerder onderzoek van het Erasmus MC blijkt dat de bevolkingsonderzoeken naar kanker jaarlijks duizenden mensen het leven redden omdat artsen vaker op tijd kunnen ingrijpen.\n        Met behulp van een MRI-scan wordt het stadium en de locatie van de tumor nog preciezer in kaart gebracht. Met gevorderde tumoren blijft het verwijderen van de endeldarm soms wel noodzakelijk.\n        \"Het fijne voor pati\u00ebnten is dat ze afhankelijk van hun situatie in overleg met hun arts de beste keuze kunnen maken\", vertelt De Wilt. Dat deze keuzes en een meer gepersonaliseerde behandeling mogelijk worden past in een bredere trend. Oncologen en wetenschappers zijn continu op zoek naar de meest gerichte behandeling per individu. Het betekent vaak minder bijwerkingen en kan zelfs ook goedkoper zijn.\n        \"Sommige mensen kunnen vanwege gezondheidsredenen geen chemotherapie ondergaan, dan is er ook de optie om het alleen met bestralen te proberen. Als die behandelingen niet succesvol zijn kan altijd nog gekozen worden voor een chirurgische ingreep.\"", "original_link": "https://nos.nl/l/2628081", "is_background": false}, "13": {"title": "Van een 100 kilometer lange wandeltocht tot Guido Dieteren in Rondje Limburg", "category": "Midden-Limburg", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Van een 100 kilometer lange wandeltocht voor mentale gezondheid en de Limburgse dialecten tot een groot concert in Roermond, bijzondere hobb...", "full_text": "Van een 100 kilometer lange wandeltocht voor mentale gezondheid en de Limburgse dialecten tot een groot concert in Roermond, bijzondere hobby\u2019s en een wandkleed over het slavernijverleden. Bekijk hier de hele uitzending. 100 kilometer wandelen en Limburgse dialecten De 19-jarige Stan Hendrix wandelt van Nijmegen naar zijn woonplaats Sevenum, een tocht van 100 kilometer. Met &#8230;\nHet bericht Van een 100 kilometer lange wandeltocht tot Guido Dieteren in Rondje Limburg verscheen eerst op VML Nieuws.", "original_link": "https://vmlnieuws.nl/regio/van-een-100-kilometer-lange-wandeltocht-tot-limburgse-dialecten-in-rondje-limburg/?utm_source=rss&utm_medium=rss&utm_campaign=van-een-100-kilometer-lange-wandeltocht-tot-limburgse-dialecten-in-rondje-limburg", "is_background": false}, "14": {"title": "Veerkrachtig VVV wint van De Graafschap", "category": "Midden-Limburg", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "VVV Venlo heeft zondagmiddag met 2-1 van De Graafschap gewonnen. Een goed gevulde Koel zag VVV op een vroege achterstand komen na slordig ui...", "full_text": "VVV Venlo heeft zondagmiddag met 2-1 van De Graafschap gewonnen. Een goed gevulde Koel zag VVV op een vroege achterstand komen na slordig uitverdedigen. Toch gaf VVV zich niet gewonnen na die fout en vocht het zich met veerkracht terug naar een 2-1 overwinning.", "original_link": "https://www.l1nieuws.nl/sport/3224497/veerkrachtig-vvv-wint-van-de-graafschap", "is_background": false}, "15": {"title": "Twee gewonden bij ongeluk in Maastricht", "category": "Midden-Limburg", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Bij een aanrijding bij de afrit van de A79 in Maastricht zijn zondagavond twee mensen gewond geraakt...", "full_text": "Bij een aanrijding bij de afrit van de A79 in Maastricht zijn zondagavond twee mensen gewond geraakt", "original_link": "https://www.l1nieuws.nl/112/3224620/twee-gewonden-bij-ongeluk-in-maastricht", "is_background": false}, "16": {"title": "Melkweg slokte 11,8 miljard jaar geleden ander sterrenstelsel op", "category": "Wiskunde & Wetenschap", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "De Melkweg slokte 11,8 miljard jaar geleden een kleiner sterrenstelsel op, blijkt uit nieuw onderzoek. Het is voor zover bekend de vroegste ...", "full_text": "De Melkweg slokte 11,8 miljard jaar geleden een kleiner sterrenstelsel op, blijkt uit nieuw onderzoek. Het is voor zover bekend de vroegste samensmelting van onze Melkweg met een ander stelsel.", "original_link": "https://www.nu.nl/wetenschap/6406680/melkweg-slokte-118-miljard-jaar-geleden-ander-sterrenstelsel-op.html", "is_background": false}, "17": {"title": "Archeologen in Peru vinden skelet van persoon die mogelijk ritueel geofferd werd", "category": "Wiskunde & Wetenschap", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Archeologen in Peru hebben dinsdag de resten gevonden van iemand die honderden jaren geleden vermoedelijk ritueel geofferd is. Het skelet we...", "full_text": "Archeologen in Peru hebben dinsdag de resten gevonden van iemand die honderden jaren geleden vermoedelijk ritueel geofferd is. Het skelet werd gevonden aan de voet van de Huaca Pucllana, een oude lemen piramide van de Limacultuur.", "original_link": "https://www.nu.nl/wetenschap/6406763/archeologen-in-peru-vinden-skelet-van-persoon-die-mogelijk-ritueel-geofferd-werd.html", "is_background": false}, "18": {"title": "Ster die met 25.000 kilometer per seconde beweegt 'voelt' draaiing van zwart gat", "category": "Wiskunde & Wetenschap", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Astronomen hebben dicht bij het zwarte gat in het centrum van de Melkweg een ster ontdekt die 25.000 kilometer per seconde beweegt. De ster ...", "full_text": "Astronomen hebben dicht bij het zwarte gat in het centrum van de Melkweg een ster ontdekt die 25.000 kilometer per seconde beweegt. De ster \"voelt\" daardoor de draaiing van het gat.", "original_link": "https://www.nu.nl/wetenschap/6406717/ster-die-met-25000-kilometer-per-seconde-beweegt-voelt-draaiing-van-zwart-gat.html", "is_background": false}, "19": {"title": "Roblox heeft te weinig gedaan om volwassenen bij kinderen weg te houden", "category": "Technologie", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "De makers van Roblox hebben er moeite mee om te zorgen dat kwaadwillende volwassenen geen contact kunnen opnemen met kinderen. Het zal meer ...", "full_text": "De makers van Roblox hebben er moeite mee om te zorgen dat kwaadwillende volwassenen geen contact kunnen opnemen met kinderen. Het zal meer moeten doen om te zorgen dat deze mensen geen onbekende kinderen berichten kunnen sturen, stelt eSafety-commissaris van Australi\u00eb, Julie Inman Grant.&nbsp;", "original_link": "https://www.bright.nl/nieuws/2126658/roblox-heeft-te-weinig-gedaan-om-volwassenen-bij-kinderen-weg-te-houden.html", "is_background": false}, "20": {"title": "Meta wil mogelijk een fysieke kill switch op zijn brillen zetten", "category": "Technologie", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Meta\u2019s slimme brillen liggen volop onder vuur: er zijn veel privacyzorgen. Daardoor is het al heel moeilijk om het ledje dat aangeeft dat de...", "full_text": "Meta\u2019s slimme brillen liggen volop onder vuur: er zijn veel privacyzorgen. Daardoor is het al heel moeilijk om het ledje dat aangeeft dat de camera draait te verwijderen. Ook afplakken heeft geen zin: je kunt de bril dan helemaal niet meer gebruiken. Maar, nu lijkt Meta met een extremere maatregel te komen.", "original_link": "https://www.bright.nl/nieuws/2126565/meta-wil-mogelijk-een-fysieke-kill-switch-op-zijn-brillen-zetten.html", "is_background": false}, "21": {"title": "Zo voorkom je dat Instagram je gegevens gebruikt voor AI en gepersonaliseerde advertenties", "category": "Technologie", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Wie een product zoekt op een externe website, ziet daar enkele minuten later een advertentie voor op Instagram. Volgens Meta luistert de app...", "full_text": "Wie een product zoekt op een externe website, ziet daar enkele minuten later een advertentie voor op Instagram. Volgens Meta luistert de app niet stiekem mee via de microfoon. Wat wel gebeurt is dat externe bedrijven informatie delen over je klik- en koopgedrag met het platform.", "original_link": "https://www.bright.nl/nieuws/2126580/zo-voorkom-je-dat-instagram-je-gegevens-gebruikt-voor-ai-en-gepersonaliseerde-ads.html", "is_background": false}, "22": {"title": "Spaanse WK-held Ferran Torres voorkomt nederlaag PSG bij debuut Mika Godts", "category": "Sport", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Mika Godts heeft zondagavond tegen Stade Rennais zijn debuut voor Paris Saint-Germain gemaakt. De Champions League-winnaar speelde in de eer...", "full_text": "Mika Godts heeft zondagavond tegen Stade Rennais zijn debuut voor Paris Saint-Germain gemaakt. De Champions League-winnaar speelde in de eerste speelronde van de Ligue 1 gelijk na een 2-0-achterstand, met dank aan de Spaanse WK-held Ferran Torres.", "original_link": "https://www.nu.nl/voetbal/6407304/spaanse-wk-held-ferran-torres-voorkomt-nederlaag-psg-bij-debuut-mika-godts.html", "is_background": false}, "23": {"title": "Talent R\u00f6ttgering plaatst zich voor het eerst voor ATP-toernooi buiten Nederland", "category": "Sport", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Tennistalent Mees R\u00f6ttgering doet komende week voor het eerst mee aan een ATP-toernooi buiten Nederland. De negentienjarige Nederlander kwal...", "full_text": "Tennistalent Mees R\u00f6ttgering doet komende week voor het eerst mee aan een ATP-toernooi buiten Nederland. De negentienjarige Nederlander kwalificeerde zich zondag voor het hoofdtoernooi in het Amerikaanse Winston-Salem.", "original_link": "https://www.nu.nl/tennis/6407302/talent-rottgering-plaatst-zich-voor-het-eerst-voor-atp-toernooi-buiten-nederland.html", "is_background": false}, "24": {"title": "FC Barcelona begint seizoen met klinkende zege en ziet debutanten schitteren", "category": "Sport", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "FC Barcelona is zondag goed begonnen aan het nieuwe seizoen in La Liga. De Catalanen haalden met 0-5 uit bij Elche. Debutanten Karim Adeyemi...", "full_text": "FC Barcelona is zondag goed begonnen aan het nieuwe seizoen in La Liga. De Catalanen haalden met 0-5 uit bij Elche. Debutanten Karim Adeyemi en Anthony Gordon lieten zich meteen gelden.", "original_link": "https://www.nu.nl/voetbal/6407307/fc-barcelona-begint-seizoen-met-klinkende-zege-en-ziet-debutanten-schitteren.html", "is_background": false}, "25": {"title": "Je eerste triatlon: zo bereid je je slim voor", "category": "Fitness & Resistance Training", "img": "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600", "ai_summary": "Droom je ervan om je eerste triatlon te doen, maar weet je niet waar je moet beginnen? Dan ben je niet de enige. Veel sporters vragen zich a...", "full_text": "Droom je ervan om je eerste triatlon te doen, maar weet je niet waar je moet beginnen? Dan ben je niet de enige. Veel sporters vragen zich af hoeveel ze moeten trainen, welke discipline het belangrijkst is en of ze direct een dure fiets of alle nieuwste gadgets nodig hebben. In deze aflevering van de [&#8230;]\nThe post Je eerste triatlon: zo bereid je je slim voor appeared first on FIT.nl.", "original_link": "https://www.fit.nl/cardio/triatlon-voorbereiding", "is_background": false}, "26": {"title": "Lowlands-bezoekers staan haar af voor kankeronderzoek: 'Ik heb toch genoeg'", "category": "Fitness & Resistance Training", "img": "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600", "ai_summary": "Een container, een kappersstoel en een schaar: op Lowlands laten honderden festivalgangers dit weekend een pluk haar afknippen. Niet voor ee...", "full_text": "Een container, een kappersstoel en een schaar: op Lowlands laten honderden festivalgangers dit weekend een pluk haar afknippen. Niet voor een nieuw kapsel, maar voor onderzoek naar stress bij jongvolwassenen met kanker.", "original_link": "https://www.nu.nl/lowlands-festival/6407191/lowlands-bezoekers-staan-haar-af-voor-kankeronderzoek-ik-heb-toch-genoeg.html", "is_background": false}, "27": {"title": "Heb je een calorieoverschot nodig voor spieropbouw?", "category": "Fitness & Resistance Training", "img": "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600", "ai_summary": "Moet je \u201cbulken\u201d om spiermassa op te bouwen? Het korte antwoord: in veel gevallen is dit niet nodig (met een uitzondering). Welke dit is, le...", "full_text": "Moet je \u201cbulken\u201d om spiermassa op te bouwen? Het korte antwoord: in veel gevallen is dit niet nodig (met een uitzondering). Welke dit is, lees je hieronder. In het kort: Heb je een calorieoverschot nodig voor spieropbouw? Nee, niet per se. Spiergroei kan plaatsvinden bij onderhoudsniveau Een klein overschot kan ondersteunen, maar is geen vereiste [&#8230;]\nThe post Heb je een calorieoverschot nodig voor spieropbouw? appeared first on FIT.nl.", "original_link": "https://www.fit.nl/spiermassa/calorieoverschot-opbouw-spiermassa", "is_background": false}, "28": {"title": "5 dingen waaraan mannen kunnen zien dat de vrouw die hard voor ze uit loopt ge\u00efnteresseerd in ze is", "category": "Humor & Luchtig", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Voor veel mannen blijft het een ingewikkelde situatie: je loopt \u2018s nachts over straat en er loopt een vrouw steeds iets harder voor je uit....", "full_text": "Voor veel mannen blijft het een ingewikkelde situatie: je loopt \u2018s nachts over straat en er loopt een vrouw steeds iets harder voor je uit.", "original_link": "https://speld.nl/2026/08/22/5-dingen-waaraan-mannen-kunnen-zien-dat-de-vrouw-die-hard-voor-ze-uit-loopt-geinteresseerd-in-ze-is/", "is_background": false}, "29": {"title": "Gedeeltelijke maansverduistering op komst in Nederland", "category": "Humor & Luchtig", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Volgende week is in de nacht van donderdag op vrijdag een gedeeltelijke maansverduistering te zien in een groot deel van Nederland. De maan ...", "full_text": "Volgende week is in de nacht van donderdag op vrijdag een gedeeltelijke maansverduistering te zien in een groot deel van Nederland. De maan komt dan voor ongeveer 93 procent in de kernschaduw van de aarde, meldt Weeronline.", "original_link": "https://www.nu.nl/binnenland/6407173/gedeeltelijke-maansverduistering-op-komst-in-nederland.html", "is_background": false}, "30": {"title": "\u200bNieuw seizoen Boer zoekt Vrouw speelt zich grotendeels af op snelweg", "category": "Humor & Luchtig", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Het vijftiende seizoen van Boer zoekt Vrouw speelt zich grotendeels af op de snelweg....", "full_text": "Het vijftiende seizoen van Boer zoekt Vrouw speelt zich grotendeels af op de snelweg.", "original_link": "https://speld.nl/2026/08/23/nieuw-seizoen-boer-zoekt-vrouw-speelt-zich-grotendeels-af-op-snelweg/", "is_background": false}};
+        const currentBuildTime = 1787547474;
 
         function forceRefresh() {
             const timeStamp = new Date().getTime();
-            const baseUrl = window.location.href.split('?')[0];
-            window.location.href = baseUrl + '?t=' + timeStamp;
+            let cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.location.href = cleanUrl + '?nocache=' + timeStamp;
         }
+
+        // Controleer automatisch iedere 3 minuten op de achtergrond of GitHub een nieuwe site gebouwd heeft
+        setInterval(() => {
+            fetch(window.location.pathname + '?check=' + new Date().getTime(), { cache: 'no-store' })
+                .then(response => response.text())
+                .then(html => {
+                    const match = html.match(/currentBuildTime\s*=\s*(\d+)/);
+                    if (match && parseInt(match[1]) > currentBuildTime) {
+                        console.log("Nieuwe update gevonden! Pagina wordt herladen...");
+                        forceRefresh();
+                    }
+                }).catch(err => console.log(err));
+        }, 180000);
 
         function openArticle(id) {
             const article = articlesData[id];
             if (!article) return;
-
             document.getElementById('modalImg').src = article.img;
             document.getElementById('modalBadge').innerText = article.category;
             document.getElementById('modalTitle').innerText = article.title;
-            document.getElementById('modalAiBox').innerHTML = '⚡ <b>Focus / Topic:</b><br>' + article.ai_summary;
+            document.getElementById('modalAiBox').innerHTML = '⚡ <b>Focus:</b><br>' + article.ai_summary;
             document.getElementById('modalFullText').innerHTML = article.full_text;
 
             const sourceBtn = document.getElementById('modalSourceLink');
@@ -623,7 +572,6 @@
                 sourceBtn.style.display = 'inline-flex';
                 sourceBtn.href = article.original_link;
             }
-
             document.getElementById('modalOverlay').style.display = 'block';
             document.body.style.overflow = 'hidden';
         }
@@ -634,14 +582,8 @@
         }
 
         function closeModalOnOverlay(e) {
-            if (e.target.id === 'modalOverlay') {
-                closeModal();
-            }
+            if (e.target.id === 'modalOverlay') closeModal();
         }
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeModal();
-        });
     </script>
 </body>
 </html>
