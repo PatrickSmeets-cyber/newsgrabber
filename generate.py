@@ -11,15 +11,15 @@ from google import genai
 # 0. Nederlandse tijdstempel bepalen
 tz = zoneinfo.ZoneInfo("Europe/Amsterdam")
 last_updated = datetime.now(tz).strftime("%d-%m-%Y om %H:%M uur")
+unix_timestamp = int(datetime.now(tz).timestamp())
 
-# Initialize Gemini Client via de officiële SDK
+# Initialize Gemini Client
 api_key = os.environ.get("AI_API_KEY", "").strip()
 client = genai.Client(api_key=api_key) if api_key else None
 
-# User-Agent instellen tegen IP/bot-blokkades op GitHub Actions
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
 
-# 1. RSS Feeds per rubriek
+# 1. RSS Feeds
 FEEDS = {
     "Wereld": [
         "https://feeds.nos.nl/nosnieuwsbuitenland",
@@ -65,7 +65,7 @@ FEEDS = {
     ]
 }
 
-# 2. Pool van Achtergrondonderwerpen
+# 2. Pool Achtergrondonderwerpen
 BACKGROUND_POOL = [
     {
         "title": "Generatieve AI op de Arbeidsmarkt",
@@ -99,7 +99,7 @@ BACKGROUND_POOL = [
     }
 ]
 
-# 3. Weer ophalen voor Midden-Limburg
+# 3. Weer ophalen
 weather_html_summary = "Weergegevens niet beschikbaar."
 try:
     url_w = "https://api.open-meteo.com/v1/forecast?latitude=51.19&longitude=5.99&current_weather=true&hourly=temperature_2m,precipitation_probability&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FAmsterdam"
@@ -134,7 +134,6 @@ try:
     """
 except Exception as e:
     print(f"Weer ophalen mislukt: {e}")
-    weather_html_summary = "Weergegevens momenteel niet beschikbaar."
 
 def clean_markdown(text):
     text = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', text)
@@ -150,9 +149,8 @@ articles_html = ""
 modal_data = {}
 article_id = 0
 
-# A. Kies 3 achtergrondonderwerpen
+# Achtergrondonderwerpen
 selected_backgrounds = random.sample(BACKGROUND_POOL, 3)
-
 for item in selected_backgrounds:
     article_id += 1
     category = "Achtergrond & Meningsvorming"
@@ -162,33 +160,18 @@ for item in selected_backgrounds:
     if client:
         try:
             prompt = (
-                f"Schrijf een compleet, op zichzelf staand achtergronddossier over het onderwerp: '{item['topic']}'. "
-                f"Gebruik inzichten uit meerdere objectieve bronnen. "
-                f"Structureer het antwoord exact als volgt:\n\n"
-                f"### Take-aways\n"
-                f"* [Kernpunt 1]\n"
-                f"* [Kernpunt 2]\n"
-                f"* [Kernpunt 3]\n\n"
-                f"### Introductie\n"
-                f"[Een heldere, feitelijke introductie]\n\n"
-                f"### Details & Nuances\n"
-                f"[Diepgaandere analyse]\n\n"
-                f"### Betrouwbaarheidswaarde\n"
-                f"Score: 8.5/10 - [Toelichting]\n\n"
-                f"### Gebruikte Bronnen & Referenties\n"
-                f"* [Lijst met bronnen]"
+                f"Schrijf een compleet, op zichzelf staand achtergronddossier over: '{item['topic']}'. "
+                f"Structureer exact als volgt:\n\n"
+                f"### Take-aways\n* [Kernpunt 1]\n* [Kernpunt 2]\n\n"
+                f"### Introductie\n[Feitelijke introductie]\n\n"
+                f"### Details & Nuances\n[Diepgaandere analyse]\n\n"
+                f"### Betrouwbaarheid\nScore: 8.5/10 - [Toelichting]"
             )
-            
-            response = client.models.generate_content(
-                model='gemini-2.0-flash',
-                contents=prompt
-            )
-            
+            response = client.models.generate_content(model='gemini-2.0-flash', contents=prompt)
             full_text = clean_markdown(response.text.strip())
             summary = item['topic']
         except Exception as ai_err:
-            print(f"AI dossier fout bij '{item['title']}': {ai_err}")
-            full_text = f"<b>Kon geen AI-dossier genereren.</b><br>Fout: {ai_err}"
+            print(f"AI fout: {ai_err}")
 
     modal_data[str(article_id)] = {
         "title": item["title"],
@@ -208,12 +191,12 @@ for item in selected_backgrounds:
         <div class="card-content">
             <h3>{item['title']}</h3>
             <p>{summary}</p>
-            <div class="read-more">Open compleet dossier &rarr;</div>
+            <div class="read-more">Open dossier &rarr;</div>
         </div>
     </div>
     """
 
-# B. Verzamel nieuws per categorie
+# Nieuws Artikelen
 for category, urls in FEEDS.items():
     pool_items = []
     for url in urls:
@@ -222,18 +205,15 @@ for category, urls in FEEDS.items():
             if feed.entries:
                 pool_items.extend(feed.entries[:5])
         except Exception as err:
-            print(f"Fout bij ophalen {url}: {err}")
+            print(f"Fout bij {url}: {err}")
             
-    if len(pool_items) >= 3:
-        category_items = random.sample(pool_items, 3)
-    else:
-        category_items = pool_items[:3]
+    category_items = random.sample(pool_items, min(len(pool_items), 3))
             
     for idx, item in enumerate(category_items):
         article_id += 1
         title = item.title
         link = item.get('link', '#')
-        raw_summary = item.get('summary', item.get('description', 'Geen samenvatting beschikbaar.'))
+        raw_summary = item.get('summary', item.get('description', 'Geen samenvatting.'))
         clean_summary = strip_tags(raw_summary)
         
         default_img = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600"
@@ -243,34 +223,19 @@ for category, urls in FEEDS.items():
         img_url = default_img
         if 'media_content' in item and len(item.media_content) > 0:
             img_url = item.media_content[0].get('url', default_img)
-        elif 'links' in item:
-            for link_item in item.links:
-                if link_item.get('type', '').startswith('image/'):
-                    img_url = link_item.href
-                    break
 
         ai_summary = clean_summary[:140] + "..."
 
         if client:
             try:
-                extra_prompt = ""
-                if category == "Fitness & Resistance Training":
-                    extra_prompt = " Leg de nadruk op krachttraining, spieropbouw, herstel of progressie."
-                
                 prompt = (
-                    "Jij bent een redacteur van een positief, energiek nieuwsdashboard. "
-                    "Herschrijf het onderstaande bericht in maximaal 2 korte, krachtige zinnen. "
-                    "Richt je primair op positief nieuws, kansen, oplossingen of vooruitgang. "
-                    f"{extra_prompt} Bericht: {title} - {clean_summary}"
+                    f"Herschrijf in maximaal 2 korte, krachtige zinnen. "
+                    f"Richt je op vooruitgang en oplossingen. Bericht: {title} - {clean_summary}"
                 )
-                
-                response = client.models.generate_content(
-                    model='gemini-2.0-flash',
-                    contents=prompt
-                )
+                response = client.models.generate_content(model='gemini-2.0-flash', contents=prompt)
                 ai_summary = response.text.strip()
             except Exception as ai_err:
-                print(f"AI fout bij {category} item {idx}: {ai_err}")
+                print(f"AI Fout: {ai_err}")
 
         modal_data[str(article_id)] = {
             "title": title,
@@ -291,7 +256,7 @@ for category, urls in FEEDS.items():
             <div class="card-content">
                 <h3>{title}</h3>
                 <p>{ai_summary}</p>
-                <div class="read-more">Lees volledig bericht &rarr;</div>
+                <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         """
@@ -302,13 +267,21 @@ html_content = f"""<!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="300">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patrick’s Nieuwsboard</title>
     
+    <script>
+      // Verwijder eventuele oude ServiceWorkers die netwerkrequests kapers
+      if ('serviceWorker' in navigator) {{
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {{
+          for(let registration of registrations) {{ registration.unregister(); }}
+        }});
+      }}
+    </script>
+
     <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/180/lightning-bolt.png?v=2">
     <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/180/lightning-bolt.png?v=2">
 
@@ -330,7 +303,7 @@ html_content = f"""<!DOCTYPE html>
             margin-bottom: 25px; 
             box-shadow: 0 8px 20px rgba(0, 180, 216, 0.2);
         }}
-        header h1 {{ margin: 0; font-size: 1.8rem; font-weight: 800; letter-spacing: 0.5px; }}
+        header h1 {{ margin: 0; font-size: 1.8rem; font-weight: 800; }}
         header p {{ margin: 6px 0 0 0; opacity: 0.95; font-size: 0.95rem; }}
         
         .widget-bar {{ 
@@ -346,21 +319,8 @@ html_content = f"""<!DOCTYPE html>
             border-left: 4px solid #00b4d8; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
         }}
-        .widget-clickable {{
-            cursor: pointer;
-            transition: transform 0.2s ease, background-color 0.2s ease;
-        }}
-        .widget-clickable:hover {{
-            background-color: #25335a;
-            transform: translateY(-2px);
-        }}
-        .spin-icon {{
-            display: inline-block;
-            transition: transform 0.5s ease;
-        }}
-        .widget-clickable:hover .spin-icon {{
-            transform: rotate(180deg);
-        }}
+        .widget-clickable {{ cursor: pointer; }}
+        .widget-clickable:hover {{ background-color: #25335a; }}
         .widget-title {{ font-size: 0.8rem; text-transform: uppercase; color: #90e0ef; font-weight: bold; margin-bottom: 5px; }}
         .widget-body {{ font-size: 0.9rem; line-height: 1.4; color: #ffffff; }}
 
@@ -377,50 +337,27 @@ html_content = f"""<!DOCTYPE html>
             display: flex; 
             flex-direction: column; 
             border: 1px solid #3a506b;
-            transition: transform 0.2s ease, border-color 0.2s ease;
             cursor: pointer;
         }}
-        .card-featured {{
-            border: 1px solid #ffb703;
-            background: #1e293b;
-        }}
-        .card:hover {{ 
-            transform: translateY(-4px); 
-            border-color: #00b4d8;
-        }}
-        .card-featured:hover {{
-            border-color: #ffb703;
-        }}
+        .card-featured {{ border: 1px solid #ffb703; background: #1e293b; }}
         .card-img-wrapper {{ position: relative; height: 170px; }}
         .card img {{ width: 100%; height: 100%; object-fit: cover; background-color: #0b132b; }}
         .badge {{ 
             position: absolute; 
-            top: 12px; 
-            left: 12px; 
+            top: 12px; left: 12px; 
             background: rgba(0, 180, 216, 0.9); 
             color: #ffffff; 
             padding: 4px 10px; 
             border-radius: 20px; 
             font-size: 0.75rem; 
             font-weight: 700; 
-            backdrop-filter: blur(4px);
             text-transform: uppercase;
         }}
-        .badge-featured {{
-            background: rgba(255, 183, 3, 0.95);
-            color: #000000;
-        }}
+        .badge-featured {{ background: rgba(255, 183, 3, 0.95); color: #000000; }}
         .card-content {{ padding: 18px; flex-grow: 1; display: flex; flex-direction: column; }}
         h3 {{ margin: 0 0 10px 0; font-size: 1.05rem; line-height: 1.35; color: #caf0f8; }}
         p {{ font-size: 0.9rem; color: #cbd5e1; line-height: 1.5; margin: 0; flex-grow: 1; }}
-        
-        .read-more {{ 
-            margin-top: 12px; 
-            font-size: 0.82rem; 
-            color: #00b4d8; 
-            font-weight: 700; 
-            display: inline-block;
-        }}
+        .read-more {{ margin-top: 12px; font-size: 0.82rem; color: #00b4d8; font-weight: 700; }}
 
         .modal-overlay {{
             display: none;
@@ -438,68 +375,33 @@ html_content = f"""<!DOCTYPE html>
             background: #1c2541;
             border-radius: 16px;
             border: 1px solid #00b4d8;
-            box-shadow: 0 10px 30px rgba(0,180,216,0.3);
             overflow: hidden;
-            animation: fadeIn 0.25s ease-out;
-        }}
-        @keyframes fadeIn {{
-            from {{ opacity: 0; transform: translateY(15px); }}
-            to {{ opacity: 1; transform: translateY(0); }}
         }}
         .modal-header-img {{ width: 100%; height: 240px; object-fit: cover; }}
         .modal-body {{ padding: 25px; }}
-        .modal-badge {{ background: #00b4d8; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }}
-        .modal-title {{ font-size: 1.4rem; color: #ffffff; margin: 15px 0; line-height: 1.3; }}
-        .modal-ai-box {{
-            background: #0b132b;
-            border-left: 4px solid #00b4d8;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            color: #90e0ef;
-            font-size: 0.95rem;
-            line-height: 1.4;
-        }}
+        .modal-badge {{ background: #00b4d8; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }}
+        .modal-title {{ font-size: 1.4rem; color: #ffffff; margin: 15px 0; }}
+        .modal-ai-box {{ background: #0b132b; border-left: 4px solid #00b4d8; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; color: #90e0ef; }}
         .modal-full-text {{ font-size: 0.95rem; color: #e0e6ed; line-height: 1.6; margin-bottom: 25px; }}
-        .modal-actions {{
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            border-top: 1px solid #3a506b;
-            padding-top: 20px;
-        }}
-        .btn {{
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-        }}
+        .modal-actions {{ display: flex; gap: 12px; border-top: 1px solid #3a506b; padding-top: 20px; }}
+        .btn {{ padding: 12px 20px; border-radius: 10px; font-size: 0.9rem; font-weight: bold; cursor: pointer; border: none; text-decoration: none; }}
         .btn-back {{ background: #3a506b; color: #ffffff; flex-grow: 1; }}
-        .btn-back:hover {{ background: #4f6d91; }}
         .btn-source {{ background: #00b4d8; color: #ffffff; flex-grow: 1; text-align: center; }}
-        .btn-source:hover {{ background: #0096c7; }}
     </style>
 </head>
 <body>
     <header>
         <h1>⚡ Patrick’s Nieuwsboard</h1>
-        <p>Positief • Krachtig • Laatst bijgewerkt: <b>{last_updated}</b></p>
+        <p>Positief • Krachtig • Laatst bijgewerkt: <b id="lastUpdated">{last_updated}</b></p>
     </header>
     
     <div class="widget-bar">
         <div class="widget widget-clickable" onclick="forceRefresh();">
-            <div class="widget-title"><span class="spin-icon">🔄</span> Status & Verversen</div>
-            <div class="widget-body"><b>{last_updated}</b><br><small style="color:#00b4d8;">Klik hier om te verversen ↻</small></div>
+            <div class="widget-title">🔄 Status & Verversen</div>
+            <div class="widget-body"><b>{last_updated}</b><br><small style="color:#00b4d8;">Klik hier om direct te verversen ↻</small></div>
         </div>
         <div class="widget">
-            <div class="widget-title">🌤️ Weer Midden-Limburg & Verwachting</div>
+            <div class="widget-title">🌤️ Weer Midden-Limburg</div>
             <div class="widget-body">{weather_html_summary}</div>
         </div>
         <div class="widget">
@@ -516,18 +418,17 @@ html_content = f"""<!DOCTYPE html>
         {articles_html}
     </div>
 
-    <!-- Modal View -->
     <div id="modalOverlay" class="modal-overlay" onclick="closeModalOnOverlay(event)">
         <div class="modal-container">
-            <img id="modalImg" class="modal-header-img" src="" alt="Nieuws afbeelding">
+            <img id="modalImg" class="modal-header-img" src="" alt="Nieuws">
             <div class="modal-body">
                 <span id="modalBadge" class="modal-badge"></span>
                 <h2 id="modalTitle" class="modal-title"></h2>
                 <div id="modalAiBox" class="modal-ai-box"></div>
                 <div id="modalFullText" class="modal-full-text"></div>
                 <div class="modal-actions">
-                    <button class="btn btn-back" onclick="closeModal()">&larr; Terug naar overzicht</button>
-                    <a id="modalSourceLink" class="btn btn-source" href="#" target="_blank" rel="noopener">Bekijk origineel op de website &rarr;</a>
+                    <button class="btn btn-back" onclick="closeModal()">&larr; Terug</button>
+                    <a id="modalSourceLink" class="btn btn-source" href="#" target="_blank" rel="noopener">Bekijk origineel &rarr;</a>
                 </div>
             </div>
         </div>
@@ -535,21 +436,34 @@ html_content = f"""<!DOCTYPE html>
 
     <script>
         const articlesData = {json_modal_data};
+        const currentBuildTime = {unix_timestamp};
 
         function forceRefresh() {{
             const timeStamp = new Date().getTime();
-            const baseUrl = window.location.href.split('?')[0];
-            window.location.href = baseUrl + '?t=' + timeStamp;
+            let cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.location.href = cleanUrl + '?nocache=' + timeStamp;
         }}
+
+        // Controleer automatisch iedere 3 minuten op de achtergrond of GitHub een nieuwe site gebouwd heeft
+        setInterval(() => {{
+            fetch(window.location.pathname + '?check=' + new Date().getTime(), {{ cache: 'no-store' }})
+                .then(response => response.text())
+                .then(html => {{
+                    const match = html.match(/currentBuildTime\\s*=\\s*(\\d+)/);
+                    if (match && parseInt(match[1]) > currentBuildTime) {{
+                        console.log("Nieuwe update gevonden! Pagina wordt herladen...");
+                        forceRefresh();
+                    }}
+                }}).catch(err => console.log(err));
+        }}, 180000);
 
         function openArticle(id) {{
             const article = articlesData[id];
             if (!article) return;
-
             document.getElementById('modalImg').src = article.img;
             document.getElementById('modalBadge').innerText = article.category;
             document.getElementById('modalTitle').innerText = article.title;
-            document.getElementById('modalAiBox').innerHTML = '⚡ <b>Focus / Topic:</b><br>' + article.ai_summary;
+            document.getElementById('modalAiBox').innerHTML = '⚡ <b>Focus:</b><br>' + article.ai_summary;
             document.getElementById('modalFullText').innerHTML = article.full_text;
 
             const sourceBtn = document.getElementById('modalSourceLink');
@@ -559,7 +473,6 @@ html_content = f"""<!DOCTYPE html>
                 sourceBtn.style.display = 'inline-flex';
                 sourceBtn.href = article.original_link;
             }}
-
             document.getElementById('modalOverlay').style.display = 'block';
             document.body.style.overflow = 'hidden';
         }}
@@ -570,14 +483,8 @@ html_content = f"""<!DOCTYPE html>
         }}
 
         function closeModalOnOverlay(e) {{
-            if (e.target.id === 'modalOverlay') {{
-                closeModal();
-            }}
+            if (e.target.id === 'modalOverlay') closeModal();
         }}
-
-        document.addEventListener('keydown', function(e) {{
-            if (e.key === 'Escape') closeModal();
-        }});
     </script>
 </body>
 </html>
@@ -586,4 +493,4 @@ html_content = f"""<!DOCTYPE html>
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
 
-print("index.html succesvol gegenereerd met cache-busting refresh!")
+print("index.html succesvol tegen gehouden caching gegenereerd!")
