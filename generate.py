@@ -23,7 +23,7 @@ client = None
 if api_key:
     try:
         client = genai.Client(api_key=api_key)
-        ai_status = "Actief (Gemini 2.5 Flash)"
+        ai_status = "Actief (Gemini 3.6 Flash)"
     except Exception as e:
         ai_status = f"Fout bij starten: {e}"
 
@@ -60,7 +60,7 @@ if client:
             "}"
         )
         res_extras = client.models.generate_content(
-            model='gemini-2.5-flash',
+            model='gemini-3.6-flash',
             contents=prompt_extras,
             config={'response_mime_type': 'application/json'}
         )
@@ -104,7 +104,6 @@ def strip_tags(text):
     return re.sub('<[^<]+?>', '', text)
 
 def extract_feed_image(entry, default_category):
-    # Probeer originele media-afbeeldingen uit de RSS feed te halen
     if 'media_content' in entry and entry.media_content:
         for media in entry.media_content:
             if 'url' in media:
@@ -114,13 +113,11 @@ def extract_feed_image(entry, default_category):
             if enc.get('type', '').startswith('image'):
                 return enc.get('href')
     
-    # Zoek in de HTML beschrijving naar <img> tags
     desc = entry.get('summary', '') or entry.get('description', '')
     img_match = re.search(r'<img [^>]*src=["\']([^"\']+)["\']', desc)
     if img_match:
         return img_match.group(1)
         
-    # Fallback: Genereer gerichte zoek-URL op basis van titel
     keywords = re.findall(r'\b[a-zA-Z]{5,}\b', entry.title)
     query = keywords[0] if keywords else default_category
     return f"https://loremflickr.com/600/400/{urllib.parse.quote(query)}"
@@ -150,7 +147,7 @@ for cat, urls in FEEDS.items():
             "link": entry.get("link", "")
         })
 
-# --- 1. OPINIESTUK GENEREREN (GEBRUIKT EXPLICIELE MODELNAAM gemini-2.5-flash) ---
+# --- 1. OPINIESTUK GENEREREN ---
 article_id += 1
 category = "Dagelijks Opinie-Dossier"
 featured_title = "Actueel Maatschappelijk Dossier"
@@ -179,7 +176,7 @@ if client and all_headlines_with_sources:
             f"}}"
         )
         res = client.models.generate_content(
-            model='gemini-2.5-flash', 
+            model='gemini-3.6-flash', 
             contents=prompt,
             config={'response_mime_type': 'application/json'}
         )
@@ -243,7 +240,7 @@ for cat, required_count in category_counts.items():
         if client:
             try:
                 res = client.models.generate_content(
-                    model='gemini-2.5-flash', 
+                    model='gemini-3.6-flash', 
                     contents=(
                         f"Geef een korte samenvatting (max 2 zinnen) en een foto-caption (max 8 woorden) voor dit bericht:\n"
                         f"Titel: {title}\nInhoud: {clean_sum}\n\n"
@@ -323,6 +320,8 @@ html_content = f"""<!DOCTYPE html>
         .btn {{ padding: 10px 15px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; text-decoration: none; }}
         .btn-back {{ background: #3a506b; color: white; }}
         .btn-source {{ background: #00b4d8; color: white; }}
+        
+        footer {{ margin-top: 40px; text-align: center; font-size: 0.75rem; color: #64748b; border-top: 1px solid #1e293b; padding-top: 15px; }}
     </style>
 </head>
 <body>
@@ -355,6 +354,10 @@ html_content = f"""<!DOCTYPE html>
     <div class="grid">
         {articles_html}
     </div>
+
+    <footer>
+        <p>Build ID: <code>{build_id}</code> | AI Provider: Gemini 3.6 Flash</p>
+    </footer>
 
     <div id="modalOverlay" class="modal-overlay" onclick="if(event.target.id==='modalOverlay') closeModal();">
         <div class="modal-container">
