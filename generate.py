@@ -52,7 +52,7 @@ if client:
             "Bedenk voor vandaag:\n"
             "1. Een inspirerende, filosofische of motiverende spreuk/quote inclusief auteur.\n"
             "2. Een unieke, praktische en direct toepasbare dagelijkse tip op het gebied van productiviteit, gezondheid of welzijn.\n\n"
-            "Geef het antwoord exact in het volgende JSON-formaat terug (geen extra tekst buiten JSON):\n"
+            "Geef het antwoord exact in het volgende JSON-formaat terug:\n"
             "{\n"
             '  "quote": "Tekst van de spreuk",\n'
             '  "auteur": "Auteur naam",\n'
@@ -103,12 +103,27 @@ def clean_markdown(text):
 def strip_tags(text):
     return re.sub('<[^<]+?>', '', text)
 
-def get_smart_image(title, fallback_category, index=0):
-    words = re.findall(r'\b[a-zA-Z]{5,}\b', title)
-    query = words[0] if words else fallback_category
-    encoded_query = urllib.parse.quote(query)
-    # Gebruikt Unsplash query; met index-variatie om dubbele afbeeldingen te voorkomen
-    return f"https://loremflickr.com/600/400/{encoded_query}?lock={index}"
+def extract_feed_image(entry, default_category):
+    # Probeer originele media-afbeeldingen uit de RSS feed te halen
+    if 'media_content' in entry and entry.media_content:
+        for media in entry.media_content:
+            if 'url' in media:
+                return media['url']
+    if 'enclosures' in entry and entry.enclosures:
+        for enc in entry.enclosures:
+            if enc.get('type', '').startswith('image'):
+                return enc.get('href')
+    
+    # Zoek in de HTML beschrijving naar <img> tags
+    desc = entry.get('summary', '') or entry.get('description', '')
+    img_match = re.search(r'<img [^>]*src=["\']([^"\']+)["\']', desc)
+    if img_match:
+        return img_match.group(1)
+        
+    # Fallback: Genereer gerichte zoek-URL op basis van titel
+    keywords = re.findall(r'\b[a-zA-Z]{5,}\b', entry.title)
+    query = keywords[0] if keywords else default_category
+    return f"https://loremflickr.com/600/400/{urllib.parse.quote(query)}"
 
 articles_html = ""
 modal_data = {}
@@ -135,29 +150,32 @@ for cat, urls in FEEDS.items():
             "link": entry.get("link", "")
         })
 
-# --- 1. OPINIESTUK GENEREREN ---
+# --- 1. OPINIESTUK GENEREREN (GEBRUIKT EXPLICIELE MODELNAAM gemini-2.5-flash) ---
 article_id += 1
 category = "Dagelijks Opinie-Dossier"
 featured_title = "Actueel Maatschappelijk Dossier"
 summary = "AI Analyse van een actueel onderwerp..."
 full_text = "Dossier wordt geladen..."
-featured_img = "https://loremflickr.com/1200/600/news,analysis?lock=999"
+featured_img = "https://loremflickr.com/1200/600/news,editorial"
+featured_caption = "Sfeerbeeld maatschappelijk debat"
 
 if client and all_headlines_with_sources:
     try:
         sample = random.sample(all_headlines_with_sources, min(len(all_headlines_with_sources), 12))
         prompt = (
-            f"Gebruik uitsluitend de onderstaande openbaar toegankelijke nieuwsbronnen:\n"
+            f"Gebruik de onderstaande nieuwsbronnen:\n"
             f"{json.dumps(sample, ensure_ascii=False)}\n\n"
             f"Opdracht:\n"
-            f"1. Kies het meest actuele of maatschappelijk relevante onderwerp uit deze lijst.\n"
+            f"1. Kies het meest actuele onderwerp.\n"
             f"2. Bedenk een pakkende titel.\n"
-            f"3. Schrijf een uitgebreid achtergrond- en opinieartikel gebaseerd op de informatie uit deze bronnen.\n\n"
-            f"Geef exact het volgende JSON-formaat terug (geen extra markdown of tekst buiten de JSON):\n"
+            f"3. Schrijf een achtergrond- en opinieartikel.\n"
+            f"4. Bedenk een korte bijbehorende foto-caption (max 10 woorden).\n\n"
+            f"Geef exact het volgende JSON-formaat terug:\n"
             f"{{\n"
             f'  "titel": "Titel",\n'
             f'  "samenvatting": "Korte samenvatting in 1-2 zinnen",\n'
-            f'  "inhoud": "### Kerninzichten\\n* [Punt 1]\\n* [Punt 2]\\n\\n### Analyse & Context\\n[Uitgebreide tekst]\\n\\n### Conclusie\\n[Conclusie]"\n'
+            f'  "inhoud": "### Kerninzichten\\n* [Punt 1]\\n* [Punt 2]\\n\\n### Analyse & Context\\n[Uitgebreide tekst]\\n\\n### Conclusie\\n[Conclusie]",\n'
+            f'  "image_caption": "Korte uitleg bij het plaatje"\n'
             f"}}"
         )
         res = client.models.generate_content(
@@ -170,7 +188,7 @@ if client and all_headlines_with_sources:
         featured_title = data.get("titel", featured_title)
         summary = data.get("samenvatting", summary)
         full_text = clean_markdown(data.get("inhoud", ""))
-        featured_img = get_smart_image(featured_title, "journalism", 100)
+        featured_caption = data.get("image_caption", featured_caption)
         print(f"✅ AI Opiniedossier gegenereerd: {featured_title}")
     except Exception as err:
         print(f"❌ AI Opinie Fout: {err}")
@@ -180,6 +198,7 @@ modal_data[str(article_id)] = {
     "title": featured_title,
     "category": category,
     "img": featured_img,
+    "caption": featured_caption,
     "ai_summary": summary,
     "full_text": full_text,
     "is_background": True
@@ -194,53 +213,54 @@ featured_html = f"""
     <div class="featured-content">
         <h2>{featured_title}</h2>
         <p>{summary}</p>
+        <div style="font-size:0.75rem; color:#ffb703; margin-top:5px;">📷 {featured_caption}</div>
         <div class="read-more">Lees het volledige opiniedossier &rarr;</div>
     </div>
 </div>
 """
 
-# --- 2. REGULIERE RUBRIEKEN (EXACT GEVRAAGDE AANTALLEN) ---
+# --- 2. REGULIERE RUBRIEKEN ---
 category_counts = {
-    "Wereld": 3,
-    "Europa": 3,
-    "Nederland": 3,
-    "Midden-Limburg": 3,
-    "Wiskunde & Wetenschap": 3,
-    "Technologie": 3,
-    "Sport": 3,
-    "Fitness & Resistance Training": 3,
-    "Humor & Luchtig": 1
+    "Wereld": 3, "Europa": 3, "Nederland": 3, "Midden-Limburg": 3,
+    "Wiskunde & Wetenschap": 3, "Technologie": 3, "Sport": 3,
+    "Fitness & Resistance Training": 3, "Humor & Luchtig": 1
 }
 
-img_seed = 10
 for cat, required_count in category_counts.items():
     pool_items = feed_results.get(cat, [])
     selected_items = pool_items[:required_count]
     
     for item in selected_items:
         article_id += 1
-        img_seed += 1
         title = item.title
         link = item.get('link', '#')
         clean_sum = strip_tags(item.get('summary', item.get('description', '')))
         
-        img_url = get_smart_image(title, cat, img_seed)
-
+        img_url = extract_feed_image(item, cat)
         ai_summary = clean_sum[:130] + "..."
+        img_caption = f"Afbeelding bij {cat}"
+
         if client:
             try:
                 res = client.models.generate_content(
                     model='gemini-2.5-flash', 
-                    contents=f"Samenvatting in max 2 zinnen: {title} - {clean_sum}"
+                    contents=(
+                        f"Geef een korte samenvatting (max 2 zinnen) en een foto-caption (max 8 woorden) voor dit bericht:\n"
+                        f"Titel: {title}\nInhoud: {clean_sum}\n\n"
+                        f"Geef antwoord als JSON: {{\n\"summary\": \"...\",\n\"caption\": \"...\"\n}}"
+                    ),
+                    config={'response_mime_type': 'application/json'}
                 )
-                ai_summary = res.text.strip()
+                res_data = json.loads(res.text.strip())
+                ai_summary = res_data.get("summary", ai_summary)
+                img_caption = res_data.get("caption", img_caption)
             except Exception as err:
-                print(f"AI Samenvatting fout: {err}")
+                print(f"AI verwerkingsfout: {err}")
 
         modal_data[str(article_id)] = {
             "title": title, "category": cat, "img": img_url,
-            "ai_summary": ai_summary, "full_text": clean_sum,
-            "original_link": link, "is_background": False
+            "caption": img_caption, "ai_summary": ai_summary,
+            "full_text": clean_sum, "original_link": link, "is_background": False
         }
 
         full_width_class = " card-full-width" if cat == "Humor & Luchtig" else ""
@@ -248,12 +268,13 @@ for cat, required_count in category_counts.items():
         articles_html += f"""
         <div class="card{full_width_class}" onclick="openArticle('{article_id}')">
             <div class="card-img-wrapper">
-                <img src="{img_url}" alt="{cat}" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock={img_seed}';">
+                <img src="{img_url}" alt="{title}" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news';">
                 <span class="badge">{cat}</span>
             </div>
             <div class="card-content">
                 <h3>{title}</h3>
                 <p>{ai_summary}</p>
+                <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 {img_caption}</div>
                 <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
@@ -276,23 +297,8 @@ html_content = f"""<!DOCTYPE html>
         .widget {{ background: #1c2541; padding: 16px; border-radius: 12px; border-left: 4px solid #00b4d8; }}
         .widget-title {{ font-size: 0.75rem; text-transform: uppercase; color: #90e0ef; font-weight: bold; margin-bottom: 5px; }}
 
-        .featured-banner {{ 
-            width: 100%; 
-            background: #1e293b; 
-            border-radius: 16px; 
-            border: 2px solid #ffb703; 
-            overflow: hidden; 
-            margin-bottom: 25px; 
-            cursor: pointer; 
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 8px 25px rgba(255, 183, 3, 0.15);
-        }}
-        @media (min-width: 768px) {{
-            .featured-banner {{ flex-direction: row; height: 300px; }}
-            .featured-img-wrapper {{ width: 50%; height: 100% !important; }}
-            .featured-content {{ width: 50%; padding: 30px !important; }}
-        }}
+        .featured-banner {{ width: 100%; background: #1e293b; border-radius: 16px; border: 2px solid #ffb703; overflow: hidden; margin-bottom: 25px; cursor: pointer; display: flex; flex-direction: column; }}
+        @media (min-width: 768px) {{ .featured-banner {{ flex-direction: row; height: 300px; }} .featured-img-wrapper {{ width: 50%; height: 100% !important; }} .featured-content {{ width: 50%; padding: 30px !important; }} }}
         .featured-img-wrapper {{ position: relative; height: 200px; }}
         .featured-img-wrapper img {{ width: 100%; height: 100%; object-fit: cover; }}
         .badge-featured {{ background: #ffb703; color: #000; position: absolute; top: 15px; left: 15px; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; }}
@@ -300,9 +306,7 @@ html_content = f"""<!DOCTYPE html>
         .featured-content h2 {{ margin: 0 0 10px 0; color: #ffffff; font-size: 1.5rem; }}
 
         .grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }}
-        @media (max-width: 900px) {{
-            .grid {{ grid-template-columns: 1fr; }}
-        }}
+        @media (max-width: 900px) {{ .grid {{ grid-template-columns: 1fr; }} }}
         .card {{ background: #1c2541; border-radius: 14px; overflow: hidden; border: 1px solid #3a506b; cursor: pointer; display: flex; flex-direction: column; }}
         .card-full-width {{ grid-column: 1 / -1; }}
         .card-img-wrapper {{ position: relative; height: 160px; }}
@@ -319,8 +323,6 @@ html_content = f"""<!DOCTYPE html>
         .btn {{ padding: 10px 15px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; text-decoration: none; }}
         .btn-back {{ background: #3a506b; color: white; }}
         .btn-source {{ background: #00b4d8; color: white; }}
-
-        footer {{ margin-top: 40px; text-align: center; font-size: 0.75rem; color: #64748b; border-top: 1px solid #1e293b; padding-top: 15px; }}
     </style>
 </head>
 <body>
@@ -336,15 +338,11 @@ html_content = f"""<!DOCTYPE html>
         </div>
         <div class="widget">
             <div class="widget-title">💡 Spreuk van de dag</div>
-            <div class="widget-body">
-                <small><i>"{daily_quote}"</i><br><b>— {daily_quote_author}</b></small>
-            </div>
+            <div class="widget-body"><small><i>"{daily_quote}"</i><br><b>— {daily_quote_author}</b></small></div>
         </div>
         <div class="widget">
             <div class="widget-title">📌 Praktische Tip</div>
-            <div class="widget-body">
-                <small>{daily_tip}</small>
-            </div>
+            <div class="widget-body"><small>{daily_tip}</small></div>
         </div>
         <div class="widget">
             <div class="widget-title">🤖 AI Status</div>
@@ -358,13 +356,10 @@ html_content = f"""<!DOCTYPE html>
         {articles_html}
     </div>
 
-    <footer>
-        <p>Build ID: <code>{build_id}</code> | AI Provider: Gemini 2.5 Flash</p>
-    </footer>
-
     <div id="modalOverlay" class="modal-overlay" onclick="if(event.target.id==='modalOverlay') closeModal();">
         <div class="modal-container">
             <img id="modalImg" style="width:100%; height:220px; object-fit:cover; border-radius:8px;" src="" alt="">
+            <div id="modalCaption" style="font-size:0.8rem; color:#90e0ef; margin-top:5px; font-style:italic;"></div>
             <span id="modalBadge" style="background:#00b4d8; color:white; padding:3px 8px; border-radius:10px; font-size:0.7rem; font-weight:bold; margin-top:10px; display:inline-block;"></span>
             <h2 id="modalTitle" style="color:white; font-size:1.3rem;"></h2>
             <div id="modalAiBox" style="background:#0b132b; padding:10px; border-left:3px solid #00b4d8; margin:10px 0; color:#90e0ef; font-size:0.9rem;"></div>
@@ -383,6 +378,7 @@ html_content = f"""<!DOCTYPE html>
             const a = articlesData[id];
             if (!a) return;
             document.getElementById('modalImg').src = a.img;
+            document.getElementById('modalCaption').innerText = '📷 ' + a.caption;
             document.getElementById('modalBadge').innerText = a.category;
             document.getElementById('modalTitle').innerText = a.title;
             document.getElementById('modalAiBox').innerHTML = '<b>Samenvatting / Focus:</b><br>' + a.ai_summary;
