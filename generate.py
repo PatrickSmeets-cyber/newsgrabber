@@ -8,6 +8,11 @@ import urllib.parse
 import uuid
 from datetime import datetime
 import zoneinfo
+import warnings
+
+# Onderdruk de Google GenAI AFC waarschuwing
+warnings.filterwarnings("ignore", category=UserWarning, module="google.genai")
+
 from google import genai
 
 # Timezone & Unieke Run ID
@@ -62,7 +67,10 @@ if client:
         res_extras = client.models.generate_content(
             model='gemini-3.6-flash',
             contents=prompt_extras,
-            config={'response_mime_type': 'application/json'}
+            config={
+                'response_mime_type': 'application/json',
+                'tools': []
+            }
         )
         data_extras = json.loads(res_extras.text.strip())
         daily_quote = data_extras.get("quote", daily_quote)
@@ -178,7 +186,10 @@ if client and all_headlines_with_sources:
         res = client.models.generate_content(
             model='gemini-3.6-flash', 
             contents=prompt,
-            config={'response_mime_type': 'application/json'}
+            config={
+                'response_mime_type': 'application/json',
+                'tools': []
+            }
         )
         
         data = json.loads(res.text.strip())
@@ -246,7 +257,10 @@ for cat, required_count in category_counts.items():
                         f"Titel: {title}\nInhoud: {clean_sum}\n\n"
                         f"Geef antwoord als JSON: {{\n\"summary\": \"...\",\n\"caption\": \"...\"\n}}"
                     ),
-                    config={'response_mime_type': 'application/json'}
+                    config={
+                        'response_mime_type': 'application/json',
+                        'tools': []
+                    }
                 )
                 res_data = json.loads(res.text.strip())
                 ai_summary = res_data.get("summary", ai_summary)
