@@ -4,12 +4,13 @@ import os
 import re
 import random
 import urllib.request
+import urllib.parse
 import uuid
 from datetime import datetime
 import zoneinfo
 from google import genai
 
-# Timezone & Unieke Run ID voor controle
+# Timezone & Unieke Run ID
 tz = zoneinfo.ZoneInfo("Europe/Amsterdam")
 last_updated = datetime.now(tz).strftime("%d-%m-%Y om %H:%M uur")
 build_id = str(uuid.uuid4())[:8]
@@ -22,7 +23,7 @@ client = None
 if api_key:
     try:
         client = genai.Client(api_key=api_key)
-        ai_status = "Actief (Gemini 2.0 Flash)"
+        ai_status = "Actief (Gemini 2.5 Flash)"
     except Exception as e:
         ai_status = f"Fout bij starten: {e}"
 
@@ -40,16 +41,56 @@ FEEDS = {
     "Humor & Luchtig": ["https://speld.nl/feed/", "https://www.nu.nl/rss/Opmerkelijk"]
 }
 
-# Weather Widget
+# --- DYNAMISCH GENEREREN SPREUK & TIP VIA AI ---
+daily_quote = "De enige constante in het leven is verandering."
+daily_quote_author = "Heraclitus"
+daily_tip = "Neem elk uur even 2 minuten afstand van je scherm om je ogen rust te geven."
+
+if client:
+    try:
+        prompt_extras = (
+            "Bedenk voor vandaag:\n"
+            "1. Een inspirerende, filosofische of motiverende spreuk/quote inclusief auteur.\n"
+            "2. Een unieke, praktische en direct toepasbare dagelijkse tip op het gebied van productiviteit, gezondheid of welzijn.\n\n"
+            "Geef het antwoord exact in het volgende JSON-formaat terug (geen extra tekst buiten JSON):\n"
+            "{\n"
+            '  "quote": "Tekst van de spreuk",\n'
+            '  "auteur": "Auteur naam",\n'
+            '  "tip": "Praktische tip tekst"\n'
+            "}"
+        )
+        res_extras = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=prompt_extras,
+            config={'response_mime_type': 'application/json'}
+        )
+        data_extras = json.loads(res_extras.text.strip())
+        daily_quote = data_extras.get("quote", daily_quote)
+        daily_quote_author = data_extras.get("auteur", daily_quote_author)
+        daily_tip = data_extras.get("tip", daily_tip)
+        print("✅ Spreuk en Tip dynamisch gegenereerd door Gemini")
+    except Exception as err:
+        print(f"❌ Fout bij genereren Spreuk/Tip: {err}")
+
+# --- 7-DAAGSE WEERSVERWACHTING ---
 weather_html_summary = "Weergegevens niet beschikbaar."
 try:
-    url_w = "https://api.open-meteo.com/v1/forecast?latitude=51.19&longitude=5.99&current_weather=true&hourly=temperature_2m,precipitation_probability&daily=temperature_2m_max,temperature_2m_min&timezone=Europe%2FAmsterdam"
+    url_w = "https://api.open-meteo.com/v1/forecast?latitude=51.19&longitude=5.99&current_weather=true&daily=temperature_2m_max,temperature_2m_min&timezone=Europe%2FAmsterdam"
     req_w = urllib.request.Request(url_w, headers=HEADERS)
     w_data = json.loads(urllib.request.urlopen(req_w, timeout=5).read())
+    
     cur_temp = round(w_data['current_weather']['temperature'])
-    max_temp = round(max(w_data['hourly']['temperature_2m'][:24]))
-    min_temp = round(min(w_data['hourly']['temperature_2m'][:24]))
-    weather_html_summary = f"<b>Nu: {cur_temp}°C</b><br><small>24u: {min_temp}°C tot {max_temp}°C</small>"
+    daily_dates = w_data['daily']['time']
+    daily_max = w_data['daily']['temperature_2m_max']
+    daily_min = w_data['daily']['temperature_2m_min']
+    
+    days_html = ""
+    for idx in range(min(7, len(daily_dates))):
+        d_obj = datetime.strptime(daily_dates[idx], "%Y-%m-%d")
+        day_name = d_obj.strftime("%a")
+        days_html += f"<div style='text-align:center; padding: 2px 4px;'><span style='color:#90e0ef; font-size:0.75rem;'>{day_name}</span><br><b style='font-size:0.85rem;'>{round(daily_max[idx])}°</b> <small style='color:#cbd5e1;'>{round(daily_min[idx])}°</small></div>"
+        
+    weather_html_summary = f"<b>Nu: {cur_temp}°C</b><div style='display:flex; justify-content:space-between; margin-top:8px;'>{days_html}</div>"
 except Exception as e:
     print(f"Weerfout: {e}")
 
@@ -62,12 +103,18 @@ def clean_markdown(text):
 def strip_tags(text):
     return re.sub('<[^<]+?>', '', text)
 
+def get_smart_image(title, fallback_category, index=0):
+    words = re.findall(r'\b[a-zA-Z]{5,}\b', title)
+    query = words[0] if words else fallback_category
+    encoded_query = urllib.parse.quote(query)
+    # Gebruikt Unsplash query; met index-variatie om dubbele afbeeldingen te voorkomen
+    return f"https://loremflickr.com/600/400/{encoded_query}?lock={index}"
+
 articles_html = ""
 modal_data = {}
 article_id = 0
 
-# --- VERZAMEL LIVE NIEUWS EN AFBEELDINGEN ---
-all_headlines = []
+all_headlines_with_sources = []
 feed_results = {}
 
 for cat, urls in FEEDS.items():
@@ -76,41 +123,45 @@ for cat, urls in FEEDS.items():
         try:
             feed = feedparser.parse(url, request_headers=HEADERS)
             if feed.entries:
-                pool_items.extend(feed.entries[:4])
+                pool_items.extend(feed.entries)
         except Exception as err:
             print(f"Feed fout {url}: {err}")
             
+    random.shuffle(pool_items)
     feed_results[cat] = pool_items
-    for entry in pool_items:
-        all_headlines.append(entry.title)
+    for entry in pool_items[:5]:
+        all_headlines_with_sources.append({
+            "title": entry.title,
+            "link": entry.get("link", "")
+        })
 
-# --- 1. DYNAMISCH ENKELE FULL-WIDTH OPINIESTUK GENEREREN ---
+# --- 1. OPINIESTUK GENEREREN ---
 article_id += 1
 category = "Dagelijks Opinie-Dossier"
 featured_title = "Actueel Maatschappelijk Dossier"
 summary = "AI Analyse van een actueel onderwerp..."
 full_text = "Dossier wordt geladen..."
-featured_img = "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200"
+featured_img = "https://loremflickr.com/1200/600/news,analysis?lock=999"
 
-if client and all_headlines:
+if client and all_headlines_with_sources:
     try:
-        headlines_sample = random.sample(all_headlines, min(len(all_headlines), 15))
+        sample = random.sample(all_headlines_with_sources, min(len(all_headlines_with_sources), 12))
         prompt = (
-            f"Hier is een lijst van actuele nieuwsonderwerpen van vandaag:\n"
-            f"{json.dumps(headlines_sample, ensure_ascii=False)}\n\n"
+            f"Gebruik uitsluitend de onderstaande openbaar toegankelijke nieuwsbronnen:\n"
+            f"{json.dumps(sample, ensure_ascii=False)}\n\n"
             f"Opdracht:\n"
-            f"1. Kies HET meest maatschappelijk relevante, scherpe of actuele onderwerp uit deze lijst (of combineer een overkoepelend thema).\n"
-            f"2. Bedenk een pakkende titel voor een opinie- en achtergrondartikel.\n"
-            f"3. Schrijf een diepgaand opinie- en achtergrondstuk.\n\n"
-            f"Geef het antwoord exact in het volgende JSON-formaat terug (geen extra tekst buiten de JSON):\n"
+            f"1. Kies het meest actuele of maatschappelijk relevante onderwerp uit deze lijst.\n"
+            f"2. Bedenk een pakkende titel.\n"
+            f"3. Schrijf een uitgebreid achtergrond- en opinieartikel gebaseerd op de informatie uit deze bronnen.\n\n"
+            f"Geef exact het volgende JSON-formaat terug (geen extra markdown of tekst buiten de JSON):\n"
             f"{{\n"
-            f'  "titel": "Jou gekozen pakkende titel",\n'
-            f'  "samenvatting": "Korte samenvatting in 1-2 zinnen van de kern van het artikel",\n'
-            f'  "inhoud": "### Kerninzichten\\n* [Punt 1]\\n* [Punt 2]\\n\\n### Analyse & Context\\n[Uitgebreide inhoud]\\n\\n### Conclusie\\n[Eindconclusie]"\n'
+            f'  "titel": "Titel",\n'
+            f'  "samenvatting": "Korte samenvatting in 1-2 zinnen",\n'
+            f'  "inhoud": "### Kerninzichten\\n* [Punt 1]\\n* [Punt 2]\\n\\n### Analyse & Context\\n[Uitgebreide tekst]\\n\\n### Conclusie\\n[Conclusie]"\n'
             f"}}"
         )
         res = client.models.generate_content(
-            model='gemini-2.0-flash', 
+            model='gemini-2.5-flash', 
             contents=prompt,
             config={'response_mime_type': 'application/json'}
         )
@@ -119,7 +170,8 @@ if client and all_headlines:
         featured_title = data.get("titel", featured_title)
         summary = data.get("samenvatting", summary)
         full_text = clean_markdown(data.get("inhoud", ""))
-        print(f"✅ AI Opiniedossier dynamisch gegenereerd: {featured_title}")
+        featured_img = get_smart_image(featured_title, "journalism", 100)
+        print(f"✅ AI Opiniedossier gegenereerd: {featured_title}")
     except Exception as err:
         print(f"❌ AI Opinie Fout: {err}")
         full_text = f"Fout bij genereren AI dossier: {err}"
@@ -147,24 +199,38 @@ featured_html = f"""
 </div>
 """
 
-# --- 2. OVERIGE CATEGORIEËN RENDEREN ---
-for cat, pool_items in feed_results.items():
-    if pool_items:
-        item = random.choice(pool_items)
+# --- 2. REGULIERE RUBRIEKEN (EXACT GEVRAAGDE AANTALLEN) ---
+category_counts = {
+    "Wereld": 3,
+    "Europa": 3,
+    "Nederland": 3,
+    "Midden-Limburg": 3,
+    "Wiskunde & Wetenschap": 3,
+    "Technologie": 3,
+    "Sport": 3,
+    "Fitness & Resistance Training": 3,
+    "Humor & Luchtig": 1
+}
+
+img_seed = 10
+for cat, required_count in category_counts.items():
+    pool_items = feed_results.get(cat, [])
+    selected_items = pool_items[:required_count]
+    
+    for item in selected_items:
         article_id += 1
+        img_seed += 1
         title = item.title
         link = item.get('link', '#')
         clean_sum = strip_tags(item.get('summary', item.get('description', '')))
         
-        img_url = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600"
-        if 'media_content' in item and len(item.media_content) > 0:
-            img_url = item.media_content[0].get('url', img_url)
+        img_url = get_smart_image(title, cat, img_seed)
 
         ai_summary = clean_sum[:130] + "..."
         if client:
             try:
                 res = client.models.generate_content(
-                    model='gemini-2.0-flash', 
+                    model='gemini-2.5-flash', 
                     contents=f"Samenvatting in max 2 zinnen: {title} - {clean_sum}"
                 )
                 ai_summary = res.text.strip()
@@ -177,10 +243,12 @@ for cat, pool_items in feed_results.items():
             "original_link": link, "is_background": False
         }
 
+        full_width_class = " card-full-width" if cat == "Humor & Luchtig" else ""
+
         articles_html += f"""
-        <div class="card" onclick="openArticle('{article_id}')">
+        <div class="card{full_width_class}" onclick="openArticle('{article_id}')">
             <div class="card-img-wrapper">
-                <img src="{img_url}" alt="{cat}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <img src="{img_url}" alt="{cat}" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock={img_seed}';">
                 <span class="badge">{cat}</span>
             </div>
             <div class="card-content">
@@ -204,9 +272,8 @@ html_content = f"""<!DOCTYPE html>
         body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0b132b; margin: 0; padding: 20px; color: #e0e6ed; }}
         header {{ text-align: center; padding: 25px 15px; background: linear-gradient(135deg, #1c2541, #3a506b, #00b4d8); color: #ffffff; border-radius: 16px; margin-bottom: 25px; }}
         
-        .widget-bar {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 25px; }}
+        .widget-bar {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-bottom: 25px; }}
         .widget {{ background: #1c2541; padding: 16px; border-radius: 12px; border-left: 4px solid #00b4d8; }}
-        .widget-clickable {{ cursor: pointer; }}
         .widget-title {{ font-size: 0.75rem; text-transform: uppercase; color: #90e0ef; font-weight: bold; margin-bottom: 5px; }}
 
         .featured-banner {{ 
@@ -222,7 +289,7 @@ html_content = f"""<!DOCTYPE html>
             box-shadow: 0 8px 25px rgba(255, 183, 3, 0.15);
         }}
         @media (min-width: 768px) {{
-            .featured-banner {{ flex-direction: row; height: 320px; }}
+            .featured-banner {{ flex-direction: row; height: 300px; }}
             .featured-img-wrapper {{ width: 50%; height: 100% !important; }}
             .featured-content {{ width: 50%; padding: 30px !important; }}
         }}
@@ -232,8 +299,12 @@ html_content = f"""<!DOCTYPE html>
         .featured-content {{ padding: 20px; display: flex; flex-direction: column; justify-content: center; }}
         .featured-content h2 {{ margin: 0 0 10px 0; color: #ffffff; font-size: 1.5rem; }}
 
-        .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }}
+        .grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }}
+        @media (max-width: 900px) {{
+            .grid {{ grid-template-columns: 1fr; }}
+        }}
         .card {{ background: #1c2541; border-radius: 14px; overflow: hidden; border: 1px solid #3a506b; cursor: pointer; display: flex; flex-direction: column; }}
+        .card-full-width {{ grid-column: 1 / -1; }}
         .card-img-wrapper {{ position: relative; height: 160px; }}
         .card img {{ width: 100%; height: 100%; object-fit: cover; }}
         .badge {{ position: absolute; top: 10px; left: 10px; background: rgba(0, 180, 216, 0.9); color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; }}
@@ -259,13 +330,21 @@ html_content = f"""<!DOCTYPE html>
     </header>
     
     <div class="widget-bar">
-        <div class="widget widget-clickable" onclick="forceRefresh();">
-            <div class="widget-title">🔄 Verversen</div>
-            <div class="widget-body"><small id="refreshStatus" style="color:#00b4d8;">Klik om direct te vernieuwen ↻</small></div>
+        <div class="widget">
+            <div class="widget-title">🌤️ 7-Daagse Weersverwachting</div>
+            <div class="widget-body">{weather_html_summary}</div>
         </div>
         <div class="widget">
-            <div class="widget-title">🌤️ Weer</div>
-            <div class="widget-body">{weather_html_summary}</div>
+            <div class="widget-title">💡 Spreuk van de dag</div>
+            <div class="widget-body">
+                <small><i>"{daily_quote}"</i><br><b>— {daily_quote_author}</b></small>
+            </div>
+        </div>
+        <div class="widget">
+            <div class="widget-title">📌 Praktische Tip</div>
+            <div class="widget-body">
+                <small>{daily_tip}</small>
+            </div>
         </div>
         <div class="widget">
             <div class="widget-title">🤖 AI Status</div>
@@ -280,7 +359,7 @@ html_content = f"""<!DOCTYPE html>
     </div>
 
     <footer>
-        <p>Build ID: <code>{build_id}</code> | AI Provider: Gemini 2.0 Flash</p>
+        <p>Build ID: <code>{build_id}</code> | AI Provider: Gemini 2.5 Flash</p>
     </footer>
 
     <div id="modalOverlay" class="modal-overlay" onclick="if(event.target.id==='modalOverlay') closeModal();">
@@ -299,12 +378,6 @@ html_content = f"""<!DOCTYPE html>
 
     <script>
         const articlesData = {json_modal_data};
-
-        function forceRefresh() {{
-            document.getElementById('refreshStatus').innerText = "Pagina wordt ververst...";
-            const timeStamp = new Date().getTime();
-            window.location.href = window.location.pathname + '?nocache=' + timeStamp;
-        }}
 
         function openArticle(id) {{
             const a = articlesData[id];
