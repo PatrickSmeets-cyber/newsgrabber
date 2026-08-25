@@ -9,9 +9,8 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0b132b; margin: 0; padding: 20px; color: #e0e6ed; }
         header { text-align: center; padding: 25px 15px; background: linear-gradient(135deg, #1c2541, #3a506b, #00b4d8); color: #ffffff; border-radius: 16px; margin-bottom: 25px; }
         
-        .widget-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .widget-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-bottom: 25px; }
         .widget { background: #1c2541; padding: 16px; border-radius: 12px; border-left: 4px solid #00b4d8; }
-        .widget-clickable { cursor: pointer; }
         .widget-title { font-size: 0.75rem; text-transform: uppercase; color: #90e0ef; font-weight: bold; margin-bottom: 5px; }
 
         .featured-banner { 
@@ -27,7 +26,7 @@
             box-shadow: 0 8px 25px rgba(255, 183, 3, 0.15);
         }
         @media (min-width: 768px) {
-            .featured-banner { flex-direction: row; height: 320px; }
+            .featured-banner { flex-direction: row; height: 300px; }
             .featured-img-wrapper { width: 50%; height: 100% !important; }
             .featured-content { width: 50%; padding: 30px !important; }
         }
@@ -37,8 +36,12 @@
         .featured-content { padding: 20px; display: flex; flex-direction: column; justify-content: center; }
         .featured-content h2 { margin: 0 0 10px 0; color: #ffffff; font-size: 1.5rem; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        @media (max-width: 900px) {
+            .grid { grid-template-columns: 1fr; }
+        }
         .card { background: #1c2541; border-radius: 14px; overflow: hidden; border: 1px solid #3a506b; cursor: pointer; display: flex; flex-direction: column; }
+        .card-full-width { grid-column: 1 / -1; }
         .card-img-wrapper { position: relative; height: 160px; }
         .card img { width: 100%; height: 100%; object-fit: cover; }
         .badge { position: absolute; top: 10px; left: 10px; background: rgba(0, 180, 216, 0.9); color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; }
@@ -60,28 +63,36 @@
 <body>
     <header>
         <h1>⚡ Patrick’s Nieuwsboard</h1>
-        <p>Laatst bijgewerkt: <b>25-08-2026 om 19:23 uur</b></p>
+        <p>Laatst bijgewerkt: <b>25-08-2026 om 20:01 uur</b></p>
     </header>
     
     <div class="widget-bar">
-        <div class="widget widget-clickable" onclick="forceRefresh();">
-            <div class="widget-title">🔄 Verversen</div>
-            <div class="widget-body"><small id="refreshStatus" style="color:#00b4d8;">Klik om direct te vernieuwen ↻</small></div>
+        <div class="widget">
+            <div class="widget-title">🌤️ 7-Daagse Weersverwachting</div>
+            <div class="widget-body"><b>Nu: 22°C</b><div style='display:flex; justify-content:space-between; margin-top:8px;'><div style='text-align:center; padding: 2px 4px;'><span style='color:#90e0ef; font-size:0.75rem;'>Tue</span><br><b style='font-size:0.85rem;'>23°</b> <small style='color:#cbd5e1;'>13°</small></div><div style='text-align:center; padding: 2px 4px;'><span style='color:#90e0ef; font-size:0.75rem;'>Wed</span><br><b style='font-size:0.85rem;'>27°</b> <small style='color:#cbd5e1;'>16°</small></div><div style='text-align:center; padding: 2px 4px;'><span style='color:#90e0ef; font-size:0.75rem;'>Thu</span><br><b style='font-size:0.85rem;'>30°</b> <small style='color:#cbd5e1;'>19°</small></div><div style='text-align:center; padding: 2px 4px;'><span style='color:#90e0ef; font-size:0.75rem;'>Fri</span><br><b style='font-size:0.85rem;'>24°</b> <small style='color:#cbd5e1;'>16°</small></div><div style='text-align:center; padding: 2px 4px;'><span style='color:#90e0ef; font-size:0.75rem;'>Sat</span><br><b style='font-size:0.85rem;'>22°</b> <small style='color:#cbd5e1;'>16°</small></div><div style='text-align:center; padding: 2px 4px;'><span style='color:#90e0ef; font-size:0.75rem;'>Sun</span><br><b style='font-size:0.85rem;'>23°</b> <small style='color:#cbd5e1;'>17°</small></div><div style='text-align:center; padding: 2px 4px;'><span style='color:#90e0ef; font-size:0.75rem;'>Mon</span><br><b style='font-size:0.85rem;'>21°</b> <small style='color:#cbd5e1;'>15°</small></div></div></div>
         </div>
         <div class="widget">
-            <div class="widget-title">🌤️ Weer</div>
-            <div class="widget-body"><b>Nu: 22°C</b><br><small>24u: 13°C tot 23°C</small></div>
+            <div class="widget-title">💡 Spreuk van de dag</div>
+            <div class="widget-body">
+                <small><i>"De enige constante in het leven is verandering."</i><br><b>— Heraclitus</b></small>
+            </div>
+        </div>
+        <div class="widget">
+            <div class="widget-title">📌 Praktische Tip</div>
+            <div class="widget-body">
+                <small>Neem elk uur even 2 minuten afstand van je scherm om je ogen rust te geven.</small>
+            </div>
         </div>
         <div class="widget">
             <div class="widget-title">🤖 AI Status</div>
-            <div class="widget-body"><small>Actief (Gemini 2.0 Flash)</small></div>
+            <div class="widget-body"><small>Actief (Gemini 2.5 Flash)</small></div>
         </div>
     </div>
 
     
 <div class="featured-banner" onclick="openArticle('1')">
     <div class="featured-img-wrapper">
-        <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200" alt="Actueel Maatschappelijk Dossier">
+        <img src="https://loremflickr.com/1200/600/news,analysis?lock=999" alt="Actueel Maatschappelijk Dossier">
         <span class="badge badge-featured">🔥 Dagelijks Opinie-Dossier</span>
     </div>
     <div class="featured-content">
@@ -96,96 +107,265 @@
         
         <div class="card" onclick="openArticle('2')">
             <div class="card-img-wrapper">
-                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Wereld" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <img src="https://loremflickr.com/600/400/Britse?lock=11" alt="Wereld" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=11';">
                 <span class="badge">Wereld</span>
             </div>
             <div class="card-content">
-                <h3>Trump provoceert Canada met plan Ontariomeer om te dopen tot Amerikameer</h3>
-                <p>De Amerikaanse president Donald Trump is met een opvallende provocatie gekomen na het stuklopen van de onderhandelingen tussen de ...</p>
+                <h3>Britse regering wil video's van illegaal rijgedrag offline na botsing spookrijder</h3>
+                <p>De Britse regering wil dat socialemediaplatforms beelden offline halen waarop gevaarlijk rijgedrag wordt verheerlijkt. Het is een ...</p>
                 <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
         <div class="card" onclick="openArticle('3')">
             <div class="card-img-wrapper">
-                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Nederland" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
-                <span class="badge">Nederland</span>
+                <img src="https://loremflickr.com/600/400/Chinese?lock=12" alt="Wereld" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=12';">
+                <span class="badge">Wereld</span>
             </div>
             <div class="card-content">
-                <h3>Dit is de nieuwe bondscoach Hernández: 'Ik ben een winnaar'</h3>
-                <p>In een persconferentie stelde de nieuwe bondscoach Xavi Hernández zich voor het eerst voor. Hij vertelde over zijn plannen met het...</p>
+                <h3>Chinese kunstenaar krijgt maximale straf voor 'beledigende' beelden van Mao</h3>
+                <p>De Chinese kunstenaar Gao Zhen is veroordeeld tot een celstraf van drie jaar vanwege het beledigen van 'Chinese helden'. Gao maakt...</p>
                 <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
         <div class="card" onclick="openArticle('4')">
             <div class="card-img-wrapper">
-                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Midden-Limburg" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
-                <span class="badge">Midden-Limburg</span>
+                <img src="https://loremflickr.com/600/400/zieken?lock=13" alt="Wereld" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=13';">
+                <span class="badge">Wereld</span>
             </div>
             <div class="card-content">
-                <h3>'Ald-VVV' is een warm bad voor oud-spelers in De Koel</h3>
-                <p>Meer dan 100 oud-VVV'ers zorgden in De Koel voor een dag vol voetbalherinneringen aan 'die goede oude tijd'. "Maar het zou mooi zi...</p>
+                <h3>Al meer dan 300 zieken door eieren met salmonella in België</h3>
+                <p>In België zijn al zeker 300 mensen ziek geworden na het eten van eieren die met salmonella waren besmet. De eieren komen van een g...</p>
                 <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
         <div class="card" onclick="openArticle('5')">
             <div class="card-img-wrapper">
-                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Wiskunde & Wetenschap" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
-                <span class="badge">Wiskunde & Wetenschap</span>
+                <img src="https://loremflickr.com/600/400/Nieuwsuur?lock=14" alt="Nederland" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=14';">
+                <span class="badge">Nederland</span>
             </div>
             <div class="card-content">
-                <h3>Koekjes van gerecycled plastic moeten astronauten helpen op lange ruimtereizen</h3>
-                <p>Wetenschappers zijn erin geslaagd de smaak en geur van 3D-geprinte koekjes van petflesplastic te verbeteren. Het onderzoek is onde...</p>
+                <h3>25/8 in Nieuwsuur: Terugkeerhub Rwanda • Afvalprobleem door windturbines • Rusland zet autonome AI-drone in</h3>
+                <p>Gesprekken over terugkeerhub Rwanda
+        Volgens Duitse media zijn Nederland, Denemarken en Duitsland in gesprek over het reali...</p>
                 <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
         <div class="card" onclick="openArticle('6')">
             <div class="card-img-wrapper">
-                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Technologie" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
-                <span class="badge">Technologie</span>
+                <img src="https://loremflickr.com/600/400/Onbegrip?lock=15" alt="Nederland" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=15';">
+                <span class="badge">Nederland</span>
             </div>
             <div class="card-content">
-                <h3>OpenAI gedagvaard na Hugging Face-hack</h3>
-                <p>Na een brief aan OpenAI-CEO Sam Altman, over de grootschalige AI-hack bij Hugging Face, gaat de Amerikaanse staat Alabama over tot...</p>
+                <h3>Onbegrip om uitspelen Cambuur-Feyenoord na vuurwerk op gezinstribune</h3>
+                <p>Het laten doorspelen van de wedstrijd tussen SC Cambuur en Feyenoord, nadat er vanuit het uitvak vuurwerk naar het familievak werd...</p>
                 <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
         <div class="card" onclick="openArticle('7')">
             <div class="card-img-wrapper">
-                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Sport" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
-                <span class="badge">Sport</span>
+                <img src="https://loremflickr.com/600/400/minder?lock=16" alt="Nederland" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=16';">
+                <span class="badge">Nederland</span>
             </div>
             <div class="card-content">
-                <h3>Pogacar verklaart vroege aanval in Vuelta: 'Anders zouden ze samenzweren'</h3>
-                <p>Tadej Pogacar koos dinsdag al vroeg voor de aanval in de Vuelta a España omdat hij vreesde dat hij geïsoleerd zou raken. De Slovee...</p>
+                <h3>Vier keer minder loon dan collega's, Filipijnse matrozen eisen gelijke betaling</h3>
+                <p>Filipijnse matrozen die op Nederlandse zeeschepen werken, krijgen veel minder betaald dan hun Nederlandse en Duitse collega's. Som...</p>
                 <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
         <div class="card" onclick="openArticle('8')">
             <div class="card-img-wrapper">
-                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Fitness & Resistance Training" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
-                <span class="badge">Fitness & Resistance Training</span>
+                <img src="https://loremflickr.com/600/400/pastoor?lock=17" alt="Midden-Limburg" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=17';">
+                <span class="badge">Midden-Limburg</span>
             </div>
             <div class="card-content">
-                <h3>Je eerste triatlon: zo bereid je je slim voor</h3>
-                <p>Droom je ervan om je eerste triatlon te doen, maar weet je niet waar je moet beginnen? Dan ben je niet de enige. Veel sporters vra...</p>
+                <h3>Oud-pastoor Paul Tervoort van Boshoven en Laar overleden</h3>
+                <p>Op vrijdag 21 augustus is pastoor Paul Tervoort overleden. Hij is 71 jaar geworden. Pastoor Tervoort was een bekend gezicht in de ...</p>
                 <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
         
         <div class="card" onclick="openArticle('9')">
             <div class="card-img-wrapper">
-                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Humor & Luchtig" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600';">
+                <img src="https://loremflickr.com/600/400/fietsster?lock=18" alt="Midden-Limburg" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=18';">
+                <span class="badge">Midden-Limburg</span>
+            </div>
+            <div class="card-content">
+                <h3>Auto tikt fietsster aan op Ringbaan-Zuid</h3>
+                <p>Een fietsster is maandagmiddag naar het ziekenhuis gebracht na een verkeersongeval op de Ringbaan-Zuid in Weert. Het ongeval gebeu...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('10')">
+            <div class="card-img-wrapper">
+                <img src="https://loremflickr.com/600/400/Identiteit?lock=19" alt="Midden-Limburg" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=19';">
+                <span class="badge">Midden-Limburg</span>
+            </div>
+            <div class="card-content">
+                <h3>Identiteit overleden vrouw bekend: 40-jarige vrouw uit Venlo</h3>
+                <p>De vrouw die zaterdagmiddag overleden werd aangetroffen in de bosjes langs de Maas bij Venlo, is een vrouw van 40 jaar uit die sta...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('11')">
+            <div class="card-img-wrapper">
+                <img src="https://loremflickr.com/600/400/Katten?lock=20" alt="Wiskunde & Wetenschap" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=20';">
+                <span class="badge">Wiskunde & Wetenschap</span>
+            </div>
+            <div class="card-content">
+                <h3>Katten lieten ook in de middeleeuwen pootafdrukken achter in boeken</h3>
+                <p>In drie van de oudste gedrukte boeken van de Universiteitsbibliotheek Utrecht zijn afdrukken van kattenpootjes gevonden. De sporen...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('12')">
+            <div class="card-img-wrapper">
+                <img src="https://loremflickr.com/600/400/Zonder?lock=21" alt="Wiskunde & Wetenschap" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=21';">
+                <span class="badge">Wiskunde & Wetenschap</span>
+            </div>
+            <div class="card-content">
+                <h3>Zonder eclipsbril kan zonsverduistering gaatje in netvlies branden: 'Als een laser'</h3>
+                <p>Kijk niet zonder eclipsbril naar de zonsverduistering, waarschuwen oogdeskundigen massaal. Door met het blote oog naar het verschi...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('13')">
+            <div class="card-img-wrapper">
+                <img src="https://loremflickr.com/600/400/Archeologen?lock=22" alt="Wiskunde & Wetenschap" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=22';">
+                <span class="badge">Wiskunde & Wetenschap</span>
+            </div>
+            <div class="card-content">
+                <h3>Archeologen in Peru vinden skelet van persoon die mogelijk ritueel geofferd werd</h3>
+                <p>Archeologen in Peru hebben dinsdag de resten gevonden van iemand die honderden jaren geleden vermoedelijk ritueel geofferd is. Het...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('14')">
+            <div class="card-img-wrapper">
+                <img src="https://loremflickr.com/600/400/gezin?lock=23" alt="Technologie" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=23';">
+                <span class="badge">Technologie</span>
+            </div>
+            <div class="card-content">
+                <h3>Op deze e-bike past het hele gezin: maar hij kost wel 7,5 duizend euro</h3>
+                <p>Er zijn al veel bedrijven geweest die een e-bike beloofden die een soort vervanger was van de auto, maar er zijn er maar weinig wa...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('15')">
+            <div class="card-img-wrapper">
+                <img src="https://loremflickr.com/600/400/Regering?lock=24" alt="Technologie" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=24';">
+                <span class="badge">Technologie</span>
+            </div>
+            <div class="card-content">
+                <h3>Regering VS dringt er bij Apple op aan geen Chinese geheugenchips te kopen</h3>
+                <p>De Amerikaanse regering heeft Apple opgeroepen om geen geheugenchips van Chinese fabrikanten te kopen, meldt The Wall Street Journ...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('16')">
+            <div class="card-img-wrapper">
+                <img src="https://loremflickr.com/600/400/Philips?lock=25" alt="Technologie" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=25';">
+                <span class="badge">Technologie</span>
+            </div>
+            <div class="card-content">
+                <h3>Philips Hue komt binnenkort met flink goedkopere Sync Box</h3>
+                <p>Signify lijkt binnenkort de Philips Hue Sync Box Lite te lanceren, als goedkoper alternatief voor het apparaat om je games en stre...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('17')">
+            <div class="card-img-wrapper">
+                <img src="https://loremflickr.com/600/400/traint?lock=26" alt="Sport" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=26';">
+                <span class="badge">Sport</span>
+            </div>
+            <div class="card-content">
+                <h3>NEC traint niet op kunstgras voor cruciaal CL-duel rond poolcirkel: 'Geen excuus'</h3>
+                <p>NEC heeft in aanloop naar de cruciale Champions League-wedstrijd tegen het Noorse FK Bodø/Glimt bewust niet op kunstgras getraind....</p>
+                <div class="read-more">Lees bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('18')">
+            <div class="card-img-wrapper">
+                <img src="https://loremflickr.com/600/400/Verstappen?lock=27" alt="Sport" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=27';">
+                <span class="badge">Sport</span>
+            </div>
+            <div class="card-content">
+                <h3>Max Verstappen daagt 100 karters tegelijk uit voor speciale race op Silverstone</h3>
+                <p>Max Verstappen neemt het tegelijkertijd op tegen honderd amateurkarters. De viervoudig Formule 1-wereldkampioen, die zijn racecarr...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('19')">
+            <div class="card-img-wrapper">
+                <img src="https://loremflickr.com/600/400/Verstappen?lock=28" alt="Sport" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=28';">
+                <span class="badge">Sport</span>
+            </div>
+            <div class="card-content">
+                <h3>Verstappen bij Mercedes in F1 is voor teambaas Wolff nog geen gesloten boek</h3>
+                <p>Max Verstappen heeft zich vorige week tot eind 2030 aan Red Bull verbonden, maar Toto Wolff haalt nog geen definitieve streep door...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('20')">
+            <div class="card-img-wrapper">
+                <img src="https://loremflickr.com/600/400/sociale?lock=29" alt="Fitness & Resistance Training" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=29';">
+                <span class="badge">Fitness & Resistance Training</span>
+            </div>
+            <div class="card-content">
+                <h3>Op sociale media bejubelde afslankprik triggert eetstoornissen: 'Is geen quick fix'</h3>
+                <p>Afslankmedicatie kan eetstoornissen in de hand werken, versterken of opnieuw aanwakkeren. Daarvoor waarschuwen experts, wetenschap...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('21')">
+            <div class="card-img-wrapper">
+                <img src="https://loremflickr.com/600/400/beenmergkanker?lock=30" alt="Fitness & Resistance Training" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=30';">
+                <span class="badge">Fitness & Resistance Training</span>
+            </div>
+            <div class="card-content">
+                <h3>Patiënten met vorm van beenmergkanker kunnen nu thuis injecties toedienen</h3>
+                <p>Patiënten met multipel myeloom, een vorm van beenmergkanker, kunnen zichzelf voortaan thuis injecties toedienen. Het HagaZiekenhui...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card" onclick="openArticle('22')">
+            <div class="card-img-wrapper">
+                <img src="https://loremflickr.com/600/400/covid?lock=31" alt="Fitness & Resistance Training" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=31';">
+                <span class="badge">Fitness & Resistance Training</span>
+            </div>
+            <div class="card-content">
+                <h3>Long covid en ME/CVS tasten spieren aan, maar niet alleen door inactiviteit</h3>
+                <p>Spieren van patiënten met long covid of de chronische uitputtingsziekte ME/CVS verschillen van die van gezonde mensen die langduri...</p>
+                <div class="read-more">Lees bericht &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="card card-full-width" onclick="openArticle('23')">
+            <div class="card-img-wrapper">
+                <img src="https://loremflickr.com/600/400/Harry?lock=32" alt="Humor & Luchtig" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news?lock=32';">
                 <span class="badge">Humor & Luchtig</span>
             </div>
             <div class="card-content">
-                <h3>Britse man (57) stept duizenden kilometers door Australië</h3>
-                <p>Een Britse man heeft een tocht van ruim 4.500 kilometer door Australië voltooid op een gewone step. Daar deed hij 31 dagen, 4 uur ...</p>
+                <h3>Harry Potter-fans laten stroomkabel verleggen om graf van Dobby te beschermen</h3>
+                <p>Harry Potter-fans zijn erin geslaagd de aanleg van een stroomkabel tussen het Verenigd Koninkrijk en Ierland te laten aanpassen. D...</p>
                 <div class="read-more">Lees bericht &rarr;</div>
             </div>
         </div>
@@ -193,7 +373,7 @@
     </div>
 
     <footer>
-        <p>Build ID: <code>c57f41a8</code> | AI Provider: Gemini 2.0 Flash</p>
+        <p>Build ID: <code>43ee3519</code> | AI Provider: Gemini 2.5 Flash</p>
     </footer>
 
     <div id="modalOverlay" class="modal-overlay" onclick="if(event.target.id==='modalOverlay') closeModal();">
@@ -211,13 +391,7 @@
     </div>
 
     <script>
-        const articlesData = {"1": {"title": "Actueel Maatschappelijk Dossier", "category": "Dagelijks Opinie-Dossier", "img": "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200", "ai_summary": "AI Analyse van een actueel onderwerp...", "full_text": "Fout bij genereren AI dossier: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.6-flash for the latest features and improvements.', 'status': 'NOT_FOUND'}}", "is_background": true}, "2": {"title": "Trump provoceert Canada met plan Ontariomeer om te dopen tot Amerikameer", "category": "Wereld", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "De Amerikaanse president Donald Trump is met een opvallende provocatie gekomen na het stuklopen van de onderhandelingen tussen de ...", "full_text": "De Amerikaanse president Donald Trump is met een opvallende provocatie gekomen na het stuklopen van de onderhandelingen tussen de Verenigde Staten en Canada over importheffingen. Volgens hem overweegt de VS het Ontariomeer te hernoemen naar Amerikameer.", "original_link": "https://www.nu.nl/verkiezingen-vs/6407488/trump-provoceert-canada-met-plan-ontariomeer-om-te-dopen-tot-amerikameer.html", "is_background": false}, "3": {"title": "Dit is de nieuwe bondscoach Hern\u00e1ndez: 'Ik ben een winnaar'", "category": "Nederland", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "In een persconferentie stelde de nieuwe bondscoach Xavi Hern\u00e1ndez zich voor het eerst voor. Hij vertelde over zijn plannen met het...", "full_text": "In een persconferentie stelde de nieuwe bondscoach Xavi Hern\u00e1ndez zich voor het eerst voor. Hij vertelde over zijn plannen met het Nederlands elftal.", "original_link": "https://www.rtl.nl/nieuws/binnenland/video/5ddbeb18-1ca5-4600-b9f1-b5d663cc4f2c/dit-de-nieuwe-bondscoach-hernandez-ik", "is_background": false}, "4": {"title": "'Ald-VVV' is een warm bad voor oud-spelers in De Koel", "category": "Midden-Limburg", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Meer dan 100 oud-VVV'ers zorgden in De Koel voor een dag vol voetbalherinneringen aan 'die goede oude tijd'. \"Maar het zou mooi zi...", "full_text": "Meer dan 100 oud-VVV'ers zorgden in De Koel voor een dag vol voetbalherinneringen aan 'die goede oude tijd'. \"Maar het zou mooi zijn als we ook meer jongere generaties oud-spelers kunnen begroeten.\"", "original_link": "https://www.l1nieuws.nl/sport/3225168/ald-vvv-is-een-warm-bad-voor-oud-spelers-in-de-koel", "is_background": false}, "5": {"title": "Koekjes van gerecycled plastic moeten astronauten helpen op lange ruimtereizen", "category": "Wiskunde & Wetenschap", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Wetenschappers zijn erin geslaagd de smaak en geur van 3D-geprinte koekjes van petflesplastic te verbeteren. Het onderzoek is onde...", "full_text": "Wetenschappers zijn erin geslaagd de smaak en geur van 3D-geprinte koekjes van petflesplastic te verbeteren. Het onderzoek is onderdeel van een wedstrijd van ruimtevaartorganisatie NASA.", "original_link": "https://www.nu.nl/wetenschap/6407449/koekjes-van-gerecycled-plastic-moeten-astronauten-helpen-op-lange-ruimtereizen.html", "is_background": false}, "6": {"title": "OpenAI gedagvaard na Hugging Face-hack", "category": "Technologie", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Na een brief aan OpenAI-CEO Sam Altman, over de grootschalige AI-hack bij Hugging Face, gaat de Amerikaanse staat Alabama over tot...", "full_text": "Na een brief aan OpenAI-CEO Sam Altman, over de grootschalige AI-hack bij Hugging Face, gaat de Amerikaanse staat Alabama over tot actie. OpenAI wordt gedagvaard in de zuidelijke staat, die als doel heeft om het bedrijf uiteindelijk ook echt voor de rechter te krijgen.", "original_link": "https://www.bright.nl/nieuws/2127328/openai-gedagvaard-na-hugging-face-hack.html", "is_background": false}, "7": {"title": "Pogacar verklaart vroege aanval in Vuelta: 'Anders zouden ze samenzweren'", "category": "Sport", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Tadej Pogacar koos dinsdag al vroeg voor de aanval in de Vuelta a Espa\u00f1a omdat hij vreesde dat hij ge\u00efsoleerd zou raken. De Slovee...", "full_text": "Tadej Pogacar koos dinsdag al vroeg voor de aanval in de Vuelta a Espa\u00f1a omdat hij vreesde dat hij ge\u00efsoleerd zou raken. De Sloveen begon in de vierde etappe al op 50 kilometer van de finish aan een solo en declasseerde de concurrentie.", "original_link": "https://www.nu.nl/wielrennen/6407521/pogacar-verklaart-vroege-aanval-in-vuelta-anders-zouden-ze-samenzweren.html", "is_background": false}, "8": {"title": "Je eerste triatlon: zo bereid je je slim voor", "category": "Fitness & Resistance Training", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Droom je ervan om je eerste triatlon te doen, maar weet je niet waar je moet beginnen? Dan ben je niet de enige. Veel sporters vra...", "full_text": "Droom je ervan om je eerste triatlon te doen, maar weet je niet waar je moet beginnen? Dan ben je niet de enige. Veel sporters vragen zich af hoeveel ze moeten trainen, welke discipline het belangrijkst is en of ze direct een dure fiets of alle nieuwste gadgets nodig hebben. In deze aflevering van de [&#8230;]\nThe post Je eerste triatlon: zo bereid je je slim voor appeared first on FIT.nl.", "original_link": "https://www.fit.nl/cardio/triatlon-voorbereiding", "is_background": false}, "9": {"title": "Britse man (57) stept duizenden kilometers door Australi\u00eb", "category": "Humor & Luchtig", "img": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600", "ai_summary": "Een Britse man heeft een tocht van ruim 4.500 kilometer door Australi\u00eb voltooid op een gewone step. Daar deed hij 31 dagen, 4 uur ...", "full_text": "Een Britse man heeft een tocht van ruim 4.500 kilometer door Australi\u00eb voltooid op een gewone step. Daar deed hij 31 dagen, 4 uur en 10 minuten over. Het is nog niet duidelijk of hij daarmee een record heeft genoteerd.", "original_link": "https://www.nu.nl/opmerkelijk/6407265/britse-man-57-stept-duizenden-kilometers-door-australie.html", "is_background": false}};
-
-        function forceRefresh() {
-            document.getElementById('refreshStatus').innerText = "Pagina wordt ververst...";
-            const timeStamp = new Date().getTime();
-            window.location.href = window.location.pathname + '?nocache=' + timeStamp;
-        }
+        const articlesData = {"1": {"title": "Actueel Maatschappelijk Dossier", "category": "Dagelijks Opinie-Dossier", "img": "https://loremflickr.com/1200/600/news,analysis?lock=999", "ai_summary": "AI Analyse van een actueel onderwerp...", "full_text": "Fout bij genereren AI dossier: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements.', 'status': 'NOT_FOUND'}}", "is_background": true}, "2": {"title": "Britse regering wil video's van illegaal rijgedrag offline na botsing spookrijder", "category": "Wereld", "img": "https://loremflickr.com/600/400/Britse?lock=11", "ai_summary": "De Britse regering wil dat socialemediaplatforms beelden offline halen waarop gevaarlijk rijgedrag wordt verheerlijkt. Het is een ...", "full_text": "De Britse regering wil dat socialemediaplatforms beelden offline halen waarop gevaarlijk rijgedrag wordt verheerlijkt. Het is een reactie op een ongeluk met een spookrijder waarbij dit weekend zeven mensen om het leven kwamen. Ierland deed dezelfde oproep na een soortgelijk ongeluk vorige week.", "original_link": "https://www.nu.nl/buitenland/6407369/britse-regering-wil-videos-van-illegaal-rijgedrag-offline-na-botsing-spookrijder.html", "is_background": false}, "3": {"title": "Chinese kunstenaar krijgt maximale straf voor 'beledigende' beelden van Mao", "category": "Wereld", "img": "https://loremflickr.com/600/400/Chinese?lock=12", "ai_summary": "De Chinese kunstenaar Gao Zhen is veroordeeld tot een celstraf van drie jaar vanwege het beledigen van 'Chinese helden'. Gao maakt...", "full_text": "De Chinese kunstenaar Gao Zhen is veroordeeld tot een celstraf van drie jaar vanwege het beledigen van 'Chinese helden'. Gao maakt satirische werken, zoals beelden van de voormalige Chinese leider Mao Zedong.\n        De uitspraak is gebaseerd op een wet die China in 2018 invoerde. Met die wet tegen \"inbreuk op de reputatie van helden\" werd vrijwel alle kritiek op Chinese leidersfiguren verboden.\n        Een van de bekendste werken van Gao is Mao's Schuld. Het is een beeld van een knielende Mao, die berouw lijkt te tonen. Hij maakte dat samen met zijn broer Qiang. Samen vormden ze jarenlang de Gao Brothers. De vader van de broers was onder Mao als klassenvijand gevangengezet en overleefde dat niet.\n        Het duo maakte allerlei maatschappijkritische werken, zoals de beeldengroep De Executie van Christus: Jezus voor een vuurpeloton met alleen maar Mao's. In de reeks Miss Mao beeldden ze de Chinese leider cartoonesk af met borsten, een paardenstaart en een Pinokkioneus.\n        Opgepakt tijdens familiebezoek\n        De nu 70-jarige Gao Zhen werd twee jaar geleden opgepakt. Hij woonde al jaren in de Verenigde Staten omdat hij de repressie onder de huidige president Xi Jinping te groot vond worden. In augustus 2024 was hij even op familiebezoek in China, en werd op straat door dertig agenten gearresteerd. Sindsdien zit hij vast.\n        Volgens de autoriteiten is Gao's werk beledigend voor revolutionaire figuren. Mao's Schuld is een van de werken die in de zaak genoemd zijn. De drie jaar cel, die Gao vandaag kreeg opgelegd, is de maximale straf voor dit vergrijp. Gao zou dus nog een jaar in de gevangenis moeten blijven.\n        Recht op vrije expressie\n        Mensenrechtenorganisaties noemen de arrestatie en de veroordeling een schending van het recht op vrije expressie. Volgens Amnesty International laat het besluit zien dat China vastbesloten is om iedereen te ontmoedigen zich artistiek te uiten.\n        \"Geen enkele kunstenaar zou vervolgd moeten worden voor werk dat uitnodigt tot kritische reflectie op de geschiedenis\", zegt Amnesty. Bovendien zijn de bewuste kunstwerken gemaakt ruim voordat deze wet werd ingevoerd. Gao is van plan in hoger beroep te gaan.", "original_link": "https://nos.nl/l/2628262", "is_background": false}, "4": {"title": "Al meer dan 300 zieken door eieren met salmonella in Belgi\u00eb", "category": "Wereld", "img": "https://loremflickr.com/600/400/zieken?lock=13", "ai_summary": "In Belgi\u00eb zijn al zeker 300 mensen ziek geworden na het eten van eieren die met salmonella waren besmet. De eieren komen van een g...", "full_text": "In Belgi\u00eb zijn al zeker 300 mensen ziek geworden na het eten van eieren die met salmonella waren besmet. De eieren komen van een grote kippenhouderij in Geel, net over de grens onder Tilburg.\n        Volgens het Federaal Agentschap voor de Veiligheid van de Voedselketen (FAVV) gaat het om de grootste salmonella-besmetting ooit in Belgi\u00eb.\n        In Nederland zijn op kleine schaal eieren van het bedrijf verkocht, maar voor zover bekend zijn er geen mensen ziek van geworden, meldt de Nederlandse Voedsel- en Warenautoriteit (NVWA).\n        Twee keer besmetting\n        In mei werd in een van de stallen van het bedrijf salmonella ontdekt, waarop de betreffende stal werd gesloten. Alle eieren van het bedrijf die al in de winkels lagen, werden teruggeroepen.\n        De eieren worden onder meer bij aantal grote supermarktketens verkocht. Mensen werden opgeroepen eieren met bepaalde codes niet te eten en terug te brengen naar de winkel.\n        Maar het aantal besmettingen bleef stijgen en begin augustus bleek dat ook een tweede stal op het bedrijf was besmet. Daarom werd het kippenbedrijf op 10 augustus helemaal stilgelegd door het FAVV en volgde een tweede terugroepactie.\n        Internationale actie\n        Ook in het buitenland zijn eieren teruggeroepen. Het bedrijf exporteert naar acht landen, waaronder Nederland, Frankrijk en Tsjechi\u00eb.\n        Mensen die ziek worden van het eten van besmette eieren, krijgen klachten als koorts, buikpijn, overgeven en diarree. Niet bij iedereen zijn de klachten even hevig.\n        Vooral jonge kinderen, ouderen, zwangeren en mensen met een kwetsbare gezondheid kunnen flink ziek worden.\n        Dode in VK\n        In het Verenigd Koninkrijk is onlangs iemand overleden aan een salmonellabesmetting. Meer dan 200 mensen werden ziek. Vermoed wordt dat de bacterie in producten zat die waarschijnlijk waren bereid met besmette eieren uit het buitenland.\n        De bron van die besmetting is nog niet gevonden. Het bedrijf in Geel exporteert niet naar het VK. ", "original_link": "https://nos.nl/l/2628279", "is_background": false}, "5": {"title": "25/8 in Nieuwsuur: Terugkeerhub Rwanda \u2022 Afvalprobleem door windturbines \u2022 Rusland zet autonome AI-drone in", "category": "Nederland", "img": "https://loremflickr.com/600/400/Nieuwsuur?lock=14", "ai_summary": "Gesprekken over terugkeerhub Rwanda\n        Volgens Duitse media zijn Nederland, Denemarken en Duitsland in gesprek over het reali...", "full_text": "Gesprekken over terugkeerhub Rwanda\n        Volgens Duitse media zijn Nederland, Denemarken en Duitsland in gesprek over het realiseren van een zogenoemde terugkeerhub in Rwanda. Uitgeprocedeerde asielzoekers moeten in de toekomst naar zo'n centrum worden uitgezet, ongeacht waar ze vandaan komen. Daar moeten ze vervolgens wachten op hun terugkeer naar het land waar ze vandaan komen. Europa-correspondent Saskia Dekkers schuift aan in de studio en we schakelen met Afrika-correspondent Elles van Gelder.\n        Afvalprobleem door windturbines\n        Windturbines wekken een kwart van onze elektriciteit op en daarmee zijn ze onmisbaar geworden voor de transitie naar schonere energie. Maar tegelijkertijd veroorzaakt de komst van deze windparken voor een groot afvalprobleem.\n        Door afgeschreven windmolens kwam er vorig jaar alleen al in Europa ruim 20 miljoen kilo aan bladen van composiet vrij. De verwachting is dat die hoeveelheid over tien jaar meer dan verviervoudigd is. Wat moeten we doen met die nieuwe afvalstroom?\n        Rusland zet autonome AI-drone in\n        In de Oekra\u00efense stad Zaporizja is vorige maand een Russische drone met een volledig autonoom AI-systeem aan boord neergestort. Daarbij kwamen drie burgers om het leven. De drone opereerde zonder tussenkomst van een mens en was uitgerust met een Nvidia-chip, die gebruikt worden voor AI-toepassingen.\n        Voor zover bekend is het de eerste vlucht met zo'n AI-systeem door Rusland waarbij burgerslachtoffers vielen, meldt The New York Times. Wat betekent deze ontwikkeling voor de oorlogsvoering? Mensenrechtenorganisaties zijn kritisch, voorstanders beweren juist dat AI soms nauwkeuriger werkt dan mensen.", "original_link": "https://nos.nl/l/2628266", "is_background": false}, "6": {"title": "Onbegrip om uitspelen Cambuur-Feyenoord na vuurwerk op gezinstribune", "category": "Nederland", "img": "https://loremflickr.com/600/400/Onbegrip?lock=15", "ai_summary": "Het laten doorspelen van de wedstrijd tussen SC Cambuur en Feyenoord, nadat er vanuit het uitvak vuurwerk naar het familievak werd...", "full_text": "Het laten doorspelen van de wedstrijd tussen SC Cambuur en Feyenoord, nadat er vanuit het uitvak vuurwerk naar het familievak werd gegooid, stuit op groot onbegrip bij de supporters uit Leeuwarden. Dat er ondanks de paniek op de tribunes niet definitief werd gestaakt, schiet bij velen in het verkeerde keelgat.\n        Bij het incident raakten zeven mensen gewond, laat SC Cambuur vandaag weten. De club gaat aangifte doen tegen de daders.\n        Tijdens de wedstrijd ging het in de elfde minuut al mis. Achter twee grote vlaggen in het uitvak zette een aantal uitsupporters bivakmutsen op, waarna er zo'n vijftig fakkels en ook vuurpijlen werden afgestoken. Niet lang geleden zijn er netten opgehangen aan de zijkant van het vak, maar het vuurwerk vloog aan de voorkant zo naar de gezinstribune, waar ook veel kinderen zaten.\n        Dat zag er zo uit:\n        \"Ik zag op een gegeven moment paniek ontstaan\", vertelt Maarten van Tuinen, voorzitter van supportersvereniging Kern van Cambuur. \"Mensen en kinderen renden massaal weg. Dan voel je direct dat het niet goed is\".\n        De wedstrijd werd een half uur stilgelegd, maar vervolgens wel uitgespeeld. De KNVB benadrukt dat er volgens de regels is gehandeld. \"De KNVB gaat alleen over veiligheid op het veld. In het protocol kijken we of er iemand geraakt is. Een vuurpijl kwam ook dicht bij Feyenoord-keeper Tjark Ernst, maar omdat hij niet werd geraakt, kon de wedstrijd voor de KNVB worden hervat.\" Het Feyenoord-uitvak bleef daarbij gevuld.\n        Protocol\n        Van Tuinen noemt dat beleid onbegrijpelijk. \"Er wordt onderscheid gemaakt tussen mensen. Waarom is een kind dat gehavend raakt minder waard dan een keeper? Voor mijn part staak je gewoon definitief en maak je een statement. Het voelt nu alsof zij werden beloond.\"\n        Ook bij de jongere aanhang, die vlak bij het stadion naar school gaat, is de verbazing groot. Supporter Ruben vindt dat het uitvak voor de hervatting leeggehaald had moeten worden. Al begrijpt medesupporter Kees de terughoudendheid van de autoriteiten wel. \"Als politie kun je zo'n vak niet zomaar leeghalen, want dan krijg je alleen maar meer gedoe.\"\n        Toegangscontrole\n        Niet alleen het doorspelen van de wedstrijd staat ter discussie. Veel mensen vragen zich af hoe het vuurwerk binnen kon komen en of de veiligheidscontroles wel goed genoeg zijn. Feyenoord-supporters moeten zowel bij het instappen in Rotterdam als bij de ingang in Leeuwarden worden gefouilleerd.\n        Feyenoord wil vandaag niet kwijt of dat ook is gebeurd en hoe zorgvuldig dat is gedaan. Volgens een woordvoerder van de club was er sprake van een verplichte auto- of buscombi. Ongeveer een derde van de supporters mocht met de auto komen, de rest met de bus. Feyenoord kijkt of het aan de hand van de beelden daders kan identificeren.\n        Onacceptabel\n        \"Het verbaast me dat ze het \u00fcberhaupt mee naar binnen kregen\", zegt Ruben, die vermoedt dat de spullen onder de grote spandoeken zijn meegesmokkeld. \n        \"Blijkbaar is het fouilleren niet intensief genoeg geweest\", zegt supportersvoorzitter Van Tuinen. \"Vuurwerk kan mooi zijn, maar als je ermee gooit naar een familievak is dat krankzinnig. Als vader met je kinderen naar het stadion gaan en gehavend thuiskomen, is volstrekt onacceptabel.\"\n        Hoewel supportersvereniging De Kern geen voorstander is van collectieve straffen omdat het om een specifieke groep individuen gaat, raakt het geduld op. \"Als dit vaker gebeurt, veeg het vak dan maar leeg\", zegt Van Tuinen. \"Dan lijden de goeden onder de kwaden. De veiligheid moet echt voorop staan\".", "original_link": "https://nos.nl/l/2628176", "is_background": false}, "7": {"title": "Vier keer minder loon dan collega's, Filipijnse matrozen eisen gelijke betaling", "category": "Nederland", "img": "https://loremflickr.com/600/400/minder?lock=16", "ai_summary": "Filipijnse matrozen die op Nederlandse zeeschepen werken, krijgen veel minder betaald dan hun Nederlandse en Duitse collega's. Som...", "full_text": "Filipijnse matrozen die op Nederlandse zeeschepen werken, krijgen veel minder betaald dan hun Nederlandse en Duitse collega's. Soms wel tot vier keer minder. Discriminatie, vindt de stichting Equal Justice Equal Pay, die na jaren juridisch gesteggel nu namens 23.000 zeelieden een massaclaim voorbereidt tegen de Nederlandse staat en de reders.\n        Voor hetzelfde werk verdient een Filipijnse zeevarende ongeveer 3,25 euro per uur, terwijl Nederlandse collega's zo'n 15 euro kunnen ontvangen. Reders verantwoorden dat met het zogenoemde woonlandbeginsel. Daarbij is loon gebaseerd op het kostenniveau van het land waarin iemand woont.\n        Vorig jaar oordeelde het College voor de Rechten van de Mens in een zaak van een Filipijnse en een Indonesische zeevarende dat loonverschillen op basis van het land van herkomst discriminatie zijn. Er volgden onderhandelingen tussen overheid, de reders en de stichting over verandering van de salarisregels, maar die zijn op niets uitgelopen.\n        Miljarden\n        Advocaat Frank Peters is namens de matrozen strijdbaar. \"We gaan het loon terugvorderen vanaf 2016, dus dat is per vandaag tien jaar. Elk jaar dat de procedure langer duurt, komt er schade erbij.\" Volgens Peters gaat het om een post van miljarden euro's.\n        De Nederlandse rederijen vinden het verschil in salaris en andere arbeidsvoorwaarden prima uit te leggen. \"We belonen op basis van koopkracht. Dat is volgens de internationale zeescheepvaart ook het eerlijkst\", zegt Annet Koster van de Koninklijke Vereniging van Nederlandse Reders.\n        \"Als je bijvoorbeeld op de Filipijnen naar de kapper gaat, is dat acht keer goedkoper dan in Nederland. Maar dat geldt ook voor boodschappen, woonkosten, noem het allemaal maar op.\"\n        Danilo Dada is een van de ondertekenaars van de massaclaim:\n        Volgens de rederijen is het salarisverschil ook nodig om internationaal te kunnen concurreren. Koster vreest dat als de rechter de massaclaim toekent, \"het afwachten is totdat reders failliet gaan of eieren voor hun geld kiezen en onder een andere vlag gaan varen. Op dit moment worden namelijk alleen Nederlandse reders hierop aangesproken.\"\n        Uit eerder onderzoek, in opdracht van het ministerie van Infrastructuur en Waterstaat, blijkt dat bij een verbod op het woonlandbeginsel de loonkosten van reders met 20 tot 35 procent zouden stijgen.\n        Naar verwachting zou de helft tot driekwart van de reders dan kunnen besluiten onder een andere vlag te gaan varen. Met een schade daarvan voor de Nederlandse economie van 125 tot 200 miljoen euro per jaar. Ook zouden Nederlandse kapiteins en zeevarenden hun baan kunnen verliezen.\n        Economische gevolgen\n        Advocaat Peters noemt de conclusies in het onderzoek \"aantoonbaar onjuist\". De stichting liet een second opinion uitvoeren door het wetenschappelijk onderzoeksinstituut SEO Economisch Onderzoek. \"SEO heeft laten zien dat het eerdere onderzoek niet veel meer is dan het opschrijven van wat rederijen uit de losse pols hebben gezegd. Als je goed cijferonderzoek doet, zie je dat het heel anders zit\", aldus Peters.\n        Zo vallen de economische gevolgen bij gelijktrekking van salaris volgens SEO wel mee: niet meer dan 20 procent van de schepen zou onder een andere vlag gaan varen. Ook hoeven er volgens het onderzoeksinstituut niet per se banen te verdwijnen.\n        Speelveld\n        Nautilus International FNV, de internationale vakbond die opkomt voor de werknemers in de scheepvaart, steunt nu nog de bestaande cao-afspraken. Gelijktrekking van lonen moet op mondiaal niveau gebeuren. Als alleen Nederland dat zou doen, stort de Nederlandse vloot in, vreest de vakbond.\n        In een reactie zegt ook het ministerie van Infrastructuur en Waterstaat dat wijziging van de betaling van zeelieden zonder internationale afstemming ongewenst is. Dat zou \"het gelijke speelveld\" doorbreken.\n        Advocaat Peters: \"We houden ook de Nederlandse staat aansprakelijk, want die maakt dit systeem mogelijk en faciliteert zo structurele discriminatie. Dat is gewoon onacceptabel.\"", "original_link": "https://nos.nl/l/2628148", "is_background": false}, "8": {"title": "Oud-pastoor Paul Tervoort van Boshoven en Laar overleden", "category": "Midden-Limburg", "img": "https://loremflickr.com/600/400/pastoor?lock=17", "ai_summary": "Op vrijdag 21 augustus is pastoor Paul Tervoort overleden. Hij is 71 jaar geworden. Pastoor Tervoort was een bekend gezicht in de ...", "full_text": "Op vrijdag 21 augustus is pastoor Paul Tervoort overleden. Hij is 71 jaar geworden. Pastoor Tervoort was een bekend gezicht in de regio. Van juni 2008 tot september 2020 diende hij als pastoor voor de parochies van Boshoven en Laar. Pastoor Tervoort groeide op in Heerlen. Op zijn vierendertigste volgt hij een jaar studie in [&#8230;]", "original_link": "https://www.weertdegekste.nl/2026/08/oud-pastoor-paul-tervoort-van-boshoven-en-laar-overleden/", "is_background": false}, "9": {"title": "Auto tikt fietsster aan op Ringbaan-Zuid", "category": "Midden-Limburg", "img": "https://loremflickr.com/600/400/fietsster?lock=18", "ai_summary": "Een fietsster is maandagmiddag naar het ziekenhuis gebracht na een verkeersongeval op de Ringbaan-Zuid in Weert. Het ongeval gebeu...", "full_text": "Een fietsster is maandagmiddag naar het ziekenhuis gebracht na een verkeersongeval op de Ringbaan-Zuid in Weert. Het ongeval gebeurde rond 16.45 uur ter hoogte van de kruising met de Johan Willem Frisolaan. Bij het ongeval waren een auto en een fietsster betrokken. De auto tikte de fietsster aan toen zij de Ringbaan-Zuid wilde oversteken. Hoewel [&#8230;]", "original_link": "https://www.weertdegekste.nl/2026/08/auto-tikt-fietsster-aan-op-ringbaan-zuid/", "is_background": false}, "10": {"title": "Identiteit overleden vrouw bekend: 40-jarige vrouw uit Venlo", "category": "Midden-Limburg", "img": "https://loremflickr.com/600/400/Identiteit?lock=19", "ai_summary": "De vrouw die zaterdagmiddag overleden werd aangetroffen in de bosjes langs de Maas bij Venlo, is een vrouw van 40 jaar uit die sta...", "full_text": "De vrouw die zaterdagmiddag overleden werd aangetroffen in de bosjes langs de Maas bij Venlo, is een vrouw van 40 jaar uit die stad.", "original_link": "https://www.l1nieuws.nl/nieuws/3224481/identiteit-overleden-vrouw-bekend-40-jarige-vrouw-uit-venlo", "is_background": false}, "11": {"title": "Katten lieten ook in de middeleeuwen pootafdrukken achter in boeken", "category": "Wiskunde & Wetenschap", "img": "https://loremflickr.com/600/400/Katten?lock=20", "ai_summary": "In drie van de oudste gedrukte boeken van de Universiteitsbibliotheek Utrecht zijn afdrukken van kattenpootjes gevonden. De sporen...", "full_text": "In drie van de oudste gedrukte boeken van de Universiteitsbibliotheek Utrecht zijn afdrukken van kattenpootjes gevonden. De sporen kwamen aan het licht tijdens een grootschalig digitaliseringsproject van vijftiende-eeuwse boeken.", "original_link": "https://www.nu.nl/wetenschap/6404880/katten-lieten-ook-in-de-middeleeuwen-pootafdrukken-achter-in-boeken.html", "is_background": false}, "12": {"title": "Zonder eclipsbril kan zonsverduistering gaatje in netvlies branden: 'Als een laser'", "category": "Wiskunde & Wetenschap", "img": "https://loremflickr.com/600/400/Zonder?lock=21", "ai_summary": "Kijk niet zonder eclipsbril naar de zonsverduistering, waarschuwen oogdeskundigen massaal. Door met het blote oog naar het verschi...", "full_text": "Kijk niet zonder eclipsbril naar de zonsverduistering, waarschuwen oogdeskundigen massaal. Door met het blote oog naar het verschijnsel te kijken, kunnen je ogen onherstelbare schade oplopen. \"Het heeft hetzelfde effect als een laserstraal.\"", "original_link": "https://www.nu.nl/wetenschap/6405986/zonder-eclipsbril-kan-zonsverduistering-gaatje-in-netvlies-branden-als-een-laser.html", "is_background": false}, "13": {"title": "Archeologen in Peru vinden skelet van persoon die mogelijk ritueel geofferd werd", "category": "Wiskunde & Wetenschap", "img": "https://loremflickr.com/600/400/Archeologen?lock=22", "ai_summary": "Archeologen in Peru hebben dinsdag de resten gevonden van iemand die honderden jaren geleden vermoedelijk ritueel geofferd is. Het...", "full_text": "Archeologen in Peru hebben dinsdag de resten gevonden van iemand die honderden jaren geleden vermoedelijk ritueel geofferd is. Het skelet werd gevonden aan de voet van de Huaca Pucllana, een oude lemen piramide van de Limacultuur.", "original_link": "https://www.nu.nl/wetenschap/6406763/archeologen-in-peru-vinden-skelet-van-persoon-die-mogelijk-ritueel-geofferd-werd.html", "is_background": false}, "14": {"title": "Op deze e-bike past het hele gezin: maar hij kost wel 7,5 duizend euro", "category": "Technologie", "img": "https://loremflickr.com/600/400/gezin?lock=23", "ai_summary": "Er zijn al veel bedrijven geweest die een e-bike beloofden die een soort vervanger was van de auto, maar er zijn er maar weinig wa...", "full_text": "Er zijn al veel bedrijven geweest die een e-bike beloofden die een soort vervanger was van de auto, maar er zijn er maar weinig waarmee je ook echt het hele gezin kan vervoeren. Deze 2,5 meter lange bakfiets kan dat wel. Hij is van Galian, hij heet Le Formidable en hij is verkrijgbaar voor 7.500 euro.", "original_link": "https://www.bright.nl/nieuws/2127101/op-deze-e-bike-past-het-hele-gezin-maar-hij-kost-wel-7-5-duizend-euro.html", "is_background": false}, "15": {"title": "Regering VS dringt er bij Apple op aan geen Chinese geheugenchips te kopen", "category": "Technologie", "img": "https://loremflickr.com/600/400/Regering?lock=24", "ai_summary": "De Amerikaanse regering heeft Apple opgeroepen om geen geheugenchips van Chinese fabrikanten te kopen, meldt The Wall Street Journ...", "full_text": "De Amerikaanse regering heeft Apple opgeroepen om geen geheugenchips van Chinese fabrikanten te kopen, meldt The Wall Street Journal. Diezelfde krant meldde onlangs dat het techbedrijf interesse heeft in chips van het Chinese CXMT.", "original_link": "https://www.nu.nl/tech-wetenschap/6406433/regering-vs-dringt-er-bij-apple-op-aan-geen-chinese-geheugenchips-te-kopen.html", "is_background": false}, "16": {"title": "Philips Hue komt binnenkort met flink goedkopere Sync Box", "category": "Technologie", "img": "https://loremflickr.com/600/400/Philips?lock=25", "ai_summary": "Signify lijkt binnenkort de Philips Hue Sync Box Lite te lanceren, als goedkoper alternatief voor het apparaat om je games en stre...", "full_text": "Signify lijkt binnenkort de Philips Hue Sync Box Lite te lanceren, als goedkoper alternatief voor het apparaat om je games en streaming te synchroniseren met je slimme lampen.", "original_link": "https://www.bright.nl/nieuws/2127162/philips-hue-komt-binnenkort-met-flink-goedkopere-sync-box.html", "is_background": false}, "17": {"title": "NEC traint niet op kunstgras voor cruciaal CL-duel rond poolcirkel: 'Geen excuus'", "category": "Sport", "img": "https://loremflickr.com/600/400/traint?lock=26", "ai_summary": "NEC heeft in aanloop naar de cruciale Champions League-wedstrijd tegen het Noorse FK Bod\u00f8/Glimt bewust niet op kunstgras getraind....", "full_text": "NEC heeft in aanloop naar de cruciale Champions League-wedstrijd tegen het Noorse FK Bod\u00f8/Glimt bewust niet op kunstgras getraind. Trainer Dick Schreuder wilde dat om medische redenen niet doen.", "original_link": "https://www.nu.nl/voetbal/6407421/nec-traint-niet-op-kunstgras-voor-cruciaal-cl-duel-rond-poolcirkel-geen-excuus.html", "is_background": false}, "18": {"title": "Max Verstappen daagt 100 karters tegelijk uit voor speciale race op Silverstone", "category": "Sport", "img": "https://loremflickr.com/600/400/Verstappen?lock=27", "ai_summary": "Max Verstappen neemt het tegelijkertijd op tegen honderd amateurkarters. De viervoudig Formule 1-wereldkampioen, die zijn racecarr...", "full_text": "Max Verstappen neemt het tegelijkertijd op tegen honderd amateurkarters. De viervoudig Formule 1-wereldkampioen, die zijn racecarri\u00e8re in de karts begon, rijdt op 16 september de speciale Max vs 100-race op het circuit van Silverstone.", "original_link": "https://www.nu.nl/formule-1/6407496/max-verstappen-daagt-100-karters-tegelijk-uit-voor-speciale-race-op-silverstone.html", "is_background": false}, "19": {"title": "Verstappen bij Mercedes in F1 is voor teambaas Wolff nog geen gesloten boek", "category": "Sport", "img": "https://loremflickr.com/600/400/Verstappen?lock=28", "ai_summary": "Max Verstappen heeft zich vorige week tot eind 2030 aan Red Bull verbonden, maar Toto Wolff haalt nog geen definitieve streep door...", "full_text": "Max Verstappen heeft zich vorige week tot eind 2030 aan Red Bull verbonden, maar Toto Wolff haalt nog geen definitieve streep door de komst van de Nederlander naar Mercedes. Volgens de teambaas kan de situatie over twee of drie jaar weer veranderen.", "original_link": "https://www.nu.nl/formule-1/6407345/verstappen-bij-mercedes-in-f1-is-voor-teambaas-wolff-nog-geen-gesloten-boek.html", "is_background": false}, "20": {"title": "Op sociale media bejubelde afslankprik triggert eetstoornissen: 'Is geen quick fix'", "category": "Fitness & Resistance Training", "img": "https://loremflickr.com/600/400/sociale?lock=29", "ai_summary": "Afslankmedicatie kan eetstoornissen in de hand werken, versterken of opnieuw aanwakkeren. Daarvoor waarschuwen experts, wetenschap...", "full_text": "Afslankmedicatie kan eetstoornissen in de hand werken, versterken of opnieuw aanwakkeren. Daarvoor waarschuwen experts, wetenschappers en een ervaringsdeskundige. Wie er gevoelig voor is, hoeft de injecties niet eens zelf te gebruiken: de vele (sociale)media-aandacht erover doet genoeg.", "original_link": "https://www.nu.nl/gezondheid/6404949/op-sociale-media-bejubelde-afslankprik-triggert-eetstoornissen-is-geen-quick-fix.html", "is_background": false}, "21": {"title": "Pati\u00ebnten met vorm van beenmergkanker kunnen nu thuis injecties toedienen", "category": "Fitness & Resistance Training", "img": "https://loremflickr.com/600/400/beenmergkanker?lock=30", "ai_summary": "Pati\u00ebnten met multipel myeloom, een vorm van beenmergkanker, kunnen zichzelf voortaan thuis injecties toedienen. Het HagaZiekenhui...", "full_text": "Pati\u00ebnten met multipel myeloom, een vorm van beenmergkanker, kunnen zichzelf voortaan thuis injecties toedienen. Het HagaZiekenhuis in Den Haag is het eerste ziekenhuis in Nederland dat deze thuisbehandeling aanbiedt. De injecties worden sinds kort vergoed vanuit de basisverzekering.", "original_link": "https://www.nu.nl/gezondheid/6404872/patienten-met-vorm-van-beenmergkanker-kunnen-nu-thuis-injecties-toedienen.html", "is_background": false}, "22": {"title": "Long covid en ME/CVS tasten spieren aan, maar niet alleen door inactiviteit", "category": "Fitness & Resistance Training", "img": "https://loremflickr.com/600/400/covid?lock=31", "ai_summary": "Spieren van pati\u00ebnten met long covid of de chronische uitputtingsziekte ME/CVS verschillen van die van gezonde mensen die langduri...", "full_text": "Spieren van pati\u00ebnten met long covid of de chronische uitputtingsziekte ME/CVS verschillen van die van gezonde mensen die langdurig inactief zijn geweest. Daarmee spreekt nieuw onderzoek van de Vrije Universiteit (VU) het idee tegen dat de spierveranderingen uitsluitend door inactiviteit worden veroorzaakt.", "original_link": "https://www.nu.nl/gezondheid/6404752/long-covid-en-mecvs-tasten-spieren-aan-maar-niet-alleen-door-inactiviteit.html", "is_background": false}, "23": {"title": "Harry Potter-fans laten stroomkabel verleggen om graf van Dobby te beschermen", "category": "Humor & Luchtig", "img": "https://loremflickr.com/600/400/Harry?lock=32", "ai_summary": "Harry Potter-fans zijn erin geslaagd de aanleg van een stroomkabel tussen het Verenigd Koninkrijk en Ierland te laten aanpassen. D...", "full_text": "Harry Potter-fans zijn erin geslaagd de aanleg van een stroomkabel tussen het Verenigd Koninkrijk en Ierland te laten aanpassen. De kabel zou dwars door het graf van Dobby de huiself lopen, maar na \"honderden telefoontjes\" werd de route gewijzigd.", "original_link": "https://www.nu.nl/opmerkelijk/6405839/harry-potter-fans-laten-stroomkabel-verleggen-om-graf-van-dobby-te-beschermen.html", "is_background": false}};
 
         function openArticle(id) {
             const a = articlesData[id];
