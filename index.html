@@ -15,12 +15,12 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0b132b; margin: 0; padding: 20px; color: #e0e6ed; }
         header { text-align: center; padding: 25px 15px 15px 15px; background: linear-gradient(135deg, #1c2541, #3a506b, #00b4d8); color: #ffffff; border-radius: 16px; margin-bottom: 25px; }
         
-        /* TICKER TAPE STYLES */
+        /* TICKER TAPE STYLES - TRAGER EN MET ALLEEN SATELLIET ICOON */
         .ticker-wrap { width: 100%; background: rgba(11, 19, 43, 0.6); overflow: hidden; height: 38px; line-height: 38px; border-radius: 8px; margin-top: 15px; border: 1px solid rgba(0, 180, 216, 0.4); display: flex; align-items: center; }
-        .ticker-title { background: #00b4d8; color: #0b132b; padding: 0 12px; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; white-space: nowrap; height: 100%; display: flex; align-items: center; z-index: 2; }
-        .ticker-move { display: inline-block; white-space: nowrap; padding-left: 100%; animation: ticker 75s linear infinite; }
+        .ticker-icon { background: #00b4d8; color: #0b132b; padding: 0 12px; font-size: 1.1rem; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 2; }
+        .ticker-move { display: inline-block; white-space: nowrap; padding-left: 100%; animation: ticker 150s linear infinite; }
         .ticker-wrap:hover .ticker-move { animation-play-state: paused; }
-        .ticker-item { display: inline-block; padding: 0 20px; font-size: 0.85rem; color: #caf0f8; }
+        .ticker-item { display: inline-block; padding: 0 25px; font-size: 0.85rem; color: #caf0f8; }
         .ticker-flag { font-size: 0.75rem; opacity: 0.9; margin-right: 4px; }
         @keyframes ticker {
             0% { transform: translate3d(0, 0, 0); }
@@ -65,47 +65,103 @@
 <body>
     <header>
         <h1 style="margin: 0 0 5px 0;">⚡ Patrick’s Nieuwsboard</h1>
-        <p style="margin: 0;">Laatst bijgewerkt: <b>26-08-2026 om 15:03 uur</b> (Actieve uren: 05:00-20:00 CET)</p>
+        <p style="margin: 0;">Laatst bijgewerkt: <b>26-08-2026 om 15:42 uur</b> (Actieve uren: 05:00-20:00 CET)</p>
         
         <!-- TICKER TAPE BAR -->
         <div class="ticker-wrap">
-            <div class="ticker-title">📡 Laatste Nieuws</div>
+            <div class="ticker-icon">📡</div>
             <div class="ticker-move">
-                <span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Man schiet acht familieleden dood bij familiediner in VS, ook vier kinderen</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Doden en honderden vermisten na overstroming in Nepal, mogelijk Nederlander vermist</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> 26/8 in Nieuwsuur: Overstroming Nepal • Agema en Westerveld verhoord • Joyriden om likes</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Mondriaan onder de hamer in Londen, Christie's verwacht recordopbrengst</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Tweede verdachte aangehouden voor zwaardaanval op Zweedse school</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Amerikaans vliegdekschip met 'uitgeputte bemanning' onderweg naar Thaise haven</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Oekraïne valt opnieuw magazijn van Russische webwinkel Wildberries aan</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Vijftien baby's overleden bij brand in Pakistaans ziekenhuis, één gered</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Russische AI-drone koos mogelijk burger als doelwit: 'Nieuwe stap in oorlogsvoering'</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Wekdienst 26/8: Coronaverhoren gaan verder • Karolien Florijn begint aan WK roeien</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Engelse brandweer experimenteert vanwege grotere bosbranden met AI-dronezwermen</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Vier doden bij Amerikaanse aanval op vermeende drugsboot Caribische Zee</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Journalisten van Frans persbureau AFP belaagd op Westelijke Jordaanoever</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Overlijden Dolly Parton maakt veel los: 'Er was er maar één zoals zij'</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Nigeria opent klopjacht op ontvoerders na socialemediavideo met honderden gijzelaars</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Country-icoon Dolly Parton (9 to 5, Jolene) op 80-jarige leeftijd overleden</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Ook over Europa razen regelmatig tornado's, maar 'kans op een zware blijft klein'</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Canada slaat terug in handelsoorlog met VS: importheffing op miljarden aan producten</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Amnesty hekelt 'onmenselijk' politiegeweld tegen Indiase Kakkerlak-betogers</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Al meer dan 300 zieken door eieren met salmonella in België</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Elon Musk krijgt hoge Oekraïense onderscheiding van president Zelensky</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Honderden vermisten na overstroming in Nepal, onder wie 291 buitenlanders</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Hongarije breekt met Orbáns beleid en bestempelt Rusland als bedreiging</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Tweede verdachte opgepakt na dodelijke zwaardaanval op Zweedse school</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Man schiet acht familieleden, onder wie vier kinderen, dood bij familiediner in VS</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Chinese kunstenaar krijgt drie jaar cel voor 'beledigende' beelden van Mao</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Zeker veertien baby's omgekomen bij brand in Pakistaans ziekenhuis</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Zus Lindsey Graham wint voorverkiezingen South Carolina met steun van Trump</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Israël zet Nederlandse vertegenwoordigers Gaza-centrum uit om handelsverbod</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Rechtszaak in VS over aanslag Lockerbie uitgesteld na ontdekking nieuw bewijs</span>
+                <span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Podcast De Dag: Dolly Parton, Queen of Country en zoveel meer</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Man schiet acht familieleden dood bij familiediner in VS, ook vier kinderen</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Grote ravage na overstromingen Nepal, tientallen doden en honderden vermisten</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> 26/8 in Nieuwsuur: Overstroming Nepal • Agema en Westerveld verhoord • Joyriden om likes</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Mondriaan onder de hamer in Londen, Christie's verwacht recordopbrengst</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Tweede verdachte aangehouden voor zwaardaanval op Zweedse school</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Amerikaans vliegdekschip met 'uitgeputte bemanning' onderweg naar Thaise haven</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Oekraïne valt opnieuw magazijn van Russische webwinkel Wildberries aan</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Vijftien baby's overleden bij brand in Pakistaans ziekenhuis, één gered</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Russische AI-drone koos mogelijk burger als doelwit: 'Nieuwe stap in oorlogsvoering'</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Wekdienst 26/8: Coronaverhoren gaan verder • Karolien Florijn begint aan WK roeien</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Engelse brandweer experimenteert vanwege grotere bosbranden met AI-dronezwermen</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Vier doden bij Amerikaanse aanval op vermeende drugsboot Caribische Zee</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Journalisten van Frans persbureau AFP belaagd op Westelijke Jordaanoever</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Overlijden Dolly Parton maakt veel los: 'Er was er maar één zoals zij'</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Nigeria opent klopjacht op ontvoerders na socialemediavideo met honderden gijzelaars</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Country-icoon Dolly Parton (9 to 5, Jolene) op 80-jarige leeftijd overleden</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Ook over Europa razen regelmatig tornado's, maar 'kans op een zware blijft klein'</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Canada slaat terug in handelsoorlog met VS: importheffing op miljarden aan producten</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Amnesty hekelt 'onmenselijk' politiegeweld tegen Indiase Kakkerlak-betogers</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Na vijf jaar weer CIA-baas in Moskou voor gesprek: 'Zegt iets over urgentie'</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Elon Musk krijgt hoge Oekraïense onderscheiding van president Zelensky</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Honderden vermisten na overstroming in Nepal, onder wie 291 buitenlanders</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Hongarije breekt met Orbáns beleid en bestempelt Rusland als bedreiging</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Tweede verdachte opgepakt na dodelijke zwaardaanval op Zweedse school</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Man schiet acht familieleden, onder wie vier kinderen, dood bij familiediner in VS</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Chinese kunstenaar krijgt drie jaar cel voor 'beledigende' beelden van Mao</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Zeker veertien baby's omgekomen bij brand in Pakistaans ziekenhuis</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Zus Lindsey Graham wint voorverkiezingen South Carolina met steun van Trump</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Israël zet Nederlandse vertegenwoordigers Gaza-centrum uit om handelsverbod</span>
             </div>
         </div>
     </header>
     
     <div class="widget-bar">
-        <div class="widget">
+        <div class="widget" style="grid-column: span 2;">
             <div class="widget-title">🌤️ Weersverwachting Weert</div>
-            <div class="widget-body"><b>📍 Weert nu: 25°C</b><div style='display:flex; justify-content:space-between; margin-top:8px;'><div style='text-align:center; padding: 2px 4px;'><span style='color:#90e0ef; font-size:0.75rem;'>Wed</span><br><b style='font-size:0.85rem;'>26°</b> <small style='color:#cbd5e1;'>13°</small></div><div style='text-align:center; padding: 2px 4px;'><span style='color:#90e0ef; font-size:0.75rem;'>Thu</span><br><b style='font-size:0.85rem;'>30°</b> <small style='color:#cbd5e1;'>17°</small></div><div style='text-align:center; padding: 2px 4px;'><span style='color:#90e0ef; font-size:0.75rem;'>Fri</span><br><b style='font-size:0.85rem;'>22°</b> <small style='color:#cbd5e1;'>16°</small></div><div style='text-align:center; padding: 2px 4px;'><span style='color:#90e0ef; font-size:0.75rem;'>Sat</span><br><b style='font-size:0.85rem;'>22°</b> <small style='color:#cbd5e1;'>16°</small></div><div style='text-align:center; padding: 2px 4px;'><span style='color:#90e0ef; font-size:0.75rem;'>Sun</span><br><b style='font-size:0.85rem;'>23°</b> <small style='color:#cbd5e1;'>16°</small></div><div style='text-align:center; padding: 2px 4px;'><span style='color:#90e0ef; font-size:0.75rem;'>Mon</span><br><b style='font-size:0.85rem;'>22°</b> <small style='color:#cbd5e1;'>16°</small></div><div style='text-align:center; padding: 2px 4px;'><span style='color:#90e0ef; font-size:0.75rem;'>Tue</span><br><b style='font-size:0.85rem;'>19°</b> <small style='color:#cbd5e1;'>14°</small></div></div></div>
+            <div class="widget-body">
+    <div style='margin-bottom:8px;'>
+        <b>📍 Weert nu: 25°C</b> <span style='font-size:0.8rem; color:#caf0f8;'>(Helder en zonnig)</span>
+        <br><small style='color:#cbd5e1;'>Wind: 5 km/h (1 Bft) | Neerslag vandaag: 0.0 mm</small>
+    </div>
+    <div style='font-size:0.8rem; color:#00b4d8; font-style:italic; margin-bottom:10px; padding:4px 8px; background:rgba(0,180,216,0.1); border-radius:6px;'>
+        💬 Vandaag in Weert: helder en zonnig met hoogstens 26°C, 1 Bft wind en 0.0mm neerslag.
+    </div>
+    <div style='display:grid; grid-template-columns: repeat(7, 1fr); gap:4px;'>
+        
+        <div style='text-align:center; padding: 4px 2px; background: rgba(255,255,255,0.03); border-radius:6px;'>
+            <span style='color:#90e0ef; font-size:0.75rem; font-weight:bold;'>Wed</span><br>
+            <b style='font-size:0.85rem;'>26°</b> <small style='color:#cbd5e1;'>13°</small><br>
+            <span style='font-size:0.7rem; color:#4cc9f0;'>💧 0.0m</span><br>
+            <span style='font-size:0.7rem; color:#cbd5e1;'>💨 2Bft</span>
+        </div>
+        
+        <div style='text-align:center; padding: 4px 2px; background: rgba(255,255,255,0.03); border-radius:6px;'>
+            <span style='color:#90e0ef; font-size:0.75rem; font-weight:bold;'>Thu</span><br>
+            <b style='font-size:0.85rem;'>30°</b> <small style='color:#cbd5e1;'>17°</small><br>
+            <span style='font-size:0.7rem; color:#4cc9f0;'>💧 0.0m</span><br>
+            <span style='font-size:0.7rem; color:#cbd5e1;'>💨 3Bft</span>
+        </div>
+        
+        <div style='text-align:center; padding: 4px 2px; background: rgba(255,255,255,0.03); border-radius:6px;'>
+            <span style='color:#90e0ef; font-size:0.75rem; font-weight:bold;'>Fri</span><br>
+            <b style='font-size:0.85rem;'>22°</b> <small style='color:#cbd5e1;'>16°</small><br>
+            <span style='font-size:0.7rem; color:#4cc9f0;'>💧 26.8m</span><br>
+            <span style='font-size:0.7rem; color:#cbd5e1;'>💨 4Bft</span>
+        </div>
+        
+        <div style='text-align:center; padding: 4px 2px; background: rgba(255,255,255,0.03); border-radius:6px;'>
+            <span style='color:#90e0ef; font-size:0.75rem; font-weight:bold;'>Sat</span><br>
+            <b style='font-size:0.85rem;'>22°</b> <small style='color:#cbd5e1;'>16°</small><br>
+            <span style='font-size:0.7rem; color:#4cc9f0;'>💧 1.1m</span><br>
+            <span style='font-size:0.7rem; color:#cbd5e1;'>💨 4Bft</span>
+        </div>
+        
+        <div style='text-align:center; padding: 4px 2px; background: rgba(255,255,255,0.03); border-radius:6px;'>
+            <span style='color:#90e0ef; font-size:0.75rem; font-weight:bold;'>Sun</span><br>
+            <b style='font-size:0.85rem;'>23°</b> <small style='color:#cbd5e1;'>16°</small><br>
+            <span style='font-size:0.7rem; color:#4cc9f0;'>💧 1.0m</span><br>
+            <span style='font-size:0.7rem; color:#cbd5e1;'>💨 4Bft</span>
+        </div>
+        
+        <div style='text-align:center; padding: 4px 2px; background: rgba(255,255,255,0.03); border-radius:6px;'>
+            <span style='color:#90e0ef; font-size:0.75rem; font-weight:bold;'>Mon</span><br>
+            <b style='font-size:0.85rem;'>22°</b> <small style='color:#cbd5e1;'>16°</small><br>
+            <span style='font-size:0.7rem; color:#4cc9f0;'>💧 2.1m</span><br>
+            <span style='font-size:0.7rem; color:#cbd5e1;'>💨 5Bft</span>
+        </div>
+        
+        <div style='text-align:center; padding: 4px 2px; background: rgba(255,255,255,0.03); border-radius:6px;'>
+            <span style='color:#90e0ef; font-size:0.75rem; font-weight:bold;'>Tue</span><br>
+            <b style='font-size:0.85rem;'>19°</b> <small style='color:#cbd5e1;'>14°</small><br>
+            <span style='font-size:0.7rem; color:#4cc9f0;'>💧 0.6m</span><br>
+            <span style='font-size:0.7rem; color:#cbd5e1;'>💨 3Bft</span>
+        </div>
+        
+    </div>
+    </div>
         </div>
         <div class="widget">
             <div class="widget-title">💡 Spreuk van de dag</div>
-            <div class="widget-body"><small><i>"De enige manier om geweldig werk te leveren, is te houden van wat je doet."</i><br><b>— Steve Jobs</b></small></div>
+            <div class="widget-body"><small><i>"Succes is niet de sleutel tot geluk. Geluk is de sleutel tot succes. Als je houdt van wat je doet, zul je succesvol zijn."</i><br><b>— Albert Schweitzer</b></small></div>
         </div>
         <div class="widget">
             <div class="widget-title">📌 Praktische Tip</div>
-            <div class="widget-body"><small>Pas de '2-minutenregel' toe op kleine dagelijkse taken: als een taak minder dan twee minuten kost (zoals een e-mail kort beantwoorden of een opruimklusje), doe het dan direct om te voorkomen dat je mentale geheugen volloopt.</small></div>
-        </div>
-        <div class="widget">
-            <div class="widget-title">🤖 AI Status</div>
-            <div class="widget-body"><small>Actief (Gemini 3.6 Flash)</small></div>
+            <div class="widget-body"><small>Pas de '2-minutenregel' toe bij het afsluiten van je werkdag: handel kleine losse taken die minder dan twee minuten duren direct af, zodat je morgen met een volledig schone leisteen kunt beginnen.</small></div>
         </div>
     </div>
 
     
 <div class="featured-banner" onclick="openArticle('1')">
     <div class="featured-img-wrapper">
-        <img src="https://picsum.photos/seed/opinion_today_1/800/600" alt="Vriend of vijand? De geopolitieke willekeur van Trump zet internationale verhoudingen op scherp">
+        <img src="https://picsum.photos/seed/fallback_op/800/600" alt="Maatschappelijk Dossier">
         <span class="badge badge-featured">🔥 Dagelijks Opinie-Dossier</span>
     </div>
     <div class="featured-content">
-        <h2>Vriend of vijand? De geopolitieke willekeur van Trump zet internationale verhoudingen op scherp</h2>
-        <p>De geopolitieke koers van Donald Trump vervaagt de klassieke scheidslijnen tussen traditionele bondgenoten en tegenstanders, wat leidt tot toenemende onzekerheid op het wereldtoneel. Deze onvoorspelbaarheid dwingt met name Europese leiders tot een snelle heroverweging van hun eigen strategische autonomie en veiligheidsbeleid.</p>
-        <div style="font-size:0.8rem; color:#4cc9f0; margin-top:8px;"><b>🛡️ Betrouwbaarheidsindicator:</b> 85% <small style="color:#cbd5e1;">(Het artikel is gebaseerd op een analyse van NRC Handelsblad en ondersteund door breder geaccepteerde politicologische analyses over het huidige Amerikaanse buitenlandbeleid.)</small></div>
-        <div style="font-size:0.75rem; color:#ffb703; margin-top:6px;">📷 Donald Trump spreekt de pers toe tijdens een internationale topontmoeting, terwijl op de achtergrond de vlaggen van diverse wereldmachten zichtbaar zijn.</div>
+        <h2>Maatschappelijk Dossier</h2>
+        <p>Kon geen nieuw dossier genereren.</p>
+        <div style="font-size:0.8rem; color:#4cc9f0; margin-top:8px;"><b>🛡️ Betrouwbaarheidsindicator:</b> 50% <small style="color:#cbd5e1;">(Onvoldoende data voor verificatie.)</small></div>
+        <div style="font-size:0.75rem; color:#ffb703; margin-top:6px;">📷 Nieuwsoverzicht van de dag</div>
         <div class="read-more">Lees het volledige opiniedossier &rarr;</div>
     </div>
 </div>
@@ -115,350 +171,350 @@
         
     <div class="card" onclick="openArticle('2')">
         <div class="card-img-wrapper">
-            <img src="https://img.lemde.fr/2026/08/04/599/0/4000/2000/644/322/60/0/9dca532_upload-1-yboi8znzjbjf-img-7549.jpg" alt="The Suez Canal: Birth and death of a colonial myth">
+            <img src="https://static01.nyt.com/images/2026/08/21/multimedia/00int-indonesia-fires-pbzg/00int-indonesia-fires-pbzg-mediumSquareAt3X-v3.jpg" alt="As El Niño Dries Indonesia, Wildfires Intensify">
             <span class="badge">Wereld</span>
-            <span class="badge-source">🇫🇷 FR • Lemonde</span>
+            <span class="badge-source">🇺🇸 US • Nytimes</span>
         </div>
         <div class="card-content">
-            <h3>The Suez Canal: Birth and death of a colonial myth</h3>
-            <p>Het Suezkanaal werd in 1869 geopend en gold aanvankelijk als een symbool van koloniale onderdrukking. Later veranderde de maritieme route tussen de Middellandse Zee en de Rode Zee in een instrument voor Egyptische emancipatie.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Een luchtfoto van een vrachtschip dat door het smalle Suezkanaal in Egypte navigeert.</div>
+            <h3>As El Niño Dries Indonesia, Wildfires Intensify</h3>
+            <p>The unusual weather pattern and dried out peatlands, a kind of wetland, have been behind some of the country’s worst fire seasons....</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: As El Niño Dries Indonesia, Wi</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('3')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_3/800/600" alt="The Bulgarian village that fears becoming an Iranian target">
+            <img src="https://picsum.photos/seed/art_3/800/600" alt=""Airport-Malaria": Ein Toter nach Infektion am Frankfurter Flughafen">
             <span class="badge">Wereld</span>
-            <span class="badge-source">🇶🇦 QA • Aljazeera</span>
+            <span class="badge-source">🇩🇪 DE • Tagesschau</span>
         </div>
         <div class="card-content">
-            <h3>The Bulgarian village that fears becoming an Iranian target</h3>
-            <p>Inwoners van het Bulgaarse dorp Bezmer maakten zich grote zorgen door de aanwezigheid van Amerikaanse tankvliegtuigen. Hoewel de vliegtuigen inmiddels zijn vertrokken, blijft de spanning in het gebied voelbaar.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Een Amerikaans Luchtmacht-tankvliegtuig op de landingsbaan nabij het Bulgaarse dorp Bezmer.</div>
+            <h3>"Airport-Malaria": Ein Toter nach Infektion am Frankfurter Flughafen</h3>
+            <p>Ein Fraport-Mitarbeiter ist infolge einer Malaria-Infektion gestorben. Insgesamt haben sich offenbar sechs Menschen infiziert. Die...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: "Airport-Malaria": Ein Toter n</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('4')">
         <div class="card-img-wrapper">
-            <img src="https://images.nu.nl/m/nd6x322ajhgu_sqr256/1027/7/5043/5043/vs-kondigt-economische-aanval-op-iran-aan-en-waarschuwt-andere-landen.jpg" alt="VS kondigt 'economische aanval' op Iran aan en waarschuwt andere landen">
+            <img src="https://i.guim.co.uk/img/media/16d4042f8c9b2aabb47619aa73c090daec510abd/784_32_3286_2630/master/3286.jpg?width=140&quality=85&auto=format&fit=max&s=0dff00fca5aae55855f30002bd0c4d94" alt="Colombia’s new president Abelardo de la Espriella announces immigration crackdown">
             <span class="badge">Wereld</span>
-            <span class="badge-source">🇳🇱 NL • Nu</span>
+            <span class="badge-source">🇬🇧 GB • Theguardian</span>
         </div>
         <div class="card-content">
-            <h3>VS kondigt 'economische aanval' op Iran aan en waarschuwt andere landen</h3>
-            <p>De Amerikaanse minister van Financiën Scott Bessent heeft een economische aanval op Iran aangekondigd. Landen die Iran helpen bij het witwassen van geld zullen volgens de VS ook zware gevolgen ondervinden.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 De Amerikaanse minister van Financiën Scott Bessent tijdens de persconferentie over nieuwe sancties tegen Iran.</div>
+            <h3>Colombia’s new president Abelardo de la Espriella announces immigration crackdown</h3>
+            <p>Far-right leader echoes ally Donald Trump and says operations to ‘track down illegal immigrants’ should begin this week, amid eart...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Colombia’s new president Abela</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('5')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_5/800/600" alt="In pictures: The world pays tribute to country music queen Dolly Parton">
+            <img src="https://picsum.photos/seed/art_5/800/600" alt="This tiny robot could help deliver drugs, dissolve blood clots and detect cancer">
             <span class="badge">Europa</span>
             <span class="badge-source">🇪🇺 EU • Euronews</span>
         </div>
         <div class="card-content">
-            <h3>In pictures: The world pays tribute to country music queen Dolly Parton</h3>
-            <p>Wereldwijd bewijzen fans en iconische instellingen eer aan countrylegende Dolly Parton. Onder meer gebouwen in Nashville en het Empire State Building in New York werden roze verlicht ter ere van de zangeres.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Het Empire State Building in New York is roze uitgelicht als eerbetoon aan Dolly Parton.</div>
+            <h3>This tiny robot could help deliver drugs, dissolve blood clots and detect cancer</h3>
+            <p>By coating the robot with antibodies, researchers collected rare cancer cells circulating in the bloodstream from samples taken fr...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: This tiny robot could help del</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('6')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_6/800/600" alt="Was die AfD mit „Remigration“ meint">
+            <img src="https://picsum.photos/seed/art_6/800/600" alt="Belgian fries under threat as potatoes shrink in heat">
             <span class="badge">Europa</span>
-            <span class="badge-source">🇪🇺 EU • Politico</span>
+            <span class="badge-source">🇪🇺 EU • Euronews</span>
         </div>
         <div class="card-content">
-            <h3>Was die AfD mit „Remigration“ meint</h3>
-            <p>Migratieonderzoeker Gerald Knaus stelt dat de plannen van de AfD voor grootschalige 'remigratie' ernstig inbreuk maken op de menselijke waardigheid. Volgens hem gebruikt de partij bewust een verhullende term om radicale ideologie te verbloemen.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Migratieonderzoeker Gerald Knaus tijdens een interview over het migratiebeleid van de AfD.</div>
+            <h3>Belgian fries under threat as potatoes shrink in heat</h3>
+            <p>Extreme weather has left this year's potato crop unusually small, raising fears of tighter supplies and higher prices from the wor...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Belgian fries under threat as </div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('7')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_7/800/600" alt="Thessaloniki counters visual vandalism with colourful graffiti in Ano Poli">
+            <img src="https://picsum.photos/seed/art_7/800/600" alt="Frankfurt Airport employee dies after contracting malaria, operator Fraport says">
             <span class="badge">Europa</span>
             <span class="badge-source">🇪🇺 EU • Euronews</span>
         </div>
         <div class="card-content">
-            <h3>Thessaloniki counters visual vandalism with colourful graffiti in Ano Poli</h3>
-            <p>De Griekse stad Thessaloniki pakt visueel vandalisme aan door huizen in de historische wijk Ano Poli te voorzien van kleurrijke graffiti. De kunstwerken met bloemen en Japanse motieven trekken veel lokale bewoners en toeristen.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Een kleurrijke muurschildering op een gevel van een woning in de historische wijk Ano Poli.</div>
+            <h3>Frankfurt Airport employee dies after contracting malaria, operator Fraport says</h3>
+            <p>The cause of the infections is believed to be a mosquito that travelled by plane from a malaria-endemic area to Germany, likely in...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Frankfurt Airport employee die</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('8')">
         <div class="card-img-wrapper">
-            <img src="https://images.nrc.nl/nypOqnW48Nnn69GDS4PRyg42vHI=/1280x/filters:no_upscale()/s3/static.nrc.nl/wp-content/uploads/2026/08/14101350/210826WEE_2035094751_walter2.jpg" alt="Beneden het water, boven de lucht: de Rotterdammer als waterdier">
+            <img src="https://image.trouw.nl/274825049/feature-crop/320/320/afbeelding" alt="In Giethoorn vecht de eigenaar van een botenhuis al jaren tegen de gemeente. ‘Slopen is onomkeerbaar’">
             <span class="badge">Nederland</span>
-            <span class="badge-source">🇳🇱 NL • Nrc</span>
+            <span class="badge-source">🇳🇱 NL • Trouw</span>
         </div>
         <div class="card-content">
-            <h3>Beneden het water, boven de lucht: de Rotterdammer als waterdier</h3>
-            <p>Fotograaf Walter Herfst legt op verzoek van NRC de zomer in Rotterdam vast vanaf zijn eigen balkon. Zijn beelden tonen het dagelijks leven en de stad vanuit een uniek maritiem perspectief.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Uitzicht vanaf een balkon op de Maas en de Rotterdamse skyline in de zomerzon.</div>
+            <h3>In Giethoorn vecht de eigenaar van een botenhuis al jaren tegen de gemeente. ‘Slopen is onomkeerbaar’</h3>
+            <p>...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: In Giethoorn vecht de eigenaar</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('9')">
         <div class="card-img-wrapper">
-            <img src="https://images.nrc.nl/bMjtwLTDzWnfoIIPEfAmc1zOZ7Y=/1280x/filters:no_upscale():format(jpeg):fill(f8f8f8,true)/s3/static.nrc.nl/taxonomy/9c6b35b-OnbehaardeApen-Featured.png" alt="Diep onder de Waddenzee ligt een vulkaan verstopt">
+            <img src="https://redactie.rtl.nl/sites/default/files/ANP260826118-1.jpg?itok=yzQXuFO8&width=1024&height=576&impolicy=semi_dynamic" alt="Reuters: UEFA op het punt om FIFA-boycot in te trekken">
             <span class="badge">Nederland</span>
-            <span class="badge-source">🇳🇱 NL • Nrc</span>
+            <span class="badge-source">🇳🇱 NL • Rtl</span>
         </div>
         <div class="card-content">
-            <h3>Diep onder de Waddenzee ligt een vulkaan verstopt</h3>
-            <p>Hoewel Nederland bekendstaat om zijn vlakke landschap, bevindt zich diep onder de bodem van de Waddenzee een oude vulkaan. Deze Zuidwalvulkaan ligt veilig verborgen tussen lagen zand en klei.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Het kalme water van de Waddenzee bij laagwater, waaronder diep in de bodem de Zuidwalvulkaan rust.</div>
+            <h3>Reuters: UEFA op het punt om FIFA-boycot in te trekken</h3>
+            <p>NYON (ANP/RTR) - De Europese voetbalbond UEFA staat op het punt om de boycot van alle competities van de FIFA in te trekken. Dat m...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Reuters: UEFA op het punt om F</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('10')">
         <div class="card-img-wrapper">
-            <img src="https://images.nrc.nl/SilZXJ-L9xc82qnA5iFFlZhHbic=/1280x/filters:no_upscale()/s3/static.nrc.nl/wp-content/uploads/2026/08/21131530/210826BUI_2036034356_zomerTrumpDRAGEND.jpg" alt="In de geopolitieke wereld van Donald Trump lopen vrienden en vijanden dwars door elkaar">
+            <img src="https://images.cdn.nos.nl/1/9/8/U/N/R/BpPZPwiTsnURbBWkYYUrZ69CxA9cLUiMgD2fZep/8x224x3984x2241-1024x576.webp" alt="Israël zet Nederlanders uit vanwege verbod op import producten Westoever">
             <span class="badge">Nederland</span>
-            <span class="badge-source">🇳🇱 NL • Nrc</span>
+            <span class="badge-source">🇳🇱 NL • Nos</span>
         </div>
         <div class="card-content">
-            <h3>In de geopolitieke wereld van Donald Trump lopen vrienden en vijanden dwars door elkaar</h3>
-            <p>Het wisselvallige buitenlandbeleid van president Donald Trump zet traditionele Amerikaanse bondgenootschappen onder druk. Rivalen zoals China en Rusland maken dankbaar gebruik van de strategische zwaktes die hierdoor ontstaan.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 President Donald Trump tijdens een internationale bijeenkomst over het Amerikaanse buitenlandbeleid.</div>
+            <h3>Israël zet Nederlanders uit vanwege verbod op import producten Westoever</h3>
+            <p>Israël zet twee Nederlandse vertegenwoordigers het land uit. Zij zijn werkzaam bij het civiel-militaire coördinatiecentrum (CMCC) ...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Israël zet Nederlanders uit va</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('11')">
         <div class="card-img-wrapper">
-            <img src="https://www.weertdegekste.nl/wp-content/uploads/2026/08/Avond4Daagse-Altweerterheide-250826002.jpg" alt="Tiende Avond4Daagse Altweerterheide van start">
+            <img src="https://picsum.photos/seed/art_11/800/600" alt="Social Media Marketing for Franchises is Meant for Women">
             <span class="badge">Midden-Limburg</span>
-            <span class="badge-source">🇳🇱 NL • Weertdegekste</span>
+            <span class="badge-source">🇳🇱 NL • Middenlimburgactueel</span>
         </div>
         <div class="card-content">
-            <h3>Tiende Avond4Daagse Altweerterheide van start</h3>
-            <p>Dinsdagavond is de tiende editie van de Avond4Daagse in Altweerterheide van start gegaan. Onder prima weersomstandigheden vertrokken de deelnemers vanaf Sportpark Op den Das voor de eerste wandeling.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Enthousiaste wandelaars vertrekken vanaf Sportpark Op den Das voor de Avond4Daagse.</div>
+            <h3>Social Media Marketing for Franchises is Meant for Women</h3>
+            <p>Find people with high expectations and a low tolerance for excuses. They&#8217;ll have higher expectations for you than you have f...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Social Media Marketing for Fra</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('12')">
         <div class="card-img-wrapper">
-            <img src="https://prod-img.limburger.nl/public/ece-incoming/aahwbh-roel-marleen-de-de-twins.jpg/alternates/BASE_SIXTEEN_NINE/Roel%20Marleen%20de%20de%20twins.jpg" alt="Leven gezin Verberk staat voor groot deel in teken van turntweeling: ‘Wij vouwen vaak pas tegen middernacht de was’">
+            <img src="https://prod-img.limburger.nl/public/ece-incoming/cdw9dq-film-review-dolly-partons-christmas-on-the-square/alternates/BASE_SIXTEEN_NINE/Film%20Review%20-%20Dolly%20Parton%E2%80%99s%20Christmas%20on%20the%20Square" alt="Zangeres Dolly Parton (80) overleden">
             <span class="badge">Midden-Limburg</span>
             <span class="badge-source">🇳🇱 NL • Limburger</span>
         </div>
         <div class="card-content">
-            <h3>Leven gezin Verberk staat voor groot deel in teken van turntweeling: ‘Wij vouwen vaak pas tegen middernacht de was’</h3>
-            <p>Marleen en Roel Verberk vertellen over de logistieke puzzel die komt kijken bij de topsportcarrière van hun turntweeling. Het ouderschap vraagt constante planning, vervoer en emotionele ondersteuning tot in de late uurtjes.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Marleen en Roel Verberk samen met hun turntweeling in de trainingshal.</div>
+            <h3>Zangeres Dolly Parton (80) overleden</h3>
+            <p>De Amerikaanse zangeres Dolly Parton is op 80-jarige leeftijd overleden. Dat heeft haar neef Bryan Seaver namens de familie op Fac...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Zangeres Dolly Parton (80) ove</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('13')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_13/800/600" alt="Toons Toppers maken zich op voor de Mont Ventoux">
+            <img src="https://picsum.photos/seed/art_13/800/600" alt="Program Will Lend $10M to Detroit Minority Businesses">
             <span class="badge">Midden-Limburg</span>
-            <span class="badge-source">🇳🇱 NL • Nederweert24</span>
+            <span class="badge-source">🇳🇱 NL • Middenlimburgactueel</span>
         </div>
         <div class="card-content">
-            <h3>Toons Toppers maken zich op voor de Mont Ventoux</h3>
-            <p>Na maanden van intensieve voorbereiding reist het team Toons Toppers in september naar Frankrijk. Daar gaan zij de Mont Ventoux beklimmen om geld in te zamelen voor Groot Verzet Tegen Kanker.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 De deelnemers van Toons Toppers trainen samen op de wielrenfiets ter voorbereiding op de beklimming.</div>
+            <h3>Program Will Lend $10M to Detroit Minority Businesses</h3>
+            <p>Find people with high expectations and a low tolerance for excuses. They&#8217;ll have higher expectations for you than you have f...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Program Will Lend $10M to Detr</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('14')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_14/800/600" alt="Scientists find hidden “highways” guiding animal evolution">
+            <img src="https://picsum.photos/seed/art_14/800/600" alt="Appropriated racial oppression shapes Black parents' socialization of children">
             <span class="badge">Wiskunde & Wetenschap</span>
-            <span class="badge-source">🇺🇸 US • Sciencedaily</span>
+            <span class="badge-source">🇺🇸 US • Phys</span>
         </div>
         <div class="card-content">
-            <h3>Scientists find hidden “highways” guiding animal evolution</h3>
-            <p>Uit een grootschalige analyse van duizenden dierlijke genomen blijkt dat chromosomen evolueren via vaste, onomkeerbare genetische paden. Deze ontdekking geeft meer inzicht in ruim 600 miljoen jaar aan evolutiegeschiedenis.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Een onderzoeker analyseert DNA-structuren en chromosomen op een computerscherm in de studio.</div>
+            <h3>Appropriated racial oppression shapes Black parents' socialization of children</h3>
+            <p>Black parents who experienced higher levels of appropriated racial oppression—defined as shaping one's behavior and self-concept a...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Appropriated racial oppression</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('15')">
         <div class="card-img-wrapper">
-            <img src="https://static.spektrum.de/fm/912/thumbnails/GettyImages-2280744583.jpg.8398982.jpg?f=1280x720" alt="Ökologie: Was uns die DNA in der Luft erzählt">
+            <img src="https://picsum.photos/seed/art_15/800/600" alt="Human brain organoids record the passage of time over multiple years">
             <span class="badge">Wiskunde & Wetenschap</span>
-            <span class="badge-source">🇩🇪 DE • Spektrum</span>
+            <span class="badge-source">🇬🇧 GB • Nature</span>
         </div>
         <div class="card-content">
-            <h3>Ökologie: Was uns die DNA in der Luft erzählt</h3>
-            <p>Genetische sporen in de lucht bieden wetenschappers waardevolle informatie over dieren, planten en ecosystemen. Tegelijkertijd roept dit omgevings-DNA vragen op over privacy, omdat er ook menselijk DNA in zit.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Een ecoloog plaatst een luchtsensor op een veldlocatie om DNA-sporen op te vangen.</div>
+            <h3>Human brain organoids record the passage of time over multiple years</h3>
+            <p>Nature, Published online: 19 August 2026; doi:10.1038/s41586-026-10877-xHuman brain organoids were developed for over five years i...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Human brain organoids record t</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('16')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_16/800/600" alt="Too much or too little sleep may make your body age faster">
+            <img src="https://picsum.photos/seed/art_16/800/600" alt="Plant-like chemical gardens show how simple reactions build complex structures">
             <span class="badge">Wiskunde & Wetenschap</span>
-            <span class="badge-source">🇺🇸 US • Sciencedaily</span>
+            <span class="badge-source">🇺🇸 US • Phys</span>
         </div>
         <div class="card-content">
-            <h3>Too much or too little sleep may make your body age faster</h3>
-            <p>Zowel te weinig als te veel slaap wordt door onderzoekers in verband gebracht met snellere biologische veroudering van het lichaam. Mensen die gemiddeld tussen de 6,4 en 7,8 uur per nacht slapen, vertonen de minste veroudering.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Een persoon slaapt in een verduisterde slaapkamer naast een digitale nachtkastklok.</div>
+            <h3>Plant-like chemical gardens show how simple reactions build complex structures</h3>
+            <p>The famous quote by Cicero, "If you have a garden and a library, you have everything you need," reminds us that the beauty of life...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Plant-like chemical gardens sh</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('17')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_17/800/600" alt="Linux 7.2: Neuer Kernel bringt Performance-Optimierung">
+            <img src="https://picsum.photos/seed/art_17/800/600" alt="They Dedicated Their Lives to Teaching. Then the Deepfakes Started">
             <span class="badge">Technologie</span>
-            <span class="badge-source">🇩🇪 DE • Heise</span>
+            <span class="badge-source">🇺🇸 US • Wired</span>
         </div>
         <div class="card-content">
-            <h3>Linux 7.2: Neuer Kernel bringt Performance-Optimierung</h3>
-            <p>De nieuwe Linux 7.2-kernel richt zich op modernisering en betere systeemprestaties. Een vernieuwde GPU-scheduler en een efficiënter gebruik van de CPU-caches zorgen voor optimale snelheid.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Een ontwikkelaar werkt aan de broncode van de Linux-kernel op een monitor.</div>
+            <h3>They Dedicated Their Lives to Teaching. Then the Deepfakes Started</h3>
+            <p>The deepfake epidemic in schools is affecting more than students. Four teachers tell WIRED about becoming targets of sexualized, A...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: They Dedicated Their Lives to </div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('18')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_18/800/600" alt="Target Promo Code: $50 Off | August 2026">
+            <img src="https://picsum.photos/seed/art_18/800/600" alt="Heroes of Might & Magic III krijgt remake">
             <span class="badge">Technologie</span>
-            <span class="badge-source">🇺🇸 US • Wired</span>
+            <span class="badge-source">🇳🇱 NL • Tweakers</span>
         </div>
         <div class="card-content">
-            <h3>Target Promo Code: $50 Off | August 2026</h3>
-            <p>Klanten van winkelketen Target kunnen profiteren van diverse kortingen, waaronder 50 dollar korting op bestellingen of tot 50 procent korting op de website via speciale actiecodes.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Het iconische rode logo van winkelketen Target op een winkelpui.</div>
+            <h3>Heroes of Might & Magic III krijgt remake</h3>
+            <p>Ubisoft heeft een remake van de game Heroes of Might & Magic III aangekondigd. Die komt uit voor XBOX Series-consoles, PlayStation...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Heroes of Might & Magic III kr</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('19')">
         <div class="card-img-wrapper">
-            <img src="https://cpx.golem.de/cpx.php?class=17&amp;aid=212319&amp;page=1&amp;ts=1787740862" alt="Weltraum-MMORPG: Eve Online beginnt mit der Umstellung auf Python 3">
+            <img src="https://cpx.golem.de/cpx.php?class=17&amp;aid=212302&amp;page=1&amp;ts=1787729881" alt="IT-Sicherheit: Führungskräfte nutzen KI trotz Sicherheitsrisiken">
             <span class="badge">Technologie</span>
             <span class="badge-source">🇩🇪 DE • Golem</span>
         </div>
         <div class="card-content">
-            <h3>Weltraum-MMORPG: Eve Online beginnt mit der Umstellung auf Python 3</h3>
-            <p>Game-ontwikkelaar CCP Games is gestart met het moderniseren van de code van de ruimtesimulator Eve Online naar Python 3. Dit is een grote uitdaging, aangezien delen van de code bijna 20 jaar oud zijn.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Het ruimteschip-interactiescherm uit de online game Eve Online op een gaming-monitor.</div>
+            <h3>IT-Sicherheit: Führungskräfte nutzen KI trotz Sicherheitsrisiken</h3>
+            <p>Eine Umfrage zeigt erhebliche Unterschiede bei der KI-Nutzung und dem Umgang mit vertraulichen Daten im Büro. (Security, Studien) ...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: IT-Sicherheit: Führungskräfte </div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('20')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_20/800/600" alt="'To have a good team, we need a great Cole' - Alonso on Palmer">
+            <img src="https://e2.365dm.com/26/08/1920x1080/skysports-crystal-palace-club_7326697.jpg?20260820165235" alt="Palace latest: Disasi joins on loan from Chelsea">
             <span class="badge">Sport</span>
-            <span class="badge-source">🇬🇧 GB • Bbc</span>
+            <span class="badge-source">🇬🇧 GB • Skysports</span>
         </div>
         <div class="card-content">
-            <h3>'To have a good team, we need a great Cole' - Alonso on Palmer</h3>
-            <p>Chelsea-manager Xabi Alonso heeft Cole Palmer geprezen na diens hoofdrol in de 3-2 overwinning op Fulham. Alonso benadrukte de volwassenheid van de speler en heeft hoge verwachtingen van zijn selectie.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Chelsea-hoofdtrainer Xabi Alonso geeft aanwijzingen langs de zijlijn tijdens het duel met Fulham.</div>
+            <h3>Palace latest: Disasi joins on loan from Chelsea</h3>
+            <p>...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Palace latest: Disasi joins on</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('21')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_21/800/600" alt="Brighton dominate 10-man Villa">
+            <img src="https://e1.365dm.com/26/08/1920x1080/skysports-mayer-boxing_7330042.jpg?20260824132254" alt="Mayer: I feel unbeatable - Cameron fight won't be close!">
             <span class="badge">Sport</span>
-            <span class="badge-source">🇬🇧 GB • Bbc</span>
+            <span class="badge-source">🇬🇧 GB • Skysports</span>
         </div>
         <div class="card-content">
-            <h3>Brighton dominate 10-man Villa</h3>
-            <p>Brighton is het seizoen overtuigend begonnen met een grote overwinning op Aston Villa. Tegen een tiental spelers van de tegenstander scoorde de thuisploeg al vier keer in de eerste helft.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Spelers van Brighton vieren samen een van de doelpuntrijke momenten in het duel tegen Aston Villa.</div>
+            <h3>Mayer: I feel unbeatable - Cameron fight won't be close!</h3>
+            <p>Mikaela Mayer says she feels "unbeatable" and that her blockbuster unification fight against Chantelle Cameron for the world super...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Mayer: I feel unbeatable - Cam</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('22')">
         <div class="card-img-wrapper">
-            <img src="https://e0.365dm.com/26/08/1920x1080/skysports-ayoub-bouaddi-manchester-city_7331753.jpg?20260826124749" alt="Man City sign Bouaddi in record-breaking deal">
+            <img src="https://picsum.photos/seed/art_22/800/600" alt="Find out more here">
             <span class="badge">Sport</span>
-            <span class="badge-source">🇬🇧 GB • Skysports</span>
+            <span class="badge-source">🇬🇧 GB • Bbc</span>
         </div>
         <div class="card-content">
-            <h3>Man City sign Bouaddi in record-breaking deal</h3>
-            <p>Manchester City heeft de komst van middenvelder Ayyoub Bouaddi afgerond. Met de overstap van de speler van Lille is een recordbedrag van 86 miljoen pond gemoeid.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Ayyoub Bouaddi houdt het shirt van Manchester City omhoog na het ondertekenen van zijn contract.</div>
+            <h3>Find out more here</h3>
+            <p>Get the latest transfer news and gossip ahead of the new season...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Find out more here</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('23')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_23/800/600" alt="Exercise selection for the hamstrings: a guide">
+            <img src="https://hips.hearstapps.com/hmg-prod/images/d05ea61a-dfbb-4642-a471-c96105325dd5.jpg" alt="Eating More Fish Can Transform Your Health. These 3 Meals Are a Smart Way to Start.">
             <span class="badge">Fitness & Resistance Training</span>
-            <span class="badge-source">🇺🇸 US • Strongerbyscience</span>
+            <span class="badge-source">🇺🇸 US • Menshealth</span>
         </div>
         <div class="card-content">
-            <h3>Exercise selection for the hamstrings: a guide</h3>
-            <p>Dit artikel biedt een uitgebreide handleiding voor het selecteren van de beste oefeningen voor een evenwichtig hamstringprogramma. Het geeft inzicht in hoe je deze spiergroep optimaal kunt versterken.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Een sporter voert een Romanian Deadlift uit met een barbell in de sportschool.</div>
+            <h3>Eating More Fish Can Transform Your Health. These 3 Meals Are a Smart Way to Start.</h3>
+            <p>They’re healthy and packed with flavor....</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Eating More Fish Can Transform</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('24')">
         <div class="card-img-wrapper">
-            <img src="https://hips.hearstapps.com/hmg-prod/images/5d7f8c1c-3b84-4c79-b31e-0e26dc094e7e.png" alt="Alan Ritchson Is Back For 8 More Ass-Kicking Episodes in Reacher Season 4">
+            <img src="https://hips.hearstapps.com/hmg-prod/images/3eb21ca5-6e7a-4fcd-9d31-197be9cb1586.png" alt="I Tested the Oura Ring 5. Here’s What I Thought.">
             <span class="badge">Fitness & Resistance Training</span>
             <span class="badge-source">🇺🇸 US • Menshealth</span>
         </div>
         <div class="card-content">
-            <h3>Alan Ritchson Is Back For 8 More Ass-Kicking Episodes in Reacher Season 4</h3>
-            <p>Acteur Alan Ritchson keert terug voor de hoofdrol in het vierde seizoen van de populaire actieserie Reacher. Het nieuwe seizoen zal weer bestaan uit acht actievolle afleveringen.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Acteur Alan Ritchson als Jack Reacher tijdens opnames van de actieserie.</div>
+            <h3>I Tested the Oura Ring 5. Here’s What I Thought.</h3>
+            <p>I tried the new tracker after adding a wedding band to my daily wear. Would two rings be too much?...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: I Tested the Oura Ring 5. Here</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('25')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_25/800/600" alt="Are “seed oils” actually unhealthy?">
+            <img src="https://hips.hearstapps.com/hmg-prod/images/4aaa109b-36c3-4896-9ec8-4a179d8ce5e8.png" alt="The True Story Behind <i><em>Tony</em></i> and the Summer That Turned Anthony Bourdain Into a Chef">
             <span class="badge">Fitness & Resistance Training</span>
-            <span class="badge-source">🇺🇸 US • Strongerbyscience</span>
+            <span class="badge-source">🇺🇸 US • Menshealth</span>
         </div>
         <div class="card-content">
-            <h3>Are “seed oils” actually unhealthy?</h3>
-            <p>Een grote verzamelstudie van 48 systematische reviews onderzocht het effect van plantaardige oliën op de gezondheid. De resultaten geven een wetenschappelijk onderbouwd antwoord op de vraag of zaadoliën schadelijk zijn.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Verschillende flessen plantaardige zaadolie opgesteld naast een schaal met diverse zaden.</div>
+            <h3>The True Story Behind <i><em>Tony</em></i> and the Summer That Turned Anthony Bourdain Into a Chef</h3>
+            <p>The new A24 film turns the culinary legend’s messy youth in Provincetown into an origin story....</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: The True Story Behind <i><em>T</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card card-full-width" onclick="openArticle('26')">
         <div class="card-img-wrapper">
-            <img src="https://images.nu.nl/m/0qbxtwjad6wf_sqr256/59/0/480/480/artsen-verwijderen-steen-van-ruim-3-kilo-uit-blaas-van-man-in-sri-lanka.jpg" alt="Artsen verwijderen steen van ruim 3 kilo uit blaas van man in Sri Lanka">
+            <img src="https://images.nu.nl/m/gktxwrfan6z4_sqr256/201/1/997/997/vissers-in-koelbox-na-vijf-dagen-op-zee-gered-op-ruim-240-kilometer-van-mexico.jpg" alt="Vissers in koelbox na vijf dagen op zee gered op ruim 240 kilometer van Mexico">
             <span class="badge">Humor & Luchtig</span>
             <span class="badge-source">🇳🇱 NL • Nu</span>
         </div>
         <div class="card-content">
-            <h3>Artsen verwijderen steen van ruim 3 kilo uit blaas van man in Sri Lanka</h3>
-            <p>Chirurgen in Sri Lanka hebben een blaassteen van maar liefst 3,1 kilo verwijderd bij een patiënt. Dit is voor zover bekend de grootste blaassteen die ooit bij een mens is gedocumenteerd.</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Medische apparatuur in een operatiekamer van het ziekenhuis in Sri Lanka.</div>
+            <h3>Vissers in koelbox na vijf dagen op zee gered op ruim 240 kilometer van Mexico</h3>
+            <p>De Mexicaanse marine heeft woensdag twee vissers gered nadat ze vijf dagen lang op drift waren geraakt, meldt de marine op X. De v...</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Vissers in koelbox na vijf dag</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
@@ -466,7 +522,7 @@
     </div>
 
     <footer>
-        <p>Build ID: <code>77df3d81</code> | AI Engine: Gemini 3.6 Flash (Ticker Tape & Guaranteed Images Active)</p>
+        <p>Build ID: <code>6bfb043b</code> | AI Engine: Gemini 3.6 Flash (Ticker Tape & Guaranteed Images Active)</p>
     </footer>
 
     <div id="modalOverlay" class="modal-overlay" onclick="if(event.target.id==='modalOverlay') closeModal();">
@@ -489,7 +545,7 @@
     </div>
 
     <script>
-        const articlesData = {"1": {"title": "Vriend of vijand? De geopolitieke willekeur van Trump zet internationale verhoudingen op scherp", "category": "Dagelijks Opinie-Dossier", "img": "https://picsum.photos/seed/opinion_today_1/800/600", "caption": "Donald Trump spreekt de pers toe tijdens een internationale topontmoeting, terwijl op de achtergrond de vlaggen van diverse wereldmachten zichtbaar zijn.", "ai_summary": "De geopolitieke koers van Donald Trump vervaagt de klassieke scheidslijnen tussen traditionele bondgenoten en tegenstanders, wat leidt tot toenemende onzekerheid op het wereldtoneel. Deze onvoorspelbaarheid dwingt met name Europese leiders tot een snelle heroverweging van hun eigen strategische autonomie en veiligheidsbeleid.", "full_text": "<h4 style=\"color:#00b4d8; margin-top:15px; margin-bottom:5px;\">Kerninzichten<\/h4>\u2022 Traditionele bondgenootschappen maken plaats voor transactionele relaties waarbij loyaliteit ondergeschikt is aan direct economisch of politiek gewin.<br>\u2022 De toenemende wereldwijde onvoorspelbaarheid dwingt Europese landen tot grotere strategische autonomie en meer defensie-investeringen.<br><br><h4 style=\"color:#00b4d8; margin-top:15px; margin-bottom:5px;\">Diepgaande Analyse<\/h4>In de hedendaagse internationale betrekkingen is de vertrouwde tweedeling tussen vriend en vijand grotendeels verdwenen. Onder de geopolitieke doctrine van Donald Trump worden diplomatieke relaties niet langer gedreven door gedeelde democratische waarden of historische verdragen, maar door puur opportunisme en zakelijke onderhandelingsposities. Landen die decennialang konden vertrouwen op onvoorwaardelijke Amerikaanse steun, zien zich nu geconfronteerd met onverwachte invoerheffingen of kritische veiligheidsgaranties, terwijl rivaliserende autoritaire leiders soms opvallend welwillend worden bejegend.<br><br>Deze veranderende dynamiek leidt tot aanzienlijke instabiliteit in de mondiale machtsbalans. Voor Europa vormt deze verschuiving een harde ontwaking: de aanname dat de Verenigde Staten altijd als ultieme veiligheidsgarant zal optreden, is achterhaald. Dit dwingt de Europese Unie en haar lidstaten om versneld werk te maken van een eigen, onafhankelijke defensie- en buitenlandstrategie, om zo minder kwetsbaar te zijn voor politieke schommelingen in Washington.<br><br><h4 style=\"color:#00b4d8; margin-top:15px; margin-bottom:5px;\">Conclusie<\/h4>De vervaging van het onderscheid tussen bondgenoot en tegenstander is geen incidenteel verschijnsel, maar een structurele herinrichting van de wereldorde. Om in dit nieuwe tijdperk van geopolitieke willekeur stand te houden, zullen internationale spelers een realistischer en zelfstandiger buitenlands beleid moeten voeren.", "reliability_score": 85, "reliability_reason": "Het artikel is gebaseerd op een analyse van NRC Handelsblad en ondersteund door breder geaccepteerde politicologische analyses over het huidige Amerikaanse buitenlandbeleid.", "source_name": "Opinie Redactie", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": true}, "2": {"title": "The Suez Canal: Birth and death of a colonial myth", "category": "Wereld", "img": "https://img.lemde.fr/2026/08/04/599/0/4000/2000/644/322/60/0/9dca532_upload-1-yboi8znzjbjf-img-7549.jpg", "caption": "Een luchtfoto van een vrachtschip dat door het smalle Suezkanaal in Egypte navigeert.", "ai_summary": "Het Suezkanaal werd in 1869 geopend en gold aanvankelijk als een symbool van koloniale onderdrukking. Later veranderde de maritieme route tussen de Middellandse Zee en de Rode Zee in een instrument voor Egyptische emancipatie.", "full_text": "'Suez, a historic canal' (1/6). In 1869, the creation of a maritime route linking the Mediterranean Sea and the Red Sea, operated by the French and the British, captivated Europe. Initially a symbol of colonial oppression for the Egyptian people, the waterway became a tool of emancipation when President Nasser announced its nationalization 70 years ago, on July 26, 1956.", "original_link": "https://www.lemonde.fr/en/summer-reads/article/2026/08/26/the-suez-canal-birth-and-death-of-a-colonial-myth_6756851_183.html", "source_name": "Lemonde", "country_code": "FR", "country_flag": "\ud83c\uddeb\ud83c\uddf7", "is_background": false}, "3": {"title": "The Bulgarian village that fears becoming an Iranian target", "category": "Wereld", "img": "https://picsum.photos/seed/art_3/800/600", "caption": "Een Amerikaans Luchtmacht-tankvliegtuig op de landingsbaan nabij het Bulgaarse dorp Bezmer.", "ai_summary": "Inwoners van het Bulgaarse dorp Bezmer maakten zich grote zorgen door de aanwezigheid van Amerikaanse tankvliegtuigen. Hoewel de vliegtuigen inmiddels zijn vertrokken, blijft de spanning in het gebied voelbaar.", "full_text": "US Air Force refuelling planes caused anxiety in Bezmer. While their departure has brought relief, tensions persist.", "original_link": "https://www.aljazeera.com/news/2026/8/26/the-bulgarian-village-that-fears-becoming-an-iranian-target?traffic_source=rss", "source_name": "Aljazeera", "country_code": "QA", "country_flag": "\ud83c\uddf6\ud83c\udde6", "is_background": false}, "4": {"title": "VS kondigt 'economische aanval' op Iran aan en waarschuwt andere landen", "category": "Wereld", "img": "https://images.nu.nl/m/nd6x322ajhgu_sqr256/1027/7/5043/5043/vs-kondigt-economische-aanval-op-iran-aan-en-waarschuwt-andere-landen.jpg", "caption": "De Amerikaanse minister van Financi\u00ebn Scott Bessent tijdens de persconferentie over nieuwe sancties tegen Iran.", "ai_summary": "De Amerikaanse minister van Financi\u00ebn Scott Bessent heeft een economische aanval op Iran aangekondigd. Landen die Iran helpen bij het witwassen van geld zullen volgens de VS ook zware gevolgen ondervinden.", "full_text": "De Verenigde Staten beginnen een \"economische aanval\" op Iran, heeft de Amerikaanse minister van Financi\u00ebn Scott Bessent maandag aangekondigd. Landen die Iran helpen met witwassen, zullen volgens de minister ook de gevolgen daarvan ondervinden.", "original_link": "https://www.nu.nl/economie/6407416/vs-kondigt-economische-aanval-op-iran-aan-en-waarschuwt-andere-landen.html", "source_name": "Nu", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "5": {"title": "In pictures: The world pays tribute to country music queen Dolly Parton", "category": "Europa", "img": "https://picsum.photos/seed/art_5/800/600", "caption": "Het Empire State Building in New York is roze uitgelicht als eerbetoon aan Dolly Parton.", "ai_summary": "Wereldwijd bewijzen fans en iconische instellingen eer aan countrylegende Dolly Parton. Onder meer gebouwen in Nashville en het Empire State Building in New York werden roze verlicht ter ere van de zangeres.", "full_text": "Fans, landmarks and institutions are honouring the beloved singer, songwriter and philanthropist, with Nashville landmarks and New York\u2019s Empire State Building lighting up in pink.", "original_link": "http://www.euronews.com/culture/2026/08/26/in-pictures-the-world-pays-tribute-to-country-music-queen-dolly-parton", "source_name": "Euronews", "country_code": "EU", "country_flag": "\ud83c\uddea\ud83c\uddfa", "is_background": false}, "6": {"title": "Was die AfD mit \u201eRemigration\u201c meint", "category": "Europa", "img": "https://picsum.photos/seed/art_6/800/600", "caption": "Migratieonderzoeker Gerald Knaus tijdens een interview over het migratiebeleid van de AfD.", "ai_summary": "Migratieonderzoeker Gerald Knaus stelt dat de plannen van de AfD voor grootschalige 'remigratie' ernstig inbreuk maken op de menselijke waardigheid. Volgens hem gebruikt de partij bewust een verhullende term om radicale ideologie te verbloemen.", "full_text": "Die Forderung nach millionenfacher \u201eRemigration\u201c pr\u00e4gt die Politik der AfD. Migrationsforscher Gerald Knaus erkl\u00e4rt im Gespr\u00e4ch mit Pauline von Pezold und Frederik Schindler, warum diese Pl\u00e4ne eklatant gegen die Menschenw\u00fcrde versto\u00dfen. Die Partei nutze dabei nach au\u00dfen gezielt eine verharmlosende Doppelmoral. Knaus warnt eindringlich vor den internationalen Vorbildern der Partei, etwa den massenhaften Deportationspl\u00e4nen aus [&#8230;]", "original_link": "https://www.politico.eu/podcast/inside-afd/was-die-afd-mit-remigration-meint/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication", "source_name": "Politico", "country_code": "EU", "country_flag": "\ud83c\uddea\ud83c\uddfa", "is_background": false}, "7": {"title": "Thessaloniki counters visual vandalism with colourful graffiti in Ano Poli", "category": "Europa", "img": "https://picsum.photos/seed/art_7/800/600", "caption": "Een kleurrijke muurschildering op een gevel van een woning in de historische wijk Ano Poli.", "ai_summary": "De Griekse stad Thessaloniki pakt visueel vandalisme aan door huizen in de historische wijk Ano Poli te voorzien van kleurrijke graffiti. De kunstwerken met bloemen en Japanse motieven trekken veel lokale bewoners en toeristen.", "full_text": "Colours, flowers and Japanese-inspired motifs are appearing on homes in the historic neighbourhood, transforming the streetscape and drawing in locals and tourists.", "original_link": "http://www.euronews.com/culture/2026/08/26/thessaloniki-counters-visual-vandalism-with-colourful-graffiti-in-ano-poli", "source_name": "Euronews", "country_code": "EU", "country_flag": "\ud83c\uddea\ud83c\uddfa", "is_background": false}, "8": {"title": "Beneden het water, boven de lucht: de Rotterdammer als waterdier", "category": "Nederland", "img": "https://images.nrc.nl/nypOqnW48Nnn69GDS4PRyg42vHI=/1280x/filters:no_upscale()/s3/static.nrc.nl/wp-content/uploads/2026/08/14101350/210826WEE_2035094751_walter2.jpg", "caption": "Uitzicht vanaf een balkon op de Maas en de Rotterdamse skyline in de zomerzon.", "ai_summary": "Fotograaf Walter Herfst legt op verzoek van NRC de zomer in Rotterdam vast vanaf zijn eigen balkon. Zijn beelden tonen het dagelijks leven en de stad vanuit een uniek maritiem perspectief.", "full_text": "NRC vroeg fotografen om de zomer dicht bij huis vast te leggen. Wat gebeurt er als je het bekende als vertrekpunt neemt? Walter Herfst richt vanaf zijn balkon zijn zeemansblik op Rotterdam.", "original_link": "https://www.nrc.nl/nieuws/2026/08/21/beneden-het-water-boven-de-lucht-de-rotterdammer-als-waterdier-a4934396", "source_name": "Nrc", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "9": {"title": "Diep onder de Waddenzee ligt een vulkaan verstopt", "category": "Nederland", "img": "https://images.nrc.nl/bMjtwLTDzWnfoIIPEfAmc1zOZ7Y=/1280x/filters:no_upscale():format(jpeg):fill(f8f8f8,true)/s3/static.nrc.nl/taxonomy/9c6b35b-OnbehaardeApen-Featured.png", "caption": "Het kalme water van de Waddenzee bij laagwater, waaronder diep in de bodem de Zuidwalvulkaan rust.", "ai_summary": "Hoewel Nederland bekendstaat om zijn vlakke landschap, bevindt zich diep onder de bodem van de Waddenzee een oude vulkaan. Deze Zuidwalvulkaan ligt veilig verborgen tussen lagen zand en klei.", "full_text": "Nederland is plat, maar onder de oppervlakte tussen zand en klei ligt iets verborgen: de Zuidwalvulkaan.", "original_link": "https://www.nrc.nl/nieuws/2026/08/26/diep-onder-de-waddenzee-ligt-een-vulkaan-verstopt-a4935163", "source_name": "Nrc", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "10": {"title": "In de geopolitieke wereld van Donald Trump lopen vrienden en vijanden dwars door elkaar", "category": "Nederland", "img": "https://images.nrc.nl/SilZXJ-L9xc82qnA5iFFlZhHbic=/1280x/filters:no_upscale()/s3/static.nrc.nl/wp-content/uploads/2026/08/21131530/210826BUI_2036034356_zomerTrumpDRAGEND.jpg", "caption": "President Donald Trump tijdens een internationale bijeenkomst over het Amerikaanse buitenlandbeleid.", "ai_summary": "Het wisselvallige buitenlandbeleid van president Donald Trump zet traditionele Amerikaanse bondgenootschappen onder druk. Rivalen zoals China en Rusland maken dankbaar gebruik van de strategische zwaktes die hierdoor ontstaan.", "full_text": "Met zijn impulsieve buitenlandpolitiek zet president Trump de bondgenootschappen op het spel die van de Verenigde Staten een supermogendheid maakten. Vanuit Beijing en Moskou kijken de traditionele vijanden toe hoe Trumps zwalkende avonturisme strategische zwaktes blootlegt.", "original_link": "https://www.nrc.nl/nieuws/2026/08/21/in-de-geopolitieke-wereld-van-donald-trump-lopen-vrienden-en-vijanden-dwars-door-elkaar-a4934864", "source_name": "Nrc", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "11": {"title": "Tiende Avond4Daagse Altweerterheide van start", "category": "Midden-Limburg", "img": "https://www.weertdegekste.nl/wp-content/uploads/2026/08/Avond4Daagse-Altweerterheide-250826002.jpg", "caption": "Enthousiaste wandelaars vertrekken vanaf Sportpark Op den Das voor de Avond4Daagse.", "ai_summary": "Dinsdagavond is de tiende editie van de Avond4Daagse in Altweerterheide van start gegaan. Onder prima weersomstandigheden vertrokken de deelnemers vanaf Sportpark Op den Das voor de eerste wandeling.", "full_text": "In Altweerterheide is dinsdagavond de tiende editie van de Avond4Daagse van start gegaan. Vanaf Sportpark Op den Das vertrokken de deelnemers voor de eerste wandeltocht door het buitengebied van het kerkdorp. De weersomstandigheden werkten tijdens de openingsavond mee. Bij prima wandelweer gingen de deelnemers op pad voor een route van zes of tien kilometer. De [&#8230;]", "original_link": "https://www.weertdegekste.nl/2026/08/tiende-avond4daagse-altweerterheide-van-start/", "source_name": "Weertdegekste", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "12": {"title": "Leven gezin Verberk staat voor groot deel in teken van turntweeling: \u2018Wij vouwen vaak pas tegen middernacht de was\u2019", "category": "Midden-Limburg", "img": "https://prod-img.limburger.nl/public/ece-incoming/aahwbh-roel-marleen-de-de-twins.jpg/alternates/BASE_SIXTEEN_NINE/Roel%20Marleen%20de%20de%20twins.jpg", "caption": "Marleen en Roel Verberk samen met hun turntweeling in de trainingshal.", "ai_summary": "Marleen en Roel Verberk vertellen over de logistieke puzzel die komt kijken bij de topsportcarri\u00e8re van hun turntweeling. Het ouderschap vraagt constante planning, vervoer en emotionele ondersteuning tot in de late uurtjes.", "full_text": "Het leven van een gezin met topsportkinderen is een voortdurende logistieke puzzel waarbij de toegewijde ouders vaak niet alleen supporter en chauffeur zijn, maar ook een luisterend oor en emotioneel vangnet bieden.\u00a0Marleen en Roel Verberk weten er alles van.", "original_link": "https://www.limburger.nl/regio/horst-aan-de-maas/sevenum/leven-gezin-verberk-staat-voor-groot-deel-in-teken-van-turntweeling-wij-vouwen-vaak-pas-tegen-middernacht-de-was/160172614.html", "source_name": "Limburger", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "13": {"title": "Toons Toppers maken zich op voor de Mont Ventoux", "category": "Midden-Limburg", "img": "https://picsum.photos/seed/art_13/800/600", "caption": "De deelnemers van Toons Toppers trainen samen op de wielrenfiets ter voorbereiding op de beklimming.", "ai_summary": "Na maanden van intensieve voorbereiding reist het team Toons Toppers in september naar Frankrijk. Daar gaan zij de Mont Ventoux beklimmen om geld in te zamelen voor Groot Verzet Tegen Kanker.", "full_text": "Na maanden van trainen, voorbereiden en samen kilometers maken, komt het moment steeds dichterbij. Begin september reizen de Toons Toppers af naar Frankrijk om de Mont Ventoux te beklimmen tijdens Groot Verzet Tegen Kanker.\nHet bericht Toons Toppers maken zich op voor de Mont Ventoux verscheen eerst op Nederweert24.", "original_link": "https://www.nederweert24.nl/2026/08/26/toons-toppers-maken-zich-op-voor-de-mont-ventoux/", "source_name": "Nederweert24", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "14": {"title": "Scientists find hidden \u201chighways\u201d guiding animal evolution", "category": "Wiskunde & Wetenschap", "img": "https://picsum.photos/seed/art_14/800/600", "caption": "Een onderzoeker analyseert DNA-structuren en chromosomen op een computerscherm in de studio.", "ai_summary": "Uit een grootschalige analyse van duizenden dierlijke genomen blijkt dat chromosomen evolueren via vaste, onomkeerbare genetische paden. Deze ontdekking geeft meer inzicht in ruim 600 miljoen jaar aan evolutiegeschiedenis.", "full_text": "A sweeping analysis of thousands of animal genomes suggests that chromosomes do not evolve randomly but instead follow a limited number of irreversible \u201cevolutionary highways.\u201d These one-way genetic changes preserve clues to more than 600 million years of animal history and could even help researchers explore where evolution may head next.", "original_link": "https://www.sciencedaily.com/releases/2026/08/260824065514.htm", "source_name": "Sciencedaily", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "15": {"title": "\u00d6kologie: Was uns die DNA in der Luft erz\u00e4hlt", "category": "Wiskunde & Wetenschap", "img": "https://static.spektrum.de/fm/912/thumbnails/GettyImages-2280744583.jpg.8398982.jpg?f=1280x720", "caption": "Een ecoloog plaatst een luchtsensor op een veldlocatie om DNA-sporen op te vangen.", "ai_summary": "Genetische sporen in de lucht bieden wetenschappers waardevolle informatie over dieren, planten en ecosystemen. Tegelijkertijd roept dit omgevings-DNA vragen op over privacy, omdat er ook menselijk DNA in zit.", "full_text": "Die Luft ist voller DNA. Aus den genetischen Spuren lassen sich R\u00fcckschl\u00fcsse auf Tiere, Pflanzen und \u00d6kosysteme ziehen. Doch Luft-DNA legt auch Informationen \u00fcber Menschen offen.", "original_link": "https://www.spektrum.de/news/umwelt-dna-was-uns-die-dna-in-der-luft-erzaehlt/2319586", "source_name": "Spektrum", "country_code": "DE", "country_flag": "\ud83c\udde9\ud83c\uddea", "is_background": false}, "16": {"title": "Too much or too little sleep may make your body age faster", "category": "Wiskunde & Wetenschap", "img": "https://picsum.photos/seed/art_16/800/600", "caption": "Een persoon slaapt in een verduisterde slaapkamer naast een digitale nachtkastklok.", "ai_summary": "Zowel te weinig als te veel slaap wordt door onderzoekers in verband gebracht met snellere biologische veroudering van het lichaam. Mensen die gemiddeld tussen de 6,4 en 7,8 uur per nacht slapen, vertonen de minste veroudering.", "full_text": "Both too little and too much sleep may be linked to faster aging throughout the body. Researchers analyzing 23 biological aging clocks found the lowest aging levels among people sleeping about 6.4 to 7.8 hours per day. Short or long sleep was also associated with numerous conditions affecting the brain, heart, lungs, metabolism, and digestive system.", "original_link": "https://www.sciencedaily.com/releases/2026/08/260823094156.htm", "source_name": "Sciencedaily", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "17": {"title": "Linux 7.2: Neuer Kernel bringt Performance-Optimierung", "category": "Technologie", "img": "https://picsum.photos/seed/art_17/800/600", "caption": "Een ontwikkelaar werkt aan de broncode van de Linux-kernel op een monitor.", "ai_summary": "De nieuwe Linux 7.2-kernel richt zich op modernisering en betere systeemprestaties. Een vernieuwde GPU-scheduler en een effici\u00ebnter gebruik van de CPU-caches zorgen voor optimale snelheid.", "full_text": "Linux 7.2 fokussiert sich auf Modernisierung. Ein neuer GPU-Scheduler sorgt f\u00fcr mehr Fairness, w\u00e4hrend CPU-Scheduling nun CPU-Caches effizienter nutzt.", "original_link": "https://www.heise.de/news/Linux-7-2-Neuer-Kernel-bringt-Performance-Optimierung-11425914.html?wt_mc=rss.red.ho.ho.atom.beitrag.beitrag", "source_name": "Heise", "country_code": "DE", "country_flag": "\ud83c\udde9\ud83c\uddea", "is_background": false}, "18": {"title": "Target Promo Code: $50 Off | August 2026", "category": "Technologie", "img": "https://picsum.photos/seed/art_18/800/600", "caption": "Het iconische rode logo van winkelketen Target op een winkelpui.", "ai_summary": "Klanten van winkelketen Target kunnen profiteren van diverse kortingen, waaronder 50 dollar korting op bestellingen of tot 50 procent korting op de website via speciale actiecodes.", "full_text": "Get $50 off your next order or up to 50% off site wide with Target coupon codes and Circle deals.", "original_link": "https://www.wired.com/story/target-promo-code/", "source_name": "Wired", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "19": {"title": "Weltraum-MMORPG: Eve Online beginnt mit der Umstellung auf Python 3", "category": "Technologie", "img": "https://cpx.golem.de/cpx.php?class=17&amp;aid=212319&amp;page=1&amp;ts=1787740862", "caption": "Het ruimteschip-interactiescherm uit de online game Eve Online op een gaming-monitor.", "ai_summary": "Game-ontwikkelaar CCP Games is gestart met het moderniseren van de code van de ruimtesimulator Eve Online naar Python 3. Dit is een grote uitdaging, aangezien delen van de code bijna 20 jaar oud zijn.", "full_text": "Das Entwicklerstudio CCP Games sieht vielen Herausforderungen entgegen. Teils ist der Python-Code von Eve Online fast 20 Jahre alt. (Eve Online, MMORPG) ", "original_link": "https://www.golem.de/news/weltraum-mmorpg-eve-online-beginnt-mit-der-umstellung-auf-python-3-2608-212319.html", "source_name": "Golem", "country_code": "DE", "country_flag": "\ud83c\udde9\ud83c\uddea", "is_background": false}, "20": {"title": "'To have a good team, we need a great Cole' - Alonso on Palmer", "category": "Sport", "img": "https://picsum.photos/seed/art_20/800/600", "caption": "Chelsea-hoofdtrainer Xabi Alonso geeft aanwijzingen langs de zijlijn tijdens het duel met Fulham.", "ai_summary": "Chelsea-manager Xabi Alonso heeft Cole Palmer geprezen na diens hoofdrol in de 3-2 overwinning op Fulham. Alonso benadrukte de volwassenheid van de speler en heeft hoge verwachtingen van zijn selectie.", "full_text": "Chelsea manager Xabi Alonso praises Cole Palmer's \"responsibility, maturity and freedom\" after a goal and an assist from the playmaker seals a 3-2 victory over Fulham at Craven Cottage. In Alonso's first Premier League match in charge, the Spaniard insists his new squad can achieve \"special things\" this season.", "original_link": "https://www.bbc.co.uk/sport/football/videos/crl6r2wgd35o?at_medium=RSS&at_campaign=rss", "source_name": "Bbc", "country_code": "GB", "country_flag": "\ud83c\uddec\ud83c\udde7", "is_background": false}, "21": {"title": "Brighton dominate 10-man Villa", "category": "Sport", "img": "https://picsum.photos/seed/art_21/800/600", "caption": "Spelers van Brighton vieren samen een van de doelpuntrijke momenten in het duel tegen Aston Villa.", "ai_summary": "Brighton is het seizoen overtuigend begonnen met een grote overwinning op Aston Villa. Tegen een tiental spelers van de tegenstander scoorde de thuisploeg al vier keer in de eerste helft.", "full_text": "Brighton start their season with an emphatic win at home against Europa League winners Aston Villa, with four first-half goals.", "original_link": "https://www.bbc.co.uk/sport/football/videos/c78g8gdkgnzo?at_medium=RSS&at_campaign=rss", "source_name": "Bbc", "country_code": "GB", "country_flag": "\ud83c\uddec\ud83c\udde7", "is_background": false}, "22": {"title": "Man City sign Bouaddi in record-breaking deal", "category": "Sport", "img": "https://e0.365dm.com/26/08/1920x1080/skysports-ayoub-bouaddi-manchester-city_7331753.jpg?20260826124749", "caption": "Ayyoub Bouaddi houdt het shirt van Manchester City omhoog na het ondertekenen van zijn contract.", "ai_summary": "Manchester City heeft de komst van middenvelder Ayyoub Bouaddi afgerond. Met de overstap van de speler van Lille is een recordbedrag van 86 miljoen pond gemoeid.", "full_text": "Manchester City have completed the signing of midfielder Ayyoub Bouaddi in a record-breaking &#163;86m move from Lille.", "original_link": "https://www.skysports.com/football/news/12040/13576515/ayyoub-bouaddi-transfer-manchester-city-complete-record-breaking-86m-deal-to-sign-18-year-old-morocco-midfielder", "source_name": "Skysports", "country_code": "GB", "country_flag": "\ud83c\uddec\ud83c\udde7", "is_background": false}, "23": {"title": "Exercise selection for the hamstrings: a guide", "category": "Fitness & Resistance Training", "img": "https://picsum.photos/seed/art_23/800/600", "caption": "Een sporter voert een Romanian Deadlift uit met een barbell in de sportschool.", "ai_summary": "Dit artikel biedt een uitgebreide handleiding voor het selecteren van de beste oefeningen voor een evenwichtig hamstringprogramma. Het geeft inzicht in hoe je deze spiergroep optimaal kunt versterken.", "full_text": "Exercises to include in a balanced hamstring program\nThe post Exercise selection for the hamstrings: a guide appeared first on Stronger by Science.", "original_link": "https://www.strongerbyscience.com/exercise-selection-hamstrings/", "source_name": "Strongerbyscience", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "24": {"title": "Alan Ritchson Is Back For 8 More Ass-Kicking Episodes in Reacher Season 4", "category": "Fitness & Resistance Training", "img": "https://hips.hearstapps.com/hmg-prod/images/5d7f8c1c-3b84-4c79-b31e-0e26dc094e7e.png", "caption": "Acteur Alan Ritchson als Jack Reacher tijdens opnames van de actieserie.", "ai_summary": "Acteur Alan Ritchson keert terug voor de hoofdrol in het vierde seizoen van de populaire actieserie Reacher. Het nieuwe seizoen zal weer bestaan uit acht actievolle afleveringen.", "full_text": "We know you don\u2019t want to miss an episode\u2014and we\u2019re here to make sure that doesn\u2019t happen. ", "original_link": "https://www.menshealth.com/entertainment/a73405595/reacher-season-4-release-schedule-prime-video/", "source_name": "Menshealth", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "25": {"title": "Are \u201cseed oils\u201d actually unhealthy?", "category": "Fitness & Resistance Training", "img": "https://picsum.photos/seed/art_25/800/600", "caption": "Verschillende flessen plantaardige zaadolie opgesteld naast een schaal met diverse zaden.", "ai_summary": "Een grote verzamelstudie van 48 systematische reviews onderzocht het effect van plantaardige oli\u00ebn op de gezondheid. De resultaten geven een wetenschappelijk onderbouwd antwoord op de vraag of zaadoli\u00ebn schadelijk zijn.", "full_text": "A recent umbrella review, which looked at 48 systematic reviews and meta-analyses (!), examined the effect of vegetable oils on multiple health outcomes.\nThe post Are \u201cseed oils\u201d actually unhealthy? appeared first on Stronger by Science.", "original_link": "https://www.strongerbyscience.com/seed-oils/", "source_name": "Strongerbyscience", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "26": {"title": "Artsen verwijderen steen van ruim 3 kilo uit blaas van man in Sri Lanka", "category": "Humor & Luchtig", "img": "https://images.nu.nl/m/0qbxtwjad6wf_sqr256/59/0/480/480/artsen-verwijderen-steen-van-ruim-3-kilo-uit-blaas-van-man-in-sri-lanka.jpg", "caption": "Medische apparatuur in een operatiekamer van het ziekenhuis in Sri Lanka.", "ai_summary": "Chirurgen in Sri Lanka hebben een blaassteen van maar liefst 3,1 kilo verwijderd bij een pati\u00ebnt. Dit is voor zover bekend de grootste blaassteen die ooit bij een mens is gedocumenteerd.", "full_text": "Artsen in Sri Lanka hebben een steen van 3,1 kilo uit de blaas van een man verwijderd. Het is voor zover bekend de grootste blaassteen die ooit bij een mens is verwijderd.", "original_link": "https://www.nu.nl/opmerkelijk/6406684/artsen-verwijderen-steen-van-ruim-3-kilo-uit-blaas-van-man-in-sri-lanka.html", "source_name": "Nu", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}};
+        const articlesData = {"1": {"title": "Maatschappelijk Dossier", "category": "Dagelijks Opinie-Dossier", "img": "https://picsum.photos/seed/fallback_op/800/600", "caption": "Nieuwsoverzicht van de dag", "ai_summary": "Kon geen nieuw dossier genereren.", "full_text": "Fout bij genereren: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 32.435259205s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '32s'}]}}", "reliability_score": 50, "reliability_reason": "Onvoldoende data voor verificatie.", "source_name": "Opinie Redactie", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": true}, "2": {"title": "As El Ni\u00f1o Dries Indonesia, Wildfires Intensify", "category": "Wereld", "img": "https://static01.nyt.com/images/2026/08/21/multimedia/00int-indonesia-fires-pbzg/00int-indonesia-fires-pbzg-mediumSquareAt3X-v3.jpg", "caption": "Afbeelding ter illustratie bij: As El Ni\u00f1o Dries Indonesia, Wi", "ai_summary": "The unusual weather pattern and dried out peatlands, a kind of wetland, have been behind some of the country\u2019s worst fire seasons....", "full_text": "The unusual weather pattern and dried out peatlands, a kind of wetland, have been behind some of the country\u2019s worst fire seasons. This year could be one.", "original_link": "https://www.nytimes.com/2026/08/24/world/asia/indonesia-el-nino-borneo-fire.html", "source_name": "Nytimes", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "3": {"title": "\"Airport-Malaria\": Ein Toter nach Infektion am Frankfurter Flughafen", "category": "Wereld", "img": "https://picsum.photos/seed/art_3/800/600", "caption": "Afbeelding ter illustratie bij: \"Airport-Malaria\": Ein Toter n", "ai_summary": "Ein Fraport-Mitarbeiter ist infolge einer Malaria-Infektion gestorben. Insgesamt haben sich offenbar sechs Menschen infiziert. Die...", "full_text": "Ein Fraport-Mitarbeiter ist infolge einer Malaria-Infektion gestorben. Insgesamt haben sich offenbar sechs Menschen infiziert. Die sogenannte Airport-Malaria gilt als seltener \u00dcbertragungsweg der Krankheit.", "original_link": "https://www.tagesschau.de/inland/regional/hessen/malaria-am-frankfurter-flughafen-100.html", "source_name": "Tagesschau", "country_code": "DE", "country_flag": "\ud83c\udde9\ud83c\uddea", "is_background": false}, "4": {"title": "Colombia\u2019s new president Abelardo de la Espriella announces immigration crackdown", "category": "Wereld", "img": "https://i.guim.co.uk/img/media/16d4042f8c9b2aabb47619aa73c090daec510abd/784_32_3286_2630/master/3286.jpg?width=140&quality=85&auto=format&fit=max&s=0dff00fca5aae55855f30002bd0c4d94", "caption": "Afbeelding ter illustratie bij: Colombia\u2019s new president Abela", "ai_summary": "Far-right leader echoes ally Donald Trump and says operations to \u2018track down illegal immigrants\u2019 should begin this week, amid eart...", "full_text": "Far-right leader echoes ally Donald Trump and says operations to \u2018track down illegal immigrants\u2019 should begin this week, amid earthquake aftermathColombia\u2019s far-right president, Abelardo de la Espriella, has announced a crackdown on immigrants, ordering authorities to detain and deport people who are in the country irregularly or have committed crimes.In office for just over two weeks, the millionaire former lawyer made the announcement on Sunday as the country continued to grapple with the aftermath of a 7.4-magnitude earthquake on 10 August that killed more than 300 people and destroyed more than 30,000 homes. Continue reading...", "original_link": "https://www.theguardian.com/world/2026/aug/25/colombia-immigration-crackdown-president-abelardo-de-la-espriella", "source_name": "Theguardian", "country_code": "GB", "country_flag": "\ud83c\uddec\ud83c\udde7", "is_background": false}, "5": {"title": "This tiny robot could help deliver drugs, dissolve blood clots and detect cancer", "category": "Europa", "img": "https://picsum.photos/seed/art_5/800/600", "caption": "Afbeelding ter illustratie bij: This tiny robot could help del", "ai_summary": "By coating the robot with antibodies, researchers collected rare cancer cells circulating in the bloodstream from samples taken fr...", "full_text": "By coating the robot with antibodies, researchers collected rare cancer cells circulating in the bloodstream from samples taken from all 23 liver cancer patients tested, showing its potential for future cancer monitoring and diagnosis.", "original_link": "http://www.euronews.com/health/2026/08/26/this-tiny-robot-could-help-deliver-drugs-dissolve-blood-clots-and-detect-cancer", "source_name": "Euronews", "country_code": "EU", "country_flag": "\ud83c\uddea\ud83c\uddfa", "is_background": false}, "6": {"title": "Belgian fries under threat as potatoes shrink in heat", "category": "Europa", "img": "https://picsum.photos/seed/art_6/800/600", "caption": "Afbeelding ter illustratie bij: Belgian fries under threat as ", "ai_summary": "Extreme weather has left this year's potato crop unusually small, raising fears of tighter supplies and higher prices from the wor...", "full_text": "Extreme weather has left this year's potato crop unusually small, raising fears of tighter supplies and higher prices from the world's biggest frozen fries exporter.", "original_link": "http://www.euronews.com/my-europe/2026/08/26/belgian-fries-under-threat-as-potatoes-shrink-in-heat", "source_name": "Euronews", "country_code": "EU", "country_flag": "\ud83c\uddea\ud83c\uddfa", "is_background": false}, "7": {"title": "Frankfurt Airport employee dies after contracting malaria, operator Fraport says", "category": "Europa", "img": "https://picsum.photos/seed/art_7/800/600", "caption": "Afbeelding ter illustratie bij: Frankfurt Airport employee die", "ai_summary": "The cause of the infections is believed to be a mosquito that travelled by plane from a malaria-endemic area to Germany, likely in...", "full_text": "The cause of the infections is believed to be a mosquito that travelled by plane from a malaria-endemic area to Germany, likely in July.", "original_link": "http://www.euronews.com/my-europe/2026/08/26/frankfurt-airport-employee-dies-after-contracting-malaria-operator-fraport-says", "source_name": "Euronews", "country_code": "EU", "country_flag": "\ud83c\uddea\ud83c\uddfa", "is_background": false}, "8": {"title": "In Giethoorn vecht de eigenaar van een botenhuis al jaren tegen de gemeente. \u2018Slopen is onomkeerbaar\u2019", "category": "Nederland", "img": "https://image.trouw.nl/274825049/feature-crop/320/320/afbeelding", "caption": "Afbeelding ter illustratie bij: In Giethoorn vecht de eigenaar", "ai_summary": "...", "full_text": "", "original_link": "https://www.trouw.nl/binnenland/in-giethoorn-vecht-de-eigenaar-van-een-botenhuis-al-jaren-tegen-de-gemeente-slopen-is-onomkeerbaar~bbdf6fae/", "source_name": "Trouw", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "9": {"title": "Reuters: UEFA op het punt om FIFA-boycot in te trekken", "category": "Nederland", "img": "https://redactie.rtl.nl/sites/default/files/ANP260826118-1.jpg?itok=yzQXuFO8&width=1024&height=576&impolicy=semi_dynamic", "caption": "Afbeelding ter illustratie bij: Reuters: UEFA op het punt om F", "ai_summary": "NYON (ANP/RTR) - De Europese voetbalbond UEFA staat op het punt om de boycot van alle competities van de FIFA in te trekken. Dat m...", "full_text": "NYON (ANP/RTR) - De Europese voetbalbond UEFA staat op het punt om de boycot van alle competities van de FIFA in te trekken. Dat meldt persbureau Reuters woensdag op basis van anonieme bronnen. De UEFA zou toezeggingen hebben gekregen van de FIFA rond het omstreden investeringsplan dat leidde tot de boycot.", "original_link": "https://www.rtl.nl/nieuws/sport/artikel/5644336/reuters-uefa-op-het-punt-om-fifa-boycot-te-trekken", "source_name": "Rtl", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "10": {"title": "Isra\u00ebl zet Nederlanders uit vanwege verbod op import producten Westoever", "category": "Nederland", "img": "https://images.cdn.nos.nl/1/9/8/U/N/R/BpPZPwiTsnURbBWkYYUrZ69CxA9cLUiMgD2fZep/8x224x3984x2241-1024x576.webp", "caption": "Afbeelding ter illustratie bij: Isra\u00ebl zet Nederlanders uit va", "ai_summary": "Isra\u00ebl zet twee Nederlandse vertegenwoordigers het land uit. Zij zijn werkzaam bij het civiel-militaire co\u00f6rdinatiecentrum (CMCC) ...", "full_text": "Isra\u00ebl zet twee Nederlandse vertegenwoordigers het land uit. Zij zijn werkzaam bij het civiel-militaire co\u00f6rdinatiecentrum (CMCC) in Isra\u00ebl van waaruit de VS, Isra\u00ebl en vijftien andere landen, waaronder Nederland, toezicht houden op het staakt-het-vuren tussen Isra\u00ebl en Hamas. Ook co\u00f6rdineren zij internationale hulp en houden ze zich bezig met de wederopbouw van Gaza.\n        \"Ik heb dit besluit vandaag genomen in overleg met premier Netanyahu\", schrijft minister van Buitenlandse Zaken Sa'ar op X. Als aanleiding noemt hij een aantal volgens hem \"anti-Isra\u00eblische stappen\" van de Nederlandse regering.\n        Importverbod\n        De meest recente is volgens Sa'ar het verbod op de import van producten uit Isra\u00eblische nederzettingen op de door Isra\u00ebl bezette Westelijke Jordaanoever. Die nederzettingen zijn volgens het internationaal recht illegaal. Geweld van kolonisten tegen Palestijnen komt er geregeld voor. Het importverbod gaat op 22 september in.\n        Het CMCC is onderdeel van Trumps 20-puntenplan voor Gaza waarover de Amerikaanse president begin oktober een akkoord sloot met Netanyahu en Hamas. De twee Nederlanders bij het CMCC in de Isra\u00eblische plaats Kiryat Gat, ten noorden van de Gazastrook, zijn civiele experts met kennis van de regio. Hun is gevraagd Isra\u00ebl binnen een week te verlaten.\n        \"Onze boodschap is duidelijk\", besluit Sa'ar. \"Wie zich tegen Isra\u00ebl keert, krijgt geen voet aan de grond in de regio. Isra\u00ebl zal dat niet toestaan.\"\n        'Onnodige actie'\n        Minister Berendsen van Buitenlandse Zaken laat in reactie weten de stap van Isra\u00ebl te betreuren. \"Wat mij betreft een onnodige actie. Ik heb mijn Isra\u00eblische collega minister Sa'ar dat ook meteen laten weten. Ik zie deze stap ook in de context van de verkiezingen in Isra\u00ebl.\"\n        Volgens Berendsen is de hulp aan Gaza nog steeds hard nodig. \"Juist ook om samen met Isra\u00ebl en andere landen de gemaakte afspraken over hulpverlening uit het 20-puntenplan van de VS verder te brengen en te implementeren.\"\n        De buitenlandminister zegt het besluit van Isra\u00ebl te respecteren. Er verandert verder niets aan het kabinetsbesluit om producten uit illegale nederzettingen te weren. \"En vanzelfsprekend blijf ik graag bereid om daarover in gesprek te gaan met mijn Isra\u00eblische collega.\"", "original_link": "https://nos.nl/l/2628310", "source_name": "Nos", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "11": {"title": "Social Media Marketing for Franchises is Meant for Women", "category": "Midden-Limburg", "img": "https://picsum.photos/seed/art_11/800/600", "caption": "Afbeelding ter illustratie bij: Social Media Marketing for Fra", "ai_summary": "Find people with high expectations and a low tolerance for excuses. They&#8217;ll have higher expectations for you than you have f...", "full_text": "Find people with high expectations and a low tolerance for excuses. They&#8217;ll have higher expectations for you than you have for yourself. Don&#8217;t flatter yourself that this has much to do with you &#8211; this is just who they are. Don&#8217;t look for &#8220;nice&#8221; in these relationships. Look for trust. Be fearless in front of [&#8230;]", "original_link": "https://middenlimburgactueel.nl/2024/07/social-media-marketing-for-franchises-is-meant-for-women/", "source_name": "Middenlimburgactueel", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "12": {"title": "Zangeres Dolly Parton (80) overleden", "category": "Midden-Limburg", "img": "https://prod-img.limburger.nl/public/ece-incoming/cdw9dq-film-review-dolly-partons-christmas-on-the-square/alternates/BASE_SIXTEEN_NINE/Film%20Review%20-%20Dolly%20Parton%E2%80%99s%20Christmas%20on%20the%20Square", "caption": "Afbeelding ter illustratie bij: Zangeres Dolly Parton (80) ove", "ai_summary": "De Amerikaanse zangeres Dolly Parton is op 80-jarige leeftijd overleden. Dat heeft haar neef Bryan Seaver namens de familie op Fac...", "full_text": "De Amerikaanse zangeres Dolly Parton is op 80-jarige leeftijd overleden. Dat heeft haar neef Bryan Seaver namens de familie op Facebook laten weten. Het was de wens van Dolly dat haar overlijden op deze manier bekend zou worden gemaakt.", "original_link": "https://www.limburger.nl/media-cultuur/muziek/zangeres-dolly-parton-80-overleden/160508282.html", "source_name": "Limburger", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "13": {"title": "Program Will Lend $10M to Detroit Minority Businesses", "category": "Midden-Limburg", "img": "https://picsum.photos/seed/art_13/800/600", "caption": "Afbeelding ter illustratie bij: Program Will Lend $10M to Detr", "ai_summary": "Find people with high expectations and a low tolerance for excuses. They&#8217;ll have higher expectations for you than you have f...", "full_text": "Find people with high expectations and a low tolerance for excuses. They&#8217;ll have higher expectations for you than you have for yourself. Don&#8217;t flatter yourself that this has much to do with you &#8211; this is just who they are. Don&#8217;t look for &#8220;nice&#8221; in these relationships. Look for trust. Be fearless in front of [&#8230;]", "original_link": "https://middenlimburgactueel.nl/2024/07/program-will-lend-10m-to-detroit-minority-businesses/", "source_name": "Middenlimburgactueel", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "14": {"title": "Appropriated racial oppression shapes Black parents' socialization of children", "category": "Wiskunde & Wetenschap", "img": "https://picsum.photos/seed/art_14/800/600", "caption": "Afbeelding ter illustratie bij: Appropriated racial oppression", "ai_summary": "Black parents who experienced higher levels of appropriated racial oppression\u2014defined as shaping one's behavior and self-concept a...", "full_text": "Black parents who experienced higher levels of appropriated racial oppression\u2014defined as shaping one's behavior and self-concept around dominant cultural norms of whiteness\u2014were less likely to transmit positive, culturally protective messages that affirmed racial pride and self-worth to their adolescent children, a recent study found.", "original_link": "https://phys.org/news/2026-08-appropriated-racial-oppression-black-parents.html", "source_name": "Phys", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "15": {"title": "Human brain organoids record the passage of time over multiple years", "category": "Wiskunde & Wetenschap", "img": "https://picsum.photos/seed/art_15/800/600", "caption": "Afbeelding ter illustratie bij: Human brain organoids record t", "ai_summary": "Nature, Published online: 19 August 2026; doi:10.1038/s41586-026-10877-xHuman brain organoids were developed for over five years i...", "full_text": "Nature, Published online: 19 August 2026; doi:10.1038/s41586-026-10877-xHuman brain organoids were developed for over five years in culture to demonstrate that brain cells can continue to mature and record the passage of time, following human-specific endogenous programs, even outside the context of the organism.", "original_link": "https://www.nature.com/articles/s41586-026-10877-x", "source_name": "Nature", "country_code": "GB", "country_flag": "\ud83c\uddec\ud83c\udde7", "is_background": false}, "16": {"title": "Plant-like chemical gardens show how simple reactions build complex structures", "category": "Wiskunde & Wetenschap", "img": "https://picsum.photos/seed/art_16/800/600", "caption": "Afbeelding ter illustratie bij: Plant-like chemical gardens sh", "ai_summary": "The famous quote by Cicero, \"If you have a garden and a library, you have everything you need,\" reminds us that the beauty of life...", "full_text": "The famous quote by Cicero, \"If you have a garden and a library, you have everything you need,\" reminds us that the beauty of life lies in the harmony between nature and knowledge. More than 2,000 years later, this idea still resonates, particularly with a group of European researchers who have created a unique type of \"garden\": one that grows from chemistry itself.", "original_link": "https://phys.org/news/2026-08-chemical-gardens-simple-reactions-complex.html", "source_name": "Phys", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "17": {"title": "They Dedicated Their Lives to Teaching. Then the Deepfakes Started", "category": "Technologie", "img": "https://picsum.photos/seed/art_17/800/600", "caption": "Afbeelding ter illustratie bij: They Dedicated Their Lives to ", "ai_summary": "The deepfake epidemic in schools is affecting more than students. Four teachers tell WIRED about becoming targets of sexualized, A...", "full_text": "The deepfake epidemic in schools is affecting more than students. Four teachers tell WIRED about becoming targets of sexualized, AI-generated content\u2014and how difficult it was to find accountability.", "original_link": "https://www.wired.com/story/teachers-deepfake-ai-students-content/", "source_name": "Wired", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "18": {"title": "Heroes of Might & Magic III krijgt remake", "category": "Technologie", "img": "https://picsum.photos/seed/art_18/800/600", "caption": "Afbeelding ter illustratie bij: Heroes of Might & Magic III kr", "ai_summary": "Ubisoft heeft een remake van de game Heroes of Might & Magic III aangekondigd. Die komt uit voor XBOX Series-consoles, PlayStation...", "full_text": "Ubisoft heeft een remake van de game Heroes of Might & Magic III aangekondigd. Die komt uit voor XBOX Series-consoles, PlayStation 5 en pc. Het spel bevat ook de content van de uitbreidingen Armageddon's Blade en The Shadow of Death.", "original_link": "https://tweakers.net/nieuws/251372/heroes-of-might-en-magic-iii-krijgt-remake.html", "source_name": "Tweakers", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "19": {"title": "IT-Sicherheit: F\u00fchrungskr\u00e4fte nutzen KI trotz Sicherheitsrisiken", "category": "Technologie", "img": "https://cpx.golem.de/cpx.php?class=17&amp;aid=212302&amp;page=1&amp;ts=1787729881", "caption": "Afbeelding ter illustratie bij: IT-Sicherheit: F\u00fchrungskr\u00e4fte ", "ai_summary": "Eine Umfrage zeigt erhebliche Unterschiede bei der KI-Nutzung und dem Umgang mit vertraulichen Daten im B\u00fcro. (Security, Studien) ...", "full_text": "Eine Umfrage zeigt erhebliche Unterschiede bei der KI-Nutzung und dem Umgang mit vertraulichen Daten im B\u00fcro. (Security, Studien) ", "original_link": "https://www.golem.de/news/it-sicherheit-fuehrungskraefte-nutzen-ki-trotz-sicherheitsrisiken-2608-212302.html", "source_name": "Golem", "country_code": "DE", "country_flag": "\ud83c\udde9\ud83c\uddea", "is_background": false}, "20": {"title": "Palace latest: Disasi joins on loan from Chelsea", "category": "Sport", "img": "https://e2.365dm.com/26/08/1920x1080/skysports-crystal-palace-club_7326697.jpg?20260820165235", "caption": "Afbeelding ter illustratie bij: Palace latest: Disasi joins on", "ai_summary": "...", "full_text": "", "original_link": "https://www.skysports.com/football/live-blog/12040/13279298/crystal-palace-transfers-latest-news-rumours-and-gossip-live-updates-goals-and-highlights", "source_name": "Skysports", "country_code": "GB", "country_flag": "\ud83c\uddec\ud83c\udde7", "is_background": false}, "21": {"title": "Mayer: I feel unbeatable - Cameron fight won't be close!", "category": "Sport", "img": "https://e1.365dm.com/26/08/1920x1080/skysports-mayer-boxing_7330042.jpg?20260824132254", "caption": "Afbeelding ter illustratie bij: Mayer: I feel unbeatable - Cam", "ai_summary": "Mikaela Mayer says she feels \"unbeatable\" and that her blockbuster unification fight against Chantelle Cameron for the world super...", "full_text": "Mikaela Mayer says she feels \"unbeatable\" and that her blockbuster unification fight against Chantelle Cameron for the world super welterweight titles won't be close.", "original_link": "https://www.skysports.com/boxing/news/12040/13576259/mayer-vs-cameron-mikaela-mayer-feels-unbeatable-ahead-of-title-unification-fight-against-chantelle-cameron", "source_name": "Skysports", "country_code": "GB", "country_flag": "\ud83c\uddec\ud83c\udde7", "is_background": false}, "22": {"title": "Find out more here", "category": "Sport", "img": "https://picsum.photos/seed/art_22/800/600", "caption": "Afbeelding ter illustratie bij: Find out more here", "ai_summary": "Get the latest transfer news and gossip ahead of the new season...", "full_text": "Get the latest transfer news and gossip ahead of the new season", "original_link": "https://www.bbc.co.uk/sport/football/articles/ce8e6y90g2jo?at_medium=RSS&at_campaign=rss", "source_name": "Bbc", "country_code": "GB", "country_flag": "\ud83c\uddec\ud83c\udde7", "is_background": false}, "23": {"title": "Eating More Fish Can Transform Your Health. These 3 Meals Are a Smart Way to Start.", "category": "Fitness & Resistance Training", "img": "https://hips.hearstapps.com/hmg-prod/images/d05ea61a-dfbb-4642-a471-c96105325dd5.jpg", "caption": "Afbeelding ter illustratie bij: Eating More Fish Can Transform", "ai_summary": "They\u2019re healthy and packed with flavor....", "full_text": "They\u2019re healthy and packed with flavor.", "original_link": "https://www.menshealth.com/nutrition/a71799062/healthy-fish-recipes/", "source_name": "Menshealth", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "24": {"title": "I Tested the Oura Ring 5. Here\u2019s What I Thought.", "category": "Fitness & Resistance Training", "img": "https://hips.hearstapps.com/hmg-prod/images/3eb21ca5-6e7a-4fcd-9d31-197be9cb1586.png", "caption": "Afbeelding ter illustratie bij: I Tested the Oura Ring 5. Here", "ai_summary": "I tried the new tracker after adding a wedding band to my daily wear. Would two rings be too much?...", "full_text": "I tried the new tracker after adding a wedding band to my daily wear. Would two rings be too much?", "original_link": "https://www.menshealth.com/fitness/a73467581/oura-ring-5-review/", "source_name": "Menshealth", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "25": {"title": "The True Story Behind <i><em>Tony<\/em><\/i> and the Summer That Turned Anthony Bourdain Into a Chef", "category": "Fitness & Resistance Training", "img": "https://hips.hearstapps.com/hmg-prod/images/4aaa109b-36c3-4896-9ec8-4a179d8ce5e8.png", "caption": "Afbeelding ter illustratie bij: The True Story Behind <i><em>T", "ai_summary": "The new A24 film turns the culinary legend\u2019s messy youth in Provincetown into an origin story....", "full_text": "The new A24 film turns the culinary legend\u2019s messy youth in Provincetown into an origin story.", "original_link": "https://www.menshealth.com/entertainment/a73476273/tony-anthony-bourdain-true-story/", "source_name": "Menshealth", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "26": {"title": "Vissers in koelbox na vijf dagen op zee gered op ruim 240 kilometer van Mexico", "category": "Humor & Luchtig", "img": "https://images.nu.nl/m/gktxwrfan6z4_sqr256/201/1/997/997/vissers-in-koelbox-na-vijf-dagen-op-zee-gered-op-ruim-240-kilometer-van-mexico.jpg", "caption": "Afbeelding ter illustratie bij: Vissers in koelbox na vijf dag", "ai_summary": "De Mexicaanse marine heeft woensdag twee vissers gered nadat ze vijf dagen lang op drift waren geraakt, meldt de marine op X. De v...", "full_text": "De Mexicaanse marine heeft woensdag twee vissers gered nadat ze vijf dagen lang op drift waren geraakt, meldt de marine op X. De vissers dreven meer dan 240 kilometer uit de kust van Mexico, zonder voedsel of water.", "original_link": "https://www.nu.nl/opmerkelijk/6407037/vissers-in-koelbox-na-vijf-dagen-op-zee-gered-op-ruim-240-kilometer-van-mexico.html", "source_name": "Nu", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}};
 
         function openArticle(id) {
             const a = articlesData[id];
