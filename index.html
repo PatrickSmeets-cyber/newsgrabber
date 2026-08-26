@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Cache-Control Meta Tags voor directe verversing -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -15,7 +14,6 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0b132b; margin: 0; padding: 20px; color: #e0e6ed; }
         header { text-align: center; padding: 25px 15px 15px 15px; background: linear-gradient(135deg, #1c2541, #3a506b, #00b4d8); color: #ffffff; border-radius: 16px; margin-bottom: 25px; }
         
-        /* TICKER TAPE STYLES */
         .ticker-wrap { width: 100%; background: rgba(11, 19, 43, 0.6); overflow: hidden; height: 38px; line-height: 38px; border-radius: 8px; margin-top: 15px; border: 1px solid rgba(0, 180, 216, 0.4); display: flex; align-items: center; }
         .ticker-icon { background: #00b4d8; color: #0b132b; padding: 0 12px; font-size: 1.1rem; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 2; }
         .ticker-move { display: inline-block; white-space: nowrap; padding-left: 100%; animation: ticker 150s linear infinite; }
@@ -27,7 +25,15 @@
             100% { transform: translate3d(-100%, 0, 0); }
         }
 
+        /* RESPONSIVE WIDGET BAR: IPAD EN GROTER NAAST ELKAAR, IPHONE ONDER ELKAAR */
         .widget-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .widget-weather { grid-column: span 2; }
+
+        @media (max-width: 600px) {
+            .widget-bar { grid-template-columns: 1fr !important; }
+            .widget-weather { grid-column: span 1 !important; }
+        }
+
         .widget { background: #1c2541; padding: 16px; border-radius: 12px; border-left: 4px solid #00b4d8; }
         .widget-title { font-size: 0.75rem; text-transform: uppercase; color: #90e0ef; font-weight: bold; margin-bottom: 5px; }
 
@@ -42,8 +48,6 @@
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
         @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
         .card { background: #1c2541; border-radius: 14px; overflow: hidden; border: 1px solid #3a506b; cursor: pointer; display: flex; flex-direction: column; }
-        
-        /* STYLING VOOR VOLLEDIGE BREEDTE (O.A. HUMOR & LUCHTIG) */
         .card-full-width { grid-column: 1 / -1; }
         
         .card-img-wrapper { position: relative; height: 160px; }
@@ -68,19 +72,18 @@
 <body>
     <header>
         <h1 style="margin: 0 0 5px 0;">⚡ Patrick’s Nieuwsboard</h1>
-        <p style="margin: 0;">Laatst bijgewerkt: <b>26-08-2026 om 15:51 uur</b> (Actieve uren: 05:00-20:00 CET)</p>
+        <p style="margin: 0;">Laatst bijgewerkt: <b>26-08-2026 om 16:06 uur</b> (Actieve uren: 05:00-20:00 CET)</p>
         
-        <!-- TICKER TAPE BAR -->
         <div class="ticker-wrap">
             <div class="ticker-icon">📡</div>
             <div class="ticker-move">
-                <span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Podcast De Dag: Dolly Parton, Queen of Country en zoveel meer</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Man schiet acht familieleden dood bij familiediner in VS, ook vier kinderen</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Grote ravage na overstromingen Nepal, bijna honderd doden en honderden vermisten</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> 26/8 in Nieuwsuur: Overstroming Nepal • Agema en Westerveld verhoord • Joyriden om likes</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Mondriaan onder de hamer in Londen, Christie's verwacht recordopbrengst</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Tweede verdachte aangehouden voor zwaardaanval op Zweedse school</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Amerikaans vliegdekschip met 'uitgeputte bemanning' onderweg naar Thaise haven</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Oekraïne valt opnieuw magazijn van Russische webwinkel Wildberries aan</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Vijftien baby's overleden bij brand in Pakistaans ziekenhuis, één gered</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Russische AI-drone koos mogelijk burger als doelwit: 'Nieuwe stap in oorlogsvoering'</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Wekdienst 26/8: Coronaverhoren gaan verder • Karolien Florijn begint aan WK roeien</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Engelse brandweer experimenteert vanwege grotere bosbranden met AI-dronezwermen</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Vier doden bij Amerikaanse aanval op vermeende drugsboot Caribische Zee</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Journalisten van Frans persbureau AFP belaagd op Westelijke Jordaanoever</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Overlijden Dolly Parton maakt veel los: 'Er was er maar één zoals zij'</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Nigeria opent klopjacht op ontvoerders na socialemediavideo met honderden gijzelaars</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Country-icoon Dolly Parton (9 to 5, Jolene) op 80-jarige leeftijd overleden</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Ook over Europa razen regelmatig tornado's, maar 'kans op een zware blijft klein'</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Canada slaat terug in handelsoorlog met VS: importheffing op miljarden aan producten</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Amnesty hekelt 'onmenselijk' politiegeweld tegen Indiase Kakkerlak-betogers</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Na vijf jaar weer CIA-baas in Moskou voor gesprek: 'Zegt iets over urgentie'</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Elon Musk krijgt hoge Oekraïense onderscheiding van president Zelensky</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Honderden vermisten na overstroming in Nepal, onder wie 291 buitenlanders</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Hongarije breekt met Orbáns beleid en bestempelt Rusland als bedreiging</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Tweede verdachte opgepakt na dodelijke zwaardaanval op Zweedse school</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Man schiet acht familieleden, onder wie vier kinderen, dood bij familiediner in VS</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Chinese kunstenaar krijgt drie jaar cel voor 'beledigende' beelden van Mao</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Zeker veertien baby's omgekomen bij brand in Pakistaans ziekenhuis</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Zus Lindsey Graham wint voorverkiezingen South Carolina met steun van Trump</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Israël zet Nederlandse vertegenwoordigers Gaza-centrum uit om handelsverbod</span>
+                <span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Podcast De Dag: Dolly Parton, Queen of Country en zoveel meer</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Man schiet acht familieleden dood bij familiediner in VS, ook vier kinderen</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Grote ravage na stortvloed Nepal, bijna honderd doden en honderden vermisten</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> 26/8 in Nieuwsuur: Overstroming Nepal • Agema en Westerveld verhoord • Joyriden om likes</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Mondriaan onder de hamer in Londen, Christie's verwacht recordopbrengst</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Tweede verdachte aangehouden voor zwaardaanval op Zweedse school</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Amerikaans vliegdekschip met 'uitgeputte bemanning' onderweg naar Thaise haven</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Oekraïne valt opnieuw magazijn van Russische webwinkel Wildberries aan</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Vijftien baby's overleden bij brand in Pakistaans ziekenhuis, één gered</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Russische AI-drone koos mogelijk burger als doelwit: 'Nieuwe stap in oorlogsvoering'</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Wekdienst 26/8: Coronaverhoren gaan verder • Karolien Florijn begint aan WK roeien</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Engelse brandweer experimenteert vanwege grotere bosbranden met AI-dronezwermen</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Vier doden bij Amerikaanse aanval op vermeende drugsboot Caribische Zee</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Journalisten van Frans persbureau AFP belaagd op Westelijke Jordaanoever</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Overlijden Dolly Parton maakt veel los: 'Er was er maar één zoals zij'</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Nigeria opent klopjacht op ontvoerders na socialemediavideo met honderden gijzelaars</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Country-icoon Dolly Parton (9 to 5, Jolene) op 80-jarige leeftijd overleden</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Ook over Europa razen regelmatig tornado's, maar 'kans op een zware blijft klein'</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Canada slaat terug in handelsoorlog met VS: importheffing op miljarden aan producten</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nos:</b> Amnesty hekelt 'onmenselijk' politiegeweld tegen Indiase Kakkerlak-betogers</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Na vijf jaar weer CIA-baas in Moskou voor gesprek: 'Zegt iets over urgentie'</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Elon Musk krijgt hoge Oekraïense onderscheiding van president Zelensky</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Honderden vermisten na overstroming in Nepal, onder wie 291 buitenlanders</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Hongarije breekt met Orbáns beleid en bestempelt Rusland als bedreiging</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Tweede verdachte opgepakt na dodelijke zwaardaanval op Zweedse school</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Man schiet acht familieleden, onder wie vier kinderen, dood bij familiediner in VS</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Chinese kunstenaar krijgt drie jaar cel voor 'beledigende' beelden van Mao</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Zeker veertien baby's omgekomen bij brand in Pakistaans ziekenhuis</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Zus Lindsey Graham wint voorverkiezingen South Carolina met steun van Trump</span><span class="ticker-item"><span class="ticker-flag">🇳🇱 NL</span> <b>Nu:</b> Israël zet Nederlandse vertegenwoordigers Gaza-centrum uit om handelsverbod</span>
             </div>
         </div>
     </header>
     
     <div class="widget-bar">
-        <div class="widget" style="grid-column: span 2;">
+        <div class="widget widget-weather">
             <div class="widget-title">🌤️ Weersverwachting Weert</div>
             <div class="widget-body">
     <div style='margin-bottom:8px;'>
@@ -146,25 +149,25 @@
         </div>
         <div class="widget">
             <div class="widget-title">💡 Spreuk van de dag</div>
-            <div class="widget-body"><small><i>"Geluk hangt niet af van wie je bent of wat je hebt; het hangt enkel af van wat je denkt."</i><br><b>— Dale Carnegie</b></small></div>
+            <div class="widget-body"><small><i>"Succes is niet de sleutel tot geluk. Geluk is de sleutel tot succes. Als je houdt van wat je doet, zul je succesvol zijn."</i><br><b>— Albert Schweitzer</b></small></div>
         </div>
         <div class="widget">
             <div class="widget-title">📌 Praktische Tip</div>
-            <div class="widget-body"><small>Drink direct na het opstaan een groot glas lauw water met een klein snufje Keltisch zeezout of citroensap vóór je eerste kop koffie. Dit hydrateert je cellen direct, ondersteunt je spijsvertering en voorkomt de bekende middagdip.</small></div>
+            <div class="widget-body"><small>Drink direct na het opstaan een groot glas lauw water met een knijpje citroensap en een klein snufje Keltisch zeezout. Dit herstelt je hydratatie en elektrolytenbalans na de nacht sneller dan gewoon water en geeft je spijsvertering een kickstart voordat je koffie drinkt.</small></div>
         </div>
     </div>
 
     
 <div class="featured-banner" onclick="openArticle('1')">
     <div class="featured-img-wrapper">
-        <img src="https://picsum.photos/seed/fallback_op/800/600" alt="Maatschappelijk Dossier">
+        <img src="https://picsum.photos/seed/opinion_today_1/800/600" alt="Achter de schermen in Moskou: Waarom directe diplomatie tussen de VS en Rusland noodzakelijker is dan ooit">
         <span class="badge badge-featured">🔥 Dagelijks Opinie-Dossier</span>
     </div>
     <div class="featured-content">
-        <h2>Maatschappelijk Dossier</h2>
-        <p>Kon geen nieuw dossier genereren.</p>
-        <div style="font-size:0.8rem; color:#4cc9f0; margin-top:8px;"><b>🛡️ Betrouwbaarheidsindicator:</b> 50% <small style="color:#cbd5e1;">(Onvoldoende data voor verificatie.)</small></div>
-        <div style="font-size:0.75rem; color:#ffb703; margin-top:6px;">📷 Nieuwsoverzicht van de dag</div>
+        <h2>Achter de schermen in Moskou: Waarom directe diplomatie tussen de VS en Rusland noodzakelijker is dan ooit</h2>
+        <p>Het zeldzame bezoek van de CIA-chef aan Moskou onderstreept de toenemende spanningen en de dringende behoefte aan directe communicatiekanalen tussen de grootmachten. Hoewel diplomatie momenteel onder druk staat, blijft strategische dialoog essentieel om gevaarlijke escalatie te voorkomen.</p>
+        <div style="font-size:0.8rem; color:#4cc9f0; margin-top:8px;"><b>🛡️ Betrouwbaarheidsindicator:</b> 85% <small style="color:#cbd5e1;">(Het artikel is gebaseerd op een bericht van NU.nl over een geverifieerde diplomatieke en strategische gebeurtenis, ondersteund door historische context rond de relatie tussen de VS en Rusland.)</small></div>
+        <div style="font-size:0.75rem; color:#ffb703; margin-top:6px;">📷 Een sober verlichte conferentiezaal met de vlaggen van de Verenigde Staten en Rusland op de achtergrond, waar twee diplomaten in silhouet tegenover elkaar aan een lange tafel zitten.</div>
         <div class="read-more">Lees het volledige opiniedossier &rarr;</div>
     </div>
 </div>
@@ -174,252 +177,252 @@
         
     <div class="card" onclick="openArticle('2')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_2/800/600" alt="Could Syria become the focus of an Israeli-Turkish conflict?">
+            <img src="https://picsum.photos/seed/art_2/800/600" alt="DR Congo peace roadmap: Will the fighting finally end?">
             <span class="badge">Wereld</span>
             <span class="badge-source">🇩🇪 DE • Dw</span>
         </div>
         <div class="card-content">
-            <h3>Could Syria become the focus of an Israeli-Turkish conflict?</h3>
-            <p>An Israeli attack on a Syrian military airfield just recently demonstrated once again that Syria is becoming a key battleground fo...</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Could Syria become the focus o</div>
+            <h3>DR Congo peace roadmap: Will the fighting finally end?</h3>
+            <p>Een nieuw stappenplan legt de voorwaarden vast voor vrede in het oosten van de Democratische Republiek Congo. Meningsverschillen over M23-rebellen en de rol van Rwanda kunnen het proces echter nog steeds laten ontsporen.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Een VN-vredesmacht patrouilleert in een gebied in het oosten van de Democratische Republiek Congo.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('3')">
         <div class="card-img-wrapper">
-            <img src="https://static01.nyt.com/images/2026/08/24/multimedia/24int-ukraine-nvidia-02-zclk/24int-ukraine-nvidia-02-zclk-mediumSquareAt3X.jpg" alt="Some of Russia’s A.I. Drones Are Powered by Nvidia Microcomputers, Ukrainian Officials Say">
+            <img src="https://picsum.photos/seed/art_3/800/600" alt="A teacher’s slap, student’s death revive India’s corporal punishment debate">
             <span class="badge">Wereld</span>
-            <span class="badge-source">🇺🇸 US • Nytimes</span>
+            <span class="badge-source">🇶🇦 QA • Aljazeera</span>
         </div>
         <div class="card-content">
-            <h3>Some of Russia’s A.I. Drones Are Powered by Nvidia Microcomputers, Ukrainian Officials Say</h3>
-            <p>The tech giant says it does not sell the devices in Russia, but they are widely available on resale markets. When purchased that w...</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Some of Russia’s A.I. Drones A</div>
+            <h3>A teacher’s slap, student’s death revive India’s corporal punishment debate</h3>
+            <p>De dood van de leerling Teja na een klap van een leraar heeft het debat over lijfstraffen in India opnieuw doen oplaaien. Ondanks een verbod van meer dan tien jaar geleden worden kinderen op scholen nog steeds regelmatig geslagen.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Demonstranten verzamelen zich voor een school in India om te demonstreren tegen geweld in het onderwijs.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('4')">
         <div class="card-img-wrapper">
-            <img src="https://img.lemde.fr/2026/08/26/643/0/1715/857/644/322/60/0/2e0549b_upload-1-5nmtajssvs5u-opale-photo-lumen-crno-10481.jpg" alt="Dolly Parton, country music icon from small-town America and feminist role model, has died at 80">
+            <img src="https://images.nu.nl/m/ksexki9adlb0_sqr256/594/0/5499/5499/na-vijf-jaar-weer-cia-baas-in-moskou-voor-gesprek-zegt-iets-over-urgentie.jpg" alt="Na vijf jaar weer CIA-baas in Moskou voor gesprek: 'Zegt iets over urgentie'">
             <span class="badge">Wereld</span>
-            <span class="badge-source">🇫🇷 FR • Lemonde</span>
+            <span class="badge-source">🇳🇱 NL • Nu</span>
         </div>
         <div class="card-content">
-            <h3>Dolly Parton, country music icon from small-town America and feminist role model, has died at 80</h3>
-            <p>The queen of country music and songwriter of more than 1,000 songs, including the iconic 'Jolene,' died on August 25 at the age of...</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Dolly Parton, country music ic</div>
+            <h3>Na vijf jaar weer CIA-baas in Moskou voor gesprek: 'Zegt iets over urgentie'</h3>
+            <p>CIA-directeur John Ratcliffe is onverwachts naar Moskou gegaan voor gesprekken met Russische functionarissen. Het zeldzame bezoek van zo'n hooggeplaatste Amerikaanse functionaris onderstreept de hoge urgentie van de situatie.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 CIA-directeur John Ratcliffe verlaat een diplomatiek gebouw in Moskou.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('5')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_5/800/600" alt="Was die AfD mit „Remigration“ meint">
+            <img src="https://picsum.photos/seed/art_5/800/600" alt="Rare Mondrian unseen for 25 years heads to auction">
             <span class="badge">Europa</span>
-            <span class="badge-source">🇪🇺 EU • Politico</span>
+            <span class="badge-source">🇪🇺 EU • Euronews</span>
         </div>
         <div class="card-content">
-            <h3>Was die AfD mit „Remigration“ meint</h3>
-            <p>Die Forderung nach millionenfacher „Remigration“ prägt die Politik der AfD. Migrationsforscher Gerald Knaus erklärt im Gespräch mi...</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Was die AfD mit „Remigration“ </div>
+            <h3>Rare Mondrian unseen for 25 years heads to auction</h3>
+            <p>Een zeldzaam schilderij van Piet Mondriaan uit 1920, 'Composition III', wordt in oktober geveild bij Christie's in Londen. Het kunstwerk is al 25 jaar niet meer getoond en moet naar verwachting tussen de 20 en 30 miljoen pond opleveren.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Het schilderij 'Composition III' van Piet Mondriaan hangt klaar voor de veiling bij Christie's.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('6')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_6/800/600" alt="Why are Dolly Parton fans lashing out at Donald Trump?">
+            <img src="https://picsum.photos/seed/art_6/800/600" alt="Wolf sightings rise in Italy after suspected attacks">
             <span class="badge">Europa</span>
             <span class="badge-source">🇪🇺 EU • Euronews</span>
         </div>
         <div class="card-content">
-            <h3>Why are Dolly Parton fans lashing out at Donald Trump?</h3>
-            <p>Donald Trump's order for flags to be lowered at half-mast to honour Dolly Parton has been met with applause. However, some fans ar...</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Why are Dolly Parton fans lash</div>
+            <h3>Wolf sightings rise in Italy after suspected attacks</h3>
+            <p>In Italië worden steeds vaker wolven gespot nadat er meerdere mensen, waaronder kinderen, gewond zijn geraakt bij mogelijke aanvallen. De autoriteiten intensiveert de pogingen om de dieren in bewoonde gebieden op te sporen en te vangen.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Een wolf loopt door een bosrijke omgeving nabij een Italiaans dorp.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('7')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_7/800/600" alt="Netherlands may not have enough gas for a harsh winter, Gasunie warns">
+            <img src="https://picsum.photos/seed/art_7/800/600" alt="Putin signs decree allowing state seizure of businesses hit by drone strikes">
             <span class="badge">Europa</span>
             <span class="badge-source">🇪🇺 EU • Euronews</span>
         </div>
         <div class="card-content">
-            <h3>Netherlands may not have enough gas for a harsh winter, Gasunie warns</h3>
-            <p>The Netherlands will miss its winter gas-storage target, leaving it insufficiently prepared for an exceptionally harsh winter with...</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Netherlands may not have enoug</div>
+            <h3>Putin signs decree allowing state seizure of businesses hit by drone strikes</h3>
+            <p>President Poetin heeft een decreet ondertekend waarmee de Russische staat bedrijven kan overnemen die zijn getroffen door droneaanvallen. Experts noemen de maatregel 'hybride nationalisatie' en waarschuwen dat het gebruikt kan worden om bezittingen af te pakken.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 President Vladimir Poetin ondertekent een decreet in het Kremlin.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('8')">
         <div class="card-img-wrapper">
-            <img src="https://images.nrc.nl/miApVh4GplXJ6-qYst21EVxZQyo=/1280x/filters:no_upscale()/s3/static.nrc.nl/wp-content/uploads/2026/08/25112317/250826BUI_2036168909_KrystynaHP.jpg" alt="Aan het front in Oekraïne kijkt militair medisch personeel mee via drones: ‘Je ziet dingen die je voor een horrorfilm nog niet kan bedenken’">
+            <img src="https://images.nrc.nl/3KnINtwyoUMtQyzhaR1ysryvQSY=/1280x/filters:no_upscale()/s3/static.nrc.nl/wp-content/uploads/2026/08/26091636/260826MID_2036198418_dollyoud.jpg" alt="Sterren rouwen om overlijden Dolly Parton. ‘Het is moeilijk voor te stellen dat we nu in een wereld zonder Dolly leven’">
             <span class="badge">Nederland</span>
             <span class="badge-source">🇳🇱 NL • Nrc</span>
         </div>
         <div class="card-content">
-            <h3>Aan het front in Oekraïne kijkt militair medisch personeel mee via drones: ‘Je ziet dingen die je voor een horrorfilm nog niet kan bedenken’</h3>
-            <p>De Nederlandse Khristina werkt sinds 2023 als hospik aan het front in Oekraïne en zag hoe de oorlog veranderde, wreder werd en omv...</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Aan het front in Oekraïne kijk</div>
+            <h3>Sterren rouwen om overlijden Dolly Parton. ‘Het is moeilijk voor te stellen dat we nu in een wereld zonder Dolly leven’</h3>
+            <p>Wereldwijd wordt er gerouwd om het overlijden van countryzangeres Dolly Parton op 80-jarige leeftijd. Beroemdheden als Oprah Winfrey, Paul McCartney en Donald Trump betuigden hun medeleven op sociale media.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Countryzangeres Dolly Parton treedt op tijdens een van haar iconische concerten.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('9')">
         <div class="card-img-wrapper">
-            <img src="https://images.nrc.nl/GYq1hJJsScLzyKJNh_9UPHhxT3M=/1280x/filters:no_upscale()/s3/static.nrc.nl/wp-content/uploads/2026/08/26123227/260826VER_2036211355_.jpg" alt="Geen supporters van Feyenoord bij komende uitwedstrijden, club belooft ‘binnen enkele dagen’ duidelijkheid over opsporen van afstekers vuurwerk bij Cambuur">
+            <img src="https://images.nrc.nl/ULGlH2Gg8-3PhP9jBnNk1xRlp24=/1280x/filters:no_upscale()/s3/static.nrc.nl/wp-content/uploads/2026/08/13142612/140826ECO_2035893420_spitsuur.jpg" alt="‘Heel soms doe ik niets. Dan lees ik lekker op mijn e-reader.’ Ze is al twintig jaar met pensioen, maar Elle Veenstra-Monteban heeft nog volop werk">
             <span class="badge">Nederland</span>
             <span class="badge-source">🇳🇱 NL • Nrc</span>
         </div>
         <div class="card-content">
-            <h3>Geen supporters van Feyenoord bij komende uitwedstrijden, club belooft ‘binnen enkele dagen’ duidelijkheid over opsporen van afstekers vuurwerk bij Cambuur</h3>
-            <p>Feyenoord heeft zelf besloten supporters thuis te laten, nadat een wedstrijd tegen SC Cambuur zondag uit de hand liep. Bij het afs...</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Geen supporters van Feyenoord </div>
+            <h3>‘Heel soms doe ik niets. Dan lees ik lekker op mijn e-reader.’ Ze is al twintig jaar met pensioen, maar Elle Veenstra-Monteban heeft nog volop werk</h3>
+            <p>Ella Veenstra-Monteban leidt twintig jaar na haar pensioen nog steeds een actief leven vol vrijwilligerswerk en schrijven. Ze leest voor aan kinderen en ouderen en werkt momenteel aan haar eigen memoires.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Ella Veenstra-Monteban leest ontspannen een boek op haar e-reader.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('10')">
         <div class="card-img-wrapper">
-            <img src="https://images.nu.nl/m/wvexkiga08yf_sqr256/0/0/4256/4256/korting-stimuleert-mij-buiten-de-spits-de-trein-te-nemen.jpg" alt="Stelling | 'Korting stimuleert mij buiten de spits de trein te nemen'">
+            <img src="https://image.parool.nl/276705517/roi/320/320/2282/1193/afbeelding" alt="Vijf kinderen en dertien volwassenen met oogschade na zonsverduistering">
             <span class="badge">Nederland</span>
-            <span class="badge-source">🇳🇱 NL • Nu</span>
+            <span class="badge-source">🇳🇱 NL • Parool</span>
         </div>
         <div class="card-content">
-            <h3>Stelling | 'Korting stimuleert mij buiten de spits de trein te nemen'</h3>
-            <p>De NS heeft een nieuwe kortingsactie om reizigers te stimuleren op rustigere momenten de trein te nemen. De korting bedraagt zo'n ...</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Stelling | 'Korting stimuleert</div>
+            <h3>Vijf kinderen en dertien volwassenen met oogschade na zonsverduistering</h3>
+            <p>Na de recente zonsverduistering zijn achttien mensen behandeld voor oogschade, onder wie vijf kinderen. Het incident benadrukt het gevaar van het kijken naar de zon zonder de juiste bescherming.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Iemand kijkt naar de zonsverduistering door een speciale beschermbril.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('11')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_11/800/600" alt="Five highlights from nuclear-power research">
+            <img src="https://picsum.photos/seed/art_11/800/600" alt="The HydroGym reinforcement learning platform for fluid dynamics">
             <span class="badge">Wiskunde & Wetenschap</span>
             <span class="badge-source">🇬🇧 GB • Nature</span>
         </div>
         <div class="card-content">
-            <h3>Five highlights from nuclear-power research</h3>
-            <p>Nature, Published online: 26 August 2026; doi:10.1038/d41586-026-02512-6Advanced materials, cancer risk analysis and other develop...</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Five highlights from nuclear-p</div>
+            <h3>The HydroGym reinforcement learning platform for fluid dynamics</h3>
+            <p>HydroGym biedt meer dan 60 gestandaardiseerde omgevingen voor reinforcement learning gericht op stromingsleer. Het platform laat succesvolle toepassing op een 3D-vleugel zien, waarbij de wrijving met 38% wordt verminderd.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Een 3D-visualisatie van de luchtstroom rondom een vliegtuigvleugel in een simulatie.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('12')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_12/800/600" alt="The dental crown of the future could be 3D-printed while you wait">
+            <img src="https://picsum.photos/seed/art_12/800/600" alt="A Manhattan-sized ice island just broke free from Greenland">
             <span class="badge">Wiskunde & Wetenschap</span>
             <span class="badge-source">🇺🇸 US • Sciencedaily</span>
         </div>
         <div class="card-content">
-            <h3>The dental crown of the future could be 3D-printed while you wait</h3>
-            <p>Researchers have found a way to slash the processing time for 3D-printed zirconia crowns from as much as 100 hours to under 30 min...</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: The dental crown of the future</div>
+            <h3>A Manhattan-sized ice island just broke free from Greenland</h3>
+            <p>Een reusachtig ijseiland ter grootte van Manhattan is afgebroken van de Petermann-gletsjer in Groenland. Het is het grootste afkalvingsevenement van deze gletsjer sinds 2012.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Satellietbeeld van het reusachtige ijseiland dat losdrijft van de Groenlandse gletsjer.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('13')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_13/800/600" alt="Historic sulfur emissions—the likely cause of damage to Murujuga rock art">
+            <img src="https://picsum.photos/seed/art_13/800/600" alt="Addendum: Sea level much higher than assumed in most coastal hazard assessments">
             <span class="badge">Wiskunde & Wetenschap</span>
-            <span class="badge-source">🇺🇸 US • Phys</span>
+            <span class="badge-source">🇬🇧 GB • Nature</span>
         </div>
         <div class="card-content">
-            <h3>Historic sulfur emissions—the likely cause of damage to Murujuga rock art</h3>
-            <p>Murujuga is a sacred cultural landscape of land and sea Country across the Burrup Peninsula and Dampier Archipelago in Western Aus...</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Historic sulfur emissions—the </div>
+            <h3>Addendum: Sea level much higher than assumed in most coastal hazard assessments</h3>
+            <p>Een wetenschappelijk addendum toont aan dat de zeespiegel aanzienlijk hoger is dan tot nu toe werd aangenomen in risicoanalyses voor kustgebieden. Dit heeft grote gevolgen voor de beoordeling van overstromingsrisico's.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Hoge golven slaan tegen een kwetsbare zeedijk tijdens een storm.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('14')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_14/800/600" alt="heise+ | Leiser China-Mini-PC mit sparsamem Intel-Wildcat-Lake-Prozessor im Test">
+            <img src="https://picsum.photos/seed/art_14/800/600" alt="Ubisoft vergeet game in Steam-release van Heroes of Might and Magic III - update">
             <span class="badge">Technologie</span>
-            <span class="badge-source">🇩🇪 DE • Heise</span>
+            <span class="badge-source">🇳🇱 NL • Tweakers</span>
         </div>
         <div class="card-content">
-            <h3>heise+ | Leiser China-Mini-PC mit sparsamem Intel-Wildcat-Lake-Prozessor im Test</h3>
-            <p>Der Mini-PC Beelink Eqi Wildcat Lake Core 3 304 zählt zu den ersten mit einer Billig-CPU der Serie 300 und hat flotte Anschlüsse. ...</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: heise+ | Leiser China-Mini-PC </div>
+            <h3>Ubisoft vergeet game in Steam-release van Heroes of Might and Magic III - update</h3>
+            <p>Kopers van Heroes of Might and Magic III op Steam kregen na aankoop een leeg bestand en een foutmelding. Ubisoft blijkt het daadwerkelijke spel te zijn vergeten toe te voegen aan de release.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Het logo van het klassieke spel Heroes of Might and Magic III getoond op een beeldscherm.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('15')">
         <div class="card-img-wrapper">
-            <img src="https://cdn.arstechnica.net/wp-content/uploads/2025/02/GettyImages-2053751760-1152x648.jpg" alt="Two unvaccinated people die from measles in Pennsylvania, officials confirm">
+            <img src="https://picsum.photos/seed/art_15/800/600" alt="Patentstreit um Disney+: InterDigital klagt jetzt auch gegen VP9">
             <span class="badge">Technologie</span>
-            <span class="badge-source">🇺🇸 US • Arstechnica</span>
+            <span class="badge-source">🇩🇪 DE • Heise</span>
         </div>
         <div class="card-content">
-            <h3>Two unvaccinated people die from measles in Pennsylvania, officials confirm</h3>
-            <p>"[P]eople are not familiar with this disease and don’t fully understand the potential severity."...</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Two unvaccinated people die fr</div>
+            <h3>Patentstreit um Disney+: InterDigital klagt jetzt auch gegen VP9</h3>
+            <p>Na verlies in meerdere patentzaken stapte Disney+ over op de VP9-codec voor 4K-streaming. InterDigital claimt dat ook deze codec hun patenten schendt en heeft opnieuw een rechtszaak aangespannen.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Het logo van de streamingdienst Disney+ op een tv-scherm.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('16')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_16/800/600" alt="SiFive bringt RISC-V-Server mit Ubuntu 26.04 und RHEL 10 für Code-Entwickler">
+            <img src="https://picsum.photos/seed/art_16/800/600" alt="Qualcomm claimt dat nieuwe Oryon-cpu als eerste mobiele chip 5GHz haalt">
             <span class="badge">Technologie</span>
-            <span class="badge-source">🇩🇪 DE • Heise</span>
+            <span class="badge-source">🇳🇱 NL • Tweakers</span>
         </div>
         <div class="card-content">
-            <h3>SiFive bringt RISC-V-Server mit Ubuntu 26.04 und RHEL 10 für Code-Entwickler</h3>
-            <p>Um das Henne-und-Ei-Problem bei RISC-V für Rechenzentren zu lösen, stellt SiFive Entwicklerserver mit 32 RVA23-Kernen, 256 GByte R...</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: SiFive bringt RISC-V-Server mi</div>
+            <h3>Qualcomm claimt dat nieuwe Oryon-cpu als eerste mobiele chip 5GHz haalt</h3>
+            <p>Qualcomm stelt dat de nieuwe Oryon-processor met een kloksnelheid van 5GHz de snelste mobiele cpu ter wereld is. De chip combineert een hoge verwerkingssnelheid met geavanceerde nieuwe cachetechnologie.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 De nieuwe Qualcomm Oryon-processor van dichtbij gefotografeerd.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('17')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_17/800/600" alt="Littler's Players Championship hopes dented">
+            <img src="https://picsum.photos/seed/art_17/800/600" alt="The maths whizz turned £86m teenage star heading to Man City">
             <span class="badge">Sport</span>
             <span class="badge-source">🇬🇧 GB • Bbc</span>
         </div>
         <div class="card-content">
-            <h3>Littler's Players Championship hopes dented</h3>
-            <p>Luke Littler loses to Jermaine Wattimena in the quarter-finals of the 27th Players Championship contest of the year....</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Littler's Players Championship</div>
+            <h3>The maths whizz turned £86m teenage star heading to Man City</h3>
+            <p>Manchester City heeft een principeakkoord bereikt met Lille over de overstap van de jonge middenvelder Ayyoub Bouaddi. De 17-jarige speler kost de club naar verluidt zo'n 86 miljoen pond.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Voetballer Ayyoub Bouaddi aan de bal tijdens een wedstrijd.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('18')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_18/800/600" alt="Man Utd's midfield spending is done - now for a left-back?">
+            <img src="https://picsum.photos/seed/art_18/800/600" alt="Taekwondo, stats and £1m record - the rise of Arsenal striker Smith">
             <span class="badge">Sport</span>
             <span class="badge-source">🇬🇧 GB • Bbc</span>
         </div>
         <div class="card-content">
-            <h3>Man Utd's midfield spending is done - now for a left-back?</h3>
-            <p>After spending £155m on three midfielders, now Manchester United must decide whether to try to buy a left-back...</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Man Utd's midfield spending is</div>
+            <h3>Taekwondo, stats and £1m record - the rise of Arsenal striker Smith</h3>
+            <p>Arsenal-aanvaller Olivia Smith staat al sinds haar vijftiende in de schijnwerpers na een indrukwekkende opmars in het vrouwenvoetbal. Haar achtergrond in taekwondo en focus op statistieken hielpen haar naar een recordtransfer.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Arsenal-spits Olivia Smith juicht na het scoren van een doelpunt.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('19')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_19/800/600" alt="'Energy, pace, passion' - Newcastle's dynamic performance">
+            <img src="https://picsum.photos/seed/art_19/800/600" alt="What does your Premier League club still need in the transfer window?">
             <span class="badge">Sport</span>
             <span class="badge-source">🇬🇧 GB • Bbc</span>
         </div>
         <div class="card-content">
-            <h3>'Energy, pace, passion' - Newcastle's dynamic performance</h3>
-            <p>Match of the Day's Joe Hart, Danny Murphy and Gabby Logan analyse Newcastle's energetic performance in their Premier League opener...</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: 'Energy, pace, passion' - Newc</div>
+            <h3>What does your Premier League club still need in the transfer window?</h3>
+            <p>Met nog een week te gaan voor de deadline analyseert BBC Sport de laatste transferbehoeftes van de Premier League-clubs. De teams zoeken op de valreep nog naar cruciale versterkingen voor hun selectie.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Een sfeerbeeld van een vol Premier League-stadion voor de aftrap.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
@@ -432,59 +435,58 @@
         </div>
         <div class="card-content">
             <h3>I'm a Fitness Editor—Here Are My Favorite Labor Day Deals on Training Gear</h3>
-            <p>I tracked down the best sales for leveling up your workouts....</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: I'm a Fitness Editor—Here Are </div>
+            <p>Een fitnessredacteur deelt de beste kortingen op sportuitrusting en kleding rondom Labor Day. De deals bieden een goede kans om voordelig nieuwe spullen voor workouts aan te schaffen.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Verschillende soorten fitnessapparatuur en sportkleding netjes uitgestald.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('21')">
         <div class="card-img-wrapper">
-            <img src="https://hips.hearstapps.com/hmg-prod/images/9ed6f2bc-a05c-48d2-ac8d-1499fb760a91.png" alt="The 24 Best Pieces of Hiking Gear, According to Outdoor Editors">
+            <img src="https://picsum.photos/seed/art_21/800/600" alt="Is lifting during pregnancy healthy?">
             <span class="badge">Fitness & Resistance Training</span>
-            <span class="badge-source">🇺🇸 US • Menshealth</span>
+            <span class="badge-source">🇺🇸 US • Strongerbyscience</span>
         </div>
         <div class="card-content">
-            <h3>The 24 Best Pieces of Hiking Gear, According to Outdoor Editors</h3>
-            <p>Must-pack picks for day hikes, expedition treks, and everything in between....</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: The 24 Best Pieces of Hiking G</div>
+            <h3>Is lifting during pregnancy healthy?</h3>
+            <p>Een grootschalige review van 50 studies onder 47.000 deelnemers onderzocht het effect van krachttraining tijdens de zwangerschap. De resultaten geven inzicht in de gevolgen voor de gezondheid van de moeder, de bevalling en het herstel.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Een zwangere vrouw voert voorzichtig een oefening uit met gewichten in de sportschool.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card" onclick="openArticle('22')">
         <div class="card-img-wrapper">
-            <img src="https://picsum.photos/seed/art_22/800/600" alt="Is breakfast really the most important meal of the day?">
+            <img src="https://picsum.photos/seed/art_22/800/600" alt="Exercise selection for the hamstrings: a guide">
             <span class="badge">Fitness & Resistance Training</span>
             <span class="badge-source">🇺🇸 US • Strongerbyscience</span>
         </div>
         <div class="card-content">
-            <h3>Is breakfast really the most important meal of the day?</h3>
-            <p>Does breakfast actually improve training performance or body composition? A recent narrative review examined this topic specifical...</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Is breakfast really the most i</div>
+            <h3>Exercise selection for the hamstrings: a guide</h3>
+            <p>Stronger by Science heeft een gids gepubliceerd met advies over de beste oefeningen voor de hamstrings. Het artikel helpt sporters bij het samenstellen van een gebalanceerd trainingsschema.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Een sporter traint de beenspieren op een hamstring-krachttoestel.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     <div class="card card-full-width" onclick="openArticle('23')">
         <div class="card-img-wrapper">
-            <img src="https://images.nu.nl/m/awuxmvtayuce_sqr256/75/0/492/492/rijke-chinese-vrouw-sponsort-dramaserie-voor-60-kusscenes-met-favoriete-acteur.jpg" alt="Rijke Chinese vrouw sponsort dramaserie voor 60 kusscènes met favoriete acteur">
+            <img src="https://storage.ghost.io/c/fa/9c/fa9cd1d4-6369-4dde-bbf0-3755aa4734dc/content/images/2026/07/Screenshot-2026-07-14-at-3.37.46---PM.png" alt="Pentagon unveils technology to hide fat generals from Hegseth">
             <span class="badge">Humor & Luchtig</span>
-            <span class="badge-source">🇳🇱 NL • Nu</span>
+            <span class="badge-source">🇺🇸 US • Duffelblog</span>
         </div>
         <div class="card-content">
-            <h3>Rijke Chinese vrouw sponsort dramaserie voor 60 kusscènes met favoriete acteur</h3>
-            <p>Een vermogende Chinese vrouw is wel erg ver gegaan om bij haar favoriete acteur te komen. Ze financiert een dramaserie in ruil voo...</p>
-            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Afbeelding ter illustratie bij: Rijke Chinese vrouw sponsort d</div>
+            <h3>Pentagon unveils technology to hide fat generals from Hegseth</h3>
+            <p>Het Pentagon heeft een augmented reality-systeem geïntroduceerd dat senior officieren slanker laat lijken om aan de fysieke eisen te voldoen. Het satirische bericht reageert op de strenge fitnessstandaarden van defensieminister Hegseth.</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 Een hoge legerofficier draagt een augmented reality-bril tijdens een presentatie.</div>
             <div class="read-more">Lees bericht &rarr;</div>
         </div>
     </div>
     
     </div>
 
-    <!-- OPSCHOONING FOOTER -->
     <footer>
-        <p>Build ID: <code>223f3957</code> | AI Engine: Gemini 3.6 Flash</p>
+        <p>Build ID: <code>7c6f6f21</code> | AI Engine: Gemini 3.6 Flash</p>
     </footer>
 
     <div id="modalOverlay" class="modal-overlay" onclick="if(event.target.id==='modalOverlay') closeModal();">
@@ -507,7 +509,7 @@
     </div>
 
     <script>
-        const articlesData = {"1": {"title": "Maatschappelijk Dossier", "category": "Dagelijks Opinie-Dossier", "img": "https://picsum.photos/seed/fallback_op/800/600", "caption": "Nieuwsoverzicht van de dag", "ai_summary": "Kon geen nieuw dossier genereren.", "full_text": "Fout bij genereren: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 33.177084355s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '33s'}]}}", "reliability_score": 50, "reliability_reason": "Onvoldoende data voor verificatie.", "source_name": "Opinie Redactie", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": true}, "2": {"title": "Could Syria become the focus of an Israeli-Turkish conflict?", "category": "Wereld", "img": "https://picsum.photos/seed/art_2/800/600", "caption": "Afbeelding ter illustratie bij: Could Syria become the focus o", "ai_summary": "An Israeli attack on a Syrian military airfield just recently demonstrated once again that Syria is becoming a key battleground fo...", "full_text": "An Israeli attack on a Syrian military airfield just recently demonstrated once again that Syria is becoming a key battleground for the rivalry between regional powers. At the forefront: Israel and Turkey.", "original_link": "https://www.dw.com/en/could-syria-become-the-focus-of-an-israeli-turkish-conflict/a-78507781?maca=en-rss-en-world-4025-rdf", "source_name": "Dw", "country_code": "DE", "country_flag": "\ud83c\udde9\ud83c\uddea", "is_background": false}, "3": {"title": "Some of Russia\u2019s A.I. Drones Are Powered by Nvidia Microcomputers, Ukrainian Officials Say", "category": "Wereld", "img": "https://static01.nyt.com/images/2026/08/24/multimedia/24int-ukraine-nvidia-02-zclk/24int-ukraine-nvidia-02-zclk-mediumSquareAt3X.jpg", "caption": "Afbeelding ter illustratie bij: Some of Russia\u2019s A.I. Drones A", "ai_summary": "The tech giant says it does not sell the devices in Russia, but they are widely available on resale markets. When purchased that w...", "full_text": "The tech giant says it does not sell the devices in Russia, but they are widely available on resale markets. When purchased that way, they are virtually impossible to track.", "original_link": "https://www.nytimes.com/2026/08/24/world/europe/ukraine-war-nvidia-ai-autonomous-drones.html", "source_name": "Nytimes", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "4": {"title": "Dolly Parton, country music icon from small-town America and feminist role model, has died at 80", "category": "Wereld", "img": "https://img.lemde.fr/2026/08/26/643/0/1715/857/644/322/60/0/2e0549b_upload-1-5nmtajssvs5u-opale-photo-lumen-crno-10481.jpg", "caption": "Afbeelding ter illustratie bij: Dolly Parton, country music ic", "ai_summary": "The queen of country music and songwriter of more than 1,000 songs, including the iconic 'Jolene,' died on August 25 at the age of...", "full_text": "The queen of country music and songwriter of more than 1,000 songs, including the iconic 'Jolene,' died on August 25 at the age of 80, in her home state of Tennessee.", "original_link": "https://www.lemonde.fr/en/obituaries/article/2026/08/26/dolly-parton-country-music-icon-from-small-town-america-and-feminist-role-model-has-died-at-80_6756864_15.html", "source_name": "Lemonde", "country_code": "FR", "country_flag": "\ud83c\uddeb\ud83c\uddf7", "is_background": false}, "5": {"title": "Was die AfD mit \u201eRemigration\u201c meint", "category": "Europa", "img": "https://picsum.photos/seed/art_5/800/600", "caption": "Afbeelding ter illustratie bij: Was die AfD mit \u201eRemigration\u201c ", "ai_summary": "Die Forderung nach millionenfacher \u201eRemigration\u201c pr\u00e4gt die Politik der AfD. Migrationsforscher Gerald Knaus erkl\u00e4rt im Gespr\u00e4ch mi...", "full_text": "Die Forderung nach millionenfacher \u201eRemigration\u201c pr\u00e4gt die Politik der AfD. Migrationsforscher Gerald Knaus erkl\u00e4rt im Gespr\u00e4ch mit Pauline von Pezold und Frederik Schindler, warum diese Pl\u00e4ne eklatant gegen die Menschenw\u00fcrde versto\u00dfen. Die Partei nutze dabei nach au\u00dfen gezielt eine verharmlosende Doppelmoral. Knaus warnt eindringlich vor den internationalen Vorbildern der Partei, etwa den massenhaften Deportationspl\u00e4nen aus [&#8230;]", "original_link": "https://www.politico.eu/podcast/inside-afd/was-die-afd-mit-remigration-meint/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication", "source_name": "Politico", "country_code": "EU", "country_flag": "\ud83c\uddea\ud83c\uddfa", "is_background": false}, "6": {"title": "Why are Dolly Parton fans lashing out at Donald Trump?", "category": "Europa", "img": "https://picsum.photos/seed/art_6/800/600", "caption": "Afbeelding ter illustratie bij: Why are Dolly Parton fans lash", "ai_summary": "Donald Trump's order for flags to be lowered at half-mast to honour Dolly Parton has been met with applause. However, some fans ar...", "full_text": "Donald Trump's order for flags to be lowered at half-mast to honour Dolly Parton has been met with applause. However, some fans are pointing out that Trump's tribute rings a false note, as Parton's literacy initiative is suffering under Republican rule...", "original_link": "http://www.euronews.com/culture/2026/08/26/why-are-dolly-parton-fans-lashing-out-at-donald-trump", "source_name": "Euronews", "country_code": "EU", "country_flag": "\ud83c\uddea\ud83c\uddfa", "is_background": false}, "7": {"title": "Netherlands may not have enough gas for a harsh winter, Gasunie warns", "category": "Europa", "img": "https://picsum.photos/seed/art_7/800/600", "caption": "Afbeelding ter illustratie bij: Netherlands may not have enoug", "ai_summary": "The Netherlands will miss its winter gas-storage target, leaving it insufficiently prepared for an exceptionally harsh winter with...", "full_text": "The Netherlands will miss its winter gas-storage target, leaving it insufficiently prepared for an exceptionally harsh winter without additional measures, according to Dutch state-owned gas infrastructure company Gasunie.", "original_link": "http://www.euronews.com/business/2026/08/26/netherlands-may-not-have-enough-gas-for-a-harsh-winter-gasunie-warns", "source_name": "Euronews", "country_code": "EU", "country_flag": "\ud83c\uddea\ud83c\uddfa", "is_background": false}, "8": {"title": "Aan het front in Oekra\u00efne kijkt militair medisch personeel mee via drones: \u2018Je ziet dingen die je voor een horrorfilm nog niet kan bedenken\u2019", "category": "Nederland", "img": "https://images.nrc.nl/miApVh4GplXJ6-qYst21EVxZQyo=/1280x/filters:no_upscale()/s3/static.nrc.nl/wp-content/uploads/2026/08/25112317/250826BUI_2036168909_KrystynaHP.jpg", "caption": "Afbeelding ter illustratie bij: Aan het front in Oekra\u00efne kijk", "ai_summary": "De Nederlandse Khristina werkt sinds 2023 als hospik aan het front in Oekra\u00efne en zag hoe de oorlog veranderde, wreder werd en omv...", "full_text": "De Nederlandse Khristina werkt sinds 2023 als hospik aan het front in Oekra\u00efne en zag hoe de oorlog veranderde, wreder werd en omvormde tot een hoogtechnologische krachtmeting. \u201eAf en toe zit je hopeloos en machteloos toe te kijken via een drone.\u201d", "original_link": "https://www.nrc.nl/nieuws/2026/08/25/aan-het-front-in-oekraine-kijken-medici-mee-via-drones-je-ziet-dingen-die-je-voor-een-horrorfilm-nog-niet-kan-bedenken-a4935123", "source_name": "Nrc", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "9": {"title": "Geen supporters van Feyenoord bij komende uitwedstrijden, club belooft \u2018binnen enkele dagen\u2019 duidelijkheid over opsporen van afstekers vuurwerk bij Cambuur", "category": "Nederland", "img": "https://images.nrc.nl/GYq1hJJsScLzyKJNh_9UPHhxT3M=/1280x/filters:no_upscale()/s3/static.nrc.nl/wp-content/uploads/2026/08/26123227/260826VER_2036211355_.jpg", "caption": "Afbeelding ter illustratie bij: Geen supporters van Feyenoord ", "ai_summary": "Feyenoord heeft zelf besloten supporters thuis te laten, nadat een wedstrijd tegen SC Cambuur zondag uit de hand liep. Bij het afs...", "full_text": "Feyenoord heeft zelf besloten supporters thuis te laten, nadat een wedstrijd tegen SC Cambuur zondag uit de hand liep. Bij het afsteken van vuurwerk raakten toen zeven mensen gewond. De club probeert naar eigen zeggen \u201ezo veel mogelijk\u201d daders op te sporen.", "original_link": "https://www.nrc.nl/nieuws/2026/08/26/geen-supporters-van-feyenoord-bij-komende-uitwedstrijden-club-belooft-binnen-enkele-dagen-duidelijkheid-over-opsporen-van-afstekers-vuurwerk-bij-cambuur-a4935185", "source_name": "Nrc", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "10": {"title": "Stelling | 'Korting stimuleert mij buiten de spits de trein te nemen'", "category": "Nederland", "img": "https://images.nu.nl/m/wvexkiga08yf_sqr256/0/0/4256/4256/korting-stimuleert-mij-buiten-de-spits-de-trein-te-nemen.jpg", "caption": "Afbeelding ter illustratie bij: Stelling | 'Korting stimuleert", "ai_summary": "De NS heeft een nieuwe kortingsactie om reizigers te stimuleren op rustigere momenten de trein te nemen. De korting bedraagt zo'n ...", "full_text": "De NS heeft een nieuwe kortingsactie om reizigers te stimuleren op rustigere momenten de trein te nemen. De korting bedraagt zo'n 30 procent. Overtuigt die korting jou de trein net buiten de spits te nemen?", "original_link": "https://www.nu.nl/uitgelicht/6407467/korting-stimuleert-mij-buiten-de-spits-de-trein-te-nemen.html", "source_name": "Nu", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "11": {"title": "Five highlights from nuclear-power research", "category": "Wiskunde & Wetenschap", "img": "https://picsum.photos/seed/art_11/800/600", "caption": "Afbeelding ter illustratie bij: Five highlights from nuclear-p", "ai_summary": "Nature, Published online: 26 August 2026; doi:10.1038/d41586-026-02512-6Advanced materials, cancer risk analysis and other develop...", "full_text": "Nature, Published online: 26 August 2026; doi:10.1038/d41586-026-02512-6Advanced materials, cancer risk analysis and other developments from recent studies.", "original_link": "https://www.nature.com/articles/d41586-026-02512-6", "source_name": "Nature", "country_code": "GB", "country_flag": "\ud83c\uddec\ud83c\udde7", "is_background": false}, "12": {"title": "The dental crown of the future could be 3D-printed while you wait", "category": "Wiskunde & Wetenschap", "img": "https://picsum.photos/seed/art_12/800/600", "caption": "Afbeelding ter illustratie bij: The dental crown of the future", "ai_summary": "Researchers have found a way to slash the processing time for 3D-printed zirconia crowns from as much as 100 hours to under 30 min...", "full_text": "Researchers have found a way to slash the processing time for 3D-printed zirconia crowns from as much as 100 hours to under 30 minutes. The advance could eventually let dentists print strong, customized permanent crowns for patients within a single appointment.", "original_link": "https://www.sciencedaily.com/releases/2026/08/260822015217.htm", "source_name": "Sciencedaily", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "13": {"title": "Historic sulfur emissions\u2014the likely cause of damage to Murujuga rock art", "category": "Wiskunde & Wetenschap", "img": "https://picsum.photos/seed/art_13/800/600", "caption": "Afbeelding ter illustratie bij: Historic sulfur emissions\u2014the ", "ai_summary": "Murujuga is a sacred cultural landscape of land and sea Country across the Burrup Peninsula and Dampier Archipelago in Western Aus...", "full_text": "Murujuga is a sacred cultural landscape of land and sea Country across the Burrup Peninsula and Dampier Archipelago in Western Australia's Pilbara region.", "original_link": "https://phys.org/news/2026-08-historic-sulfur-emissions-murujuga-art.html", "source_name": "Phys", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "14": {"title": "heise+ | Leiser China-Mini-PC mit sparsamem Intel-Wildcat-Lake-Prozessor im Test", "category": "Technologie", "img": "https://picsum.photos/seed/art_14/800/600", "caption": "Afbeelding ter illustratie bij: heise+ | Leiser China-Mini-PC ", "ai_summary": "Der Mini-PC Beelink Eqi Wildcat Lake Core 3 304 z\u00e4hlt zu den ersten mit einer Billig-CPU der Serie 300 und hat flotte Anschl\u00fcsse. ...", "full_text": "Der Mini-PC Beelink Eqi Wildcat Lake Core 3 304 z\u00e4hlt zu den ersten mit einer Billig-CPU der Serie 300 und hat flotte Anschl\u00fcsse. Das leistet er im B\u00fcroalltag.", "original_link": "https://www.heise.de/tests/Leiser-China-Mini-PC-mit-sparsamem-Intel-Wildcat-Lake-Prozessor-im-Test-11387527.html?wt_mc=rss.red.ho.ho.atom.beitrag_plus.beitrag_plus", "source_name": "Heise", "country_code": "DE", "country_flag": "\ud83c\udde9\ud83c\uddea", "is_background": false}, "15": {"title": "Two unvaccinated people die from measles in Pennsylvania, officials confirm", "category": "Technologie", "img": "https://cdn.arstechnica.net/wp-content/uploads/2025/02/GettyImages-2053751760-1152x648.jpg", "caption": "Afbeelding ter illustratie bij: Two unvaccinated people die fr", "ai_summary": "\"[P]eople are not familiar with this disease and don\u2019t fully understand the potential severity.\"...", "full_text": "\"[P]eople are not familiar with this disease and don\u2019t fully understand the potential severity.\"", "original_link": "https://arstechnica.com/health/2026/08/two-unvaccinated-people-die-from-measles-in-pennsylvania-officials-confirm/", "source_name": "Arstechnica", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "16": {"title": "SiFive bringt RISC-V-Server mit Ubuntu 26.04 und RHEL 10 f\u00fcr Code-Entwickler", "category": "Technologie", "img": "https://picsum.photos/seed/art_16/800/600", "caption": "Afbeelding ter illustratie bij: SiFive bringt RISC-V-Server mi", "ai_summary": "Um das Henne-und-Ei-Problem bei RISC-V f\u00fcr Rechenzentren zu l\u00f6sen, stellt SiFive Entwicklerserver mit 32 RVA23-Kernen, 256 GByte R...", "full_text": "Um das Henne-und-Ei-Problem bei RISC-V f\u00fcr Rechenzentren zu l\u00f6sen, stellt SiFive Entwicklerserver mit 32 RVA23-Kernen, 256 GByte RAM und PCIe 5.0 bereit.", "original_link": "https://www.heise.de/news/SiFive-bringt-RISC-V-Server-mit-Ubuntu-26-04-und-RHEL-10-fuer-Code-Entwickler-11424109.html?wt_mc=rss.red.ho.ho.atom.beitrag.beitrag", "source_name": "Heise", "country_code": "DE", "country_flag": "\ud83c\udde9\ud83c\uddea", "is_background": false}, "17": {"title": "Littler's Players Championship hopes dented", "category": "Sport", "img": "https://picsum.photos/seed/art_17/800/600", "caption": "Afbeelding ter illustratie bij: Littler's Players Championship", "ai_summary": "Luke Littler loses to Jermaine Wattimena in the quarter-finals of the 27th Players Championship contest of the year....", "full_text": "Luke Littler loses to Jermaine Wattimena in the quarter-finals of the 27th Players Championship contest of the year.", "original_link": "https://www.bbc.co.uk/sport/darts/articles/c36ln69p1ldo?at_medium=RSS&at_campaign=rss", "source_name": "Bbc", "country_code": "GB", "country_flag": "\ud83c\uddec\ud83c\udde7", "is_background": false}, "18": {"title": "Man Utd's midfield spending is done - now for a left-back?", "category": "Sport", "img": "https://picsum.photos/seed/art_18/800/600", "caption": "Afbeelding ter illustratie bij: Man Utd's midfield spending is", "ai_summary": "After spending \u00a3155m on three midfielders, now Manchester United must decide whether to try to buy a left-back...", "full_text": "After spending \u00a3155m on three midfielders, now Manchester United must decide whether to try to buy a left-back", "original_link": "https://www.bbc.co.uk/sport/football/articles/clykngy3gldo?at_medium=RSS&at_campaign=rss", "source_name": "Bbc", "country_code": "GB", "country_flag": "\ud83c\uddec\ud83c\udde7", "is_background": false}, "19": {"title": "'Energy, pace, passion' - Newcastle's dynamic performance", "category": "Sport", "img": "https://picsum.photos/seed/art_19/800/600", "caption": "Afbeelding ter illustratie bij: 'Energy, pace, passion' - Newc", "ai_summary": "Match of the Day's Joe Hart, Danny Murphy and Gabby Logan analyse Newcastle's energetic performance in their Premier League opener...", "full_text": "Match of the Day's Joe Hart, Danny Murphy and Gabby Logan analyse Newcastle's energetic performance in their Premier League opener against Liverpool.", "original_link": "https://www.bbc.co.uk/sport/football/videos/cr595yvrevjo?at_medium=RSS&at_campaign=rss", "source_name": "Bbc", "country_code": "GB", "country_flag": "\ud83c\uddec\ud83c\udde7", "is_background": false}, "20": {"title": "I'm a Fitness Editor\u2014Here Are My Favorite Labor Day Deals on Training Gear", "category": "Fitness & Resistance Training", "img": "https://hips.hearstapps.com/hmg-prod/images/cd90f81b-fe90-4075-8328-c66061a2f75b.png", "caption": "Afbeelding ter illustratie bij: I'm a Fitness Editor\u2014Here Are ", "ai_summary": "I tracked down the best sales for leveling up your workouts....", "full_text": "I tracked down the best sales for leveling up your workouts.", "original_link": "https://www.menshealth.com/fitness/a73454255/labor-day-fitness-editor-picks-2026/", "source_name": "Menshealth", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "21": {"title": "The 24 Best Pieces of Hiking Gear, According to Outdoor Editors", "category": "Fitness & Resistance Training", "img": "https://hips.hearstapps.com/hmg-prod/images/9ed6f2bc-a05c-48d2-ac8d-1499fb760a91.png", "caption": "Afbeelding ter illustratie bij: The 24 Best Pieces of Hiking G", "ai_summary": "Must-pack picks for day hikes, expedition treks, and everything in between....", "full_text": "Must-pack picks for day hikes, expedition treks, and everything in between.", "original_link": "https://www.menshealth.com/technology-gear/a71731077/best-hiking-gear/", "source_name": "Menshealth", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "22": {"title": "Is breakfast really the most important meal of the day?", "category": "Fitness & Resistance Training", "img": "https://picsum.photos/seed/art_22/800/600", "caption": "Afbeelding ter illustratie bij: Is breakfast really the most i", "ai_summary": "Does breakfast actually improve training performance or body composition? A recent narrative review examined this topic specifical...", "full_text": "Does breakfast actually improve training performance or body composition? A recent narrative review examined this topic specifically. \nThe post Is breakfast really the most important meal of the day? appeared first on Stronger by Science.", "original_link": "https://www.strongerbyscience.com/breakfast/", "source_name": "Strongerbyscience", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "23": {"title": "Rijke Chinese vrouw sponsort dramaserie voor 60 kussc\u00e8nes met favoriete acteur", "category": "Humor & Luchtig", "img": "https://images.nu.nl/m/awuxmvtayuce_sqr256/75/0/492/492/rijke-chinese-vrouw-sponsort-dramaserie-voor-60-kusscenes-met-favoriete-acteur.jpg", "caption": "Afbeelding ter illustratie bij: Rijke Chinese vrouw sponsort d", "ai_summary": "Een vermogende Chinese vrouw is wel erg ver gegaan om bij haar favoriete acteur te komen. Ze financiert een dramaserie in ruil voo...", "full_text": "Een vermogende Chinese vrouw is wel erg ver gegaan om bij haar favoriete acteur te komen. Ze financiert een dramaserie in ruil voor tientallen zoensc\u00e8nes met haar lievelingsacteur. Acteur Zhong Yufei deelde zijn verdriet hierover op sociale media.", "original_link": "https://www.nu.nl/opmerkelijk/6406411/rijke-chinese-vrouw-sponsort-dramaserie-voor-60-kusscenes-met-favoriete-acteur.html", "source_name": "Nu", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}};
+        const articlesData = {"1": {"title": "Achter de schermen in Moskou: Waarom directe diplomatie tussen de VS en Rusland noodzakelijker is dan ooit", "category": "Dagelijks Opinie-Dossier", "img": "https://picsum.photos/seed/opinion_today_1/800/600", "caption": "Een sober verlichte conferentiezaal met de vlaggen van de Verenigde Staten en Rusland op de achtergrond, waar twee diplomaten in silhouet tegenover elkaar aan een lange tafel zitten.", "ai_summary": "Het zeldzame bezoek van de CIA-chef aan Moskou onderstreept de toenemende spanningen en de dringende behoefte aan directe communicatiekanalen tussen de grootmachten. Hoewel diplomatie momenteel onder druk staat, blijft strategische dialoog essentieel om gevaarlijke escalatie te voorkomen.", "full_text": "<h4 style=\"color:#00b4d8; margin-top:15px; margin-bottom:5px;\">Kerninzichten<\/h4>\u2022 Het eerste bezoek van een CIA-directeur aan Moskou in vijf jaar duidt op een ernstige escalatie of dringende veiligheidskwestie.<br>\u2022 Directe informatie-uitwisseling tussen inlichtingendiensten voorkomt fatale misrekeningen in hooggespannen geopolitieke situaties.<br><br><h4 style=\"color:#00b4d8; margin-top:15px; margin-bottom:5px;\">Diepgaande Analyse<\/h4>In tijden van diepe geopolitieke crises is het onderhouden van communicatiekanalen geen teken van zwakte, maar van strategische noodzaak. Dat de topman van de CIA na vijf jaar weer afreist naar de Russische hoofdstad, geeft aan dat de situatie rondom de internationale veiligheid een kritiek punt heeft bereikt. De offici\u00eble diplomatieke betrekkingen tussen het Westen en Rusland bevinden zich op een historisch dieptepunt, maar achter de schermen moeten risico's op een directe confrontatie koste wat het kost worden geminimaliseerd.<br><br>Historisch gezien hebben geheime overleggen tussen inlichtingendiensten \u2013 zoals tijdens de Koude Oorlog \u2013 geholpen om misverstanden te voorkomen die tot catastrofale escalaties hadden kunnen leiden. De aanhoudende spanningen en de verschuivende verhoudingen in de mondiale orde eisen dat er, ondanks harde openbare retoriek, op operationeel niveau gesproken blijft worden over de rode lijnen van beide mogendheden.<br><br><h4 style=\"color:#00b4d8; margin-top:15px; margin-bottom:5px;\">Conclusie<\/h4>Het bezoek van de CIA-chef is een sober signaal dat de internationale veiligheidssituatie uiterst kwetsbaar is. Openheid en praatbereidheid achter gesloten deuren zijn geen toezeggingen aan de tegenstander, maar een onmisbaar instrument om wereldwijde escalatie te voorkomen.", "reliability_score": 85, "reliability_reason": "Het artikel is gebaseerd op een bericht van NU.nl over een geverifieerde diplomatieke en strategische gebeurtenis, ondersteund door historische context rond de relatie tussen de VS en Rusland.", "source_name": "Opinie Redactie", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": true}, "2": {"title": "DR Congo peace roadmap: Will the fighting finally end?", "category": "Wereld", "img": "https://picsum.photos/seed/art_2/800/600", "caption": "Een VN-vredesmacht patrouilleert in een gebied in het oosten van de Democratische Republiek Congo.", "ai_summary": "Een nieuw stappenplan legt de voorwaarden vast voor vrede in het oosten van de Democratische Republiek Congo. Meningsverschillen over M23-rebellen en de rol van Rwanda kunnen het proces echter nog steeds laten ontsporen.", "full_text": "A new roadmap sets out the conditions toward peace in the eastern Democratic Republic of Congo (DRC). But disagreements over M23 rebels, Rwanda's role and security concerns remain, and could still derail the process.", "original_link": "https://www.dw.com/en/dr-congo-peace-roadmap-will-the-fighting-finally-end/a-78487489?maca=en-rss-en-world-4025-rdf", "source_name": "Dw", "country_code": "DE", "country_flag": "\ud83c\udde9\ud83c\uddea", "is_background": false}, "3": {"title": "A teacher\u2019s slap, student\u2019s death revive India\u2019s corporal punishment debate", "category": "Wereld", "img": "https://picsum.photos/seed/art_3/800/600", "caption": "Demonstranten verzamelen zich voor een school in India om te demonstreren tegen geweld in het onderwijs.", "ai_summary": "De dood van de leerling Teja na een klap van een leraar heeft het debat over lijfstraffen in India opnieuw doen oplaaien. Ondanks een verbod van meer dan tien jaar geleden worden kinderen op scholen nog steeds regelmatig geslagen.", "full_text": "Teja&#039;s death raises question India has not fully answered: why more than a decade after ban is hitting children routine?", "original_link": "https://www.aljazeera.com/news/2026/8/26/a-teachers-slap-students-death-revive-indias-corporal-punishment-debate?traffic_source=rss", "source_name": "Aljazeera", "country_code": "QA", "country_flag": "\ud83c\uddf6\ud83c\udde6", "is_background": false}, "4": {"title": "Na vijf jaar weer CIA-baas in Moskou voor gesprek: 'Zegt iets over urgentie'", "category": "Wereld", "img": "https://images.nu.nl/m/ksexki9adlb0_sqr256/594/0/5499/5499/na-vijf-jaar-weer-cia-baas-in-moskou-voor-gesprek-zegt-iets-over-urgentie.jpg", "caption": "CIA-directeur John Ratcliffe verlaat een diplomatiek gebouw in Moskou.", "ai_summary": "CIA-directeur John Ratcliffe is onverwachts naar Moskou gegaan voor gesprekken met Russische functionarissen. Het zeldzame bezoek van zo'n hooggeplaatste Amerikaanse functionaris onderstreept de hoge urgentie van de situatie.", "full_text": "CIA-directeur John Ratcliffe is dinsdag onaangekondigd naar Moskou gevlogen voor gesprekken, bevestigt president Donald Trump na berichten in Amerikaanse media. Het is voor het eerst in jaren dat zo'n hooggeplaatste Amerikaanse functionaris in Rusland is geweest. \"Die stuur je alleen als er iets speelt.\"", "original_link": "https://www.nu.nl/spanningen-oekraine/6407569/na-vijf-jaar-weer-cia-baas-in-moskou-voor-gesprek-zegt-iets-over-urgentie.html", "source_name": "Nu", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "5": {"title": "Rare Mondrian unseen for 25 years heads to auction", "category": "Europa", "img": "https://picsum.photos/seed/art_5/800/600", "caption": "Het schilderij 'Composition III' van Piet Mondriaan hangt klaar voor de veiling bij Christie's.", "ai_summary": "Een zeldzaam schilderij van Piet Mondriaan uit 1920, 'Composition III', wordt in oktober geveild bij Christie's in Londen. Het kunstwerk is al 25 jaar niet meer getoond en moet naar verwachting tussen de 20 en 30 miljoen pond opleveren.", "full_text": "A rare 1920 Mondrian painting, Composition III, unseen for 25 years, will sell at Christie's London in October with an estimate of \u00a320m to \u00a330m.", "original_link": "http://www.euronews.com/video/2026/08/26/rare-mondrian-unseen-for-25-years-heads-to-auction", "source_name": "Euronews", "country_code": "EU", "country_flag": "\ud83c\uddea\ud83c\uddfa", "is_background": false}, "6": {"title": "Wolf sightings rise in Italy after suspected attacks", "category": "Europa", "img": "https://picsum.photos/seed/art_6/800/600", "caption": "Een wolf loopt door een bosrijke omgeving nabij een Italiaans dorp.", "ai_summary": "In Itali\u00eb worden steeds vaker wolven gespot nadat er meerdere mensen, waaronder kinderen, gewond zijn geraakt bij mogelijke aanvallen. De autoriteiten intensiveert de pogingen om de dieren in bewoonde gebieden op te sporen en te vangen.", "full_text": "Several people, including children, have been injured in recent incidents as authorities step up efforts to track and capture animals in populated areas.", "original_link": "http://www.euronews.com/my-europe/2026/08/26/wolf-sightings-rise-in-italy-after-suspected-attacks", "source_name": "Euronews", "country_code": "EU", "country_flag": "\ud83c\uddea\ud83c\uddfa", "is_background": false}, "7": {"title": "Putin signs decree allowing state seizure of businesses hit by drone strikes", "category": "Europa", "img": "https://picsum.photos/seed/art_7/800/600", "caption": "President Vladimir Poetin ondertekent een decreet in het Kremlin.", "ai_summary": "President Poetin heeft een decreet ondertekend waarmee de Russische staat bedrijven kan overnemen die zijn getroffen door droneaanvallen. Experts noemen de maatregel 'hybride nationalisatie' en waarschuwen dat het gebruikt kan worden om bezittingen af te pakken.", "full_text": "The edict covers energy, transport, logistics and any facility deemed critical to national security, and can be imposed by presidential instruction alone. Experts called it \"hybrid nationalisation,\" warning it would be used to seize assets from companies under the pretext of security failure.", "original_link": "http://www.euronews.com/2026/08/26/putin-signs-decree-allowing-state-seizure-of-businesses-hit-by-drone-strikes", "source_name": "Euronews", "country_code": "EU", "country_flag": "\ud83c\uddea\ud83c\uddfa", "is_background": false}, "8": {"title": "Sterren rouwen om overlijden Dolly Parton. \u2018Het is moeilijk voor te stellen dat we nu in een wereld zonder Dolly leven\u2019", "category": "Nederland", "img": "https://images.nrc.nl/3KnINtwyoUMtQyzhaR1ysryvQSY=/1280x/filters:no_upscale()/s3/static.nrc.nl/wp-content/uploads/2026/08/26091636/260826MID_2036198418_dollyoud.jpg", "caption": "Countryzangeres Dolly Parton treedt op tijdens een van haar iconische concerten.", "ai_summary": "Wereldwijd wordt er gerouwd om het overlijden van countryzangeres Dolly Parton op 80-jarige leeftijd. Beroemdheden als Oprah Winfrey, Paul McCartney en Donald Trump betuigden hun medeleven op sociale media.", "full_text": "Wereldwijd wordt gereageerd op de dood van countryzangeres Dolly Parton, die op 80-jarige leeftijd is overleden. Oprah Winfrey, Paul McCartney en de Amerikaanse president Donald Trump behoren tot de vele bekende namen die op sociale media hun verdriet hebben gedeeld.", "original_link": "https://www.nrc.nl/nieuws/2026/08/25/sterren-rouwen-om-overlijden-dolly-parton-het-is-moeilijk-voor-te-stellen-dat-we-nu-in-een-wereld-zonder-dolly-leven-a4935162", "source_name": "Nrc", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "9": {"title": "\u2018Heel soms doe ik niets. Dan lees ik lekker op mijn e-reader.\u2019 Ze is al twintig jaar met pensioen, maar Elle Veenstra-Monteban heeft nog volop werk", "category": "Nederland", "img": "https://images.nrc.nl/ULGlH2Gg8-3PhP9jBnNk1xRlp24=/1280x/filters:no_upscale()/s3/static.nrc.nl/wp-content/uploads/2026/08/13142612/140826ECO_2035893420_spitsuur.jpg", "caption": "Ella Veenstra-Monteban leest ontspannen een boek op haar e-reader.", "ai_summary": "Ella Veenstra-Monteban leidt twintig jaar na haar pensioen nog steeds een actief leven vol vrijwilligerswerk en schrijven. Ze leest voor aan kinderen en ouderen en werkt momenteel aan haar eigen memoires.", "full_text": "Ella Veenstra-Monteban is twintig jaar met pensioen, en leidt nog altijd een druk leven vol vrijwilligerswerk. Ze leest voor aan kinderen en dementerenden en belicht kerkzaken in lokale media. Schrijven is een van haar hobby\u2019s: \u201eIk ben nu mijn memoires aan het schrijven.\u201d", "original_link": "https://www.nrc.nl/nieuws/2026/08/14/vrijwilligerswerk-is-voor-mij-een-kwestie-van-zingeving-het-voelt-als-een-plicht-naar-de-maatschappij-a4934338", "source_name": "Nrc", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "10": {"title": "Vijf kinderen en dertien volwassenen met oogschade na zonsverduistering", "category": "Nederland", "img": "https://image.parool.nl/276705517/roi/320/320/2282/1193/afbeelding", "caption": "Iemand kijkt naar de zonsverduistering door een speciale beschermbril.", "ai_summary": "Na de recente zonsverduistering zijn achttien mensen behandeld voor oogschade, onder wie vijf kinderen. Het incident benadrukt het gevaar van het kijken naar de zon zonder de juiste bescherming.", "full_text": "", "original_link": "https://www.parool.nl/nederland/vijf-kinderen-en-dertien-volwassenen-met-oogschade-na-zonsverduistering~b1bb515e/", "source_name": "Parool", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "11": {"title": "The HydroGym reinforcement learning platform for fluid dynamics", "category": "Wiskunde & Wetenschap", "img": "https://picsum.photos/seed/art_11/800/600", "caption": "Een 3D-visualisatie van de luchtstroom rondom een vliegtuigvleugel in een simulatie.", "ai_summary": "HydroGym biedt meer dan 60 gestandaardiseerde omgevingen voor reinforcement learning gericht op stromingsleer. Het platform laat succesvolle toepassing op een 3D-vleugel zien, waarbij de wrijving met 38% wordt verminderd.", "full_text": "Nature, Published online: 19 August 2026; doi:10.1038/s41586-026-10917-6HydroGym offers over 60 standardized reinforcement-learning flow-control environments and demonstrates zero-shot transfer to a 3D wing, cutting local skin friction by 38% and exploration costs by four orders of magnitude.", "original_link": "https://www.nature.com/articles/s41586-026-10917-6", "source_name": "Nature", "country_code": "GB", "country_flag": "\ud83c\uddec\ud83c\udde7", "is_background": false}, "12": {"title": "A Manhattan-sized ice island just broke free from Greenland", "category": "Wiskunde & Wetenschap", "img": "https://picsum.photos/seed/art_12/800/600", "caption": "Satellietbeeld van het reusachtige ijseiland dat losdrijft van de Groenlandse gletsjer.", "ai_summary": "Een reusachtig ijseiland ter grootte van Manhattan is afgebroken van de Petermann-gletsjer in Groenland. Het is het grootste afkalvingsevenement van deze gletsjer sinds 2012.", "full_text": "A huge section of Greenland\u2019s Petermann Glacier has snapped off, forming an ice island about the size of Manhattan. Satellites watched cracks spread rapidly before the 76-square-kilometer slab finally broke free on August 4. It is the glacier\u2019s biggest calving event since 2012, and scientists say two even larger pieces could eventually follow. The rare Arctic iceberg will now be tracked as it drifts, breaks apart, and potentially affects shipping routes.", "original_link": "https://www.sciencedaily.com/releases/2026/08/260823094145.htm", "source_name": "Sciencedaily", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "13": {"title": "Addendum: Sea level much higher than assumed in most coastal hazard assessments", "category": "Wiskunde & Wetenschap", "img": "https://picsum.photos/seed/art_13/800/600", "caption": "Hoge golven slaan tegen een kwetsbare zeedijk tijdens een storm.", "ai_summary": "Een wetenschappelijk addendum toont aan dat de zeespiegel aanzienlijk hoger is dan tot nu toe werd aangenomen in risicoanalyses voor kustgebieden. Dit heeft grote gevolgen voor de beoordeling van overstromingsrisico's.", "full_text": "Nature, Published online: 25 August 2026; doi:10.1038/s41586-026-11017-1Addendum: Sea level much higher than assumed in most coastal hazard assessments", "original_link": "https://www.nature.com/articles/s41586-026-11017-1", "source_name": "Nature", "country_code": "GB", "country_flag": "\ud83c\uddec\ud83c\udde7", "is_background": false}, "14": {"title": "Ubisoft vergeet game in Steam-release van Heroes of Might and Magic III - update", "category": "Technologie", "img": "https://picsum.photos/seed/art_14/800/600", "caption": "Het logo van het klassieke spel Heroes of Might and Magic III getoond op een beeldscherm.", "ai_summary": "Kopers van Heroes of Might and Magic III op Steam kregen na aankoop een leeg bestand en een foutmelding. Ubisoft blijkt het daadwerkelijke spel te zijn vergeten toe te voegen aan de release.", "full_text": "De Steam-release van de klassieke rpg Heroes of Might and Magic III blijkt die game zelf niet te bevatten. Kopers die 9,99 euro betaalden voor de gisteren uitgebrachte game krijgen een download van 23,49kB en een foutmelding waarin staat dat het uitvoerbare gamebestand een dummy is.", "original_link": "https://tweakers.net/nieuws/251392/ubisoft-vergeet-game-in-steam-release-van-heroes-of-might-and-magic-iii.html", "source_name": "Tweakers", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "15": {"title": "Patentstreit um Disney+: InterDigital klagt jetzt auch gegen VP9", "category": "Technologie", "img": "https://picsum.photos/seed/art_15/800/600", "caption": "Het logo van de streamingdienst Disney+ op een tv-scherm.", "ai_summary": "Na verlies in meerdere patentzaken stapte Disney+ over op de VP9-codec voor 4K-streaming. InterDigital claimt dat ook deze codec hun patenten schendt en heeft opnieuw een rechtszaak aangespannen.", "full_text": "Disney+ streamt nach mehreren Gerichtsniederlagen mit dem Codec VP9 in 4K. InterDigital h\u00e4lt auch das f\u00fcr eine Patentverletzung und hat erneut geklagt.", "original_link": "https://www.heise.de/news/Patentstreit-um-Disney-InterDigital-klagt-jetzt-auch-gegen-VP9-11424349.html?wt_mc=rss.red.ho.ho.atom.beitrag.beitrag", "source_name": "Heise", "country_code": "DE", "country_flag": "\ud83c\udde9\ud83c\uddea", "is_background": false}, "16": {"title": "Qualcomm claimt dat nieuwe Oryon-cpu als eerste mobiele chip 5GHz haalt", "category": "Technologie", "img": "https://picsum.photos/seed/art_16/800/600", "caption": "De nieuwe Qualcomm Oryon-processor van dichtbij gefotografeerd.", "ai_summary": "Qualcomm stelt dat de nieuwe Oryon-processor met een kloksnelheid van 5GHz de snelste mobiele cpu ter wereld is. De chip combineert een hoge verwerkingssnelheid met geavanceerde nieuwe cachetechnologie.", "full_text": "Qualcomm claimt dat zijn nieuwe Oryon-processor met een kloksnelheid van 5GHz de snelste mobiele cpu ter wereld is. Oryon verwerkt volgens de maker ook veel instructies per kloktik en zou dus niet alleen op papier goed scoren. Qualcomm combineert de cpu met nieuwe cachetechnologie.", "original_link": "https://tweakers.net/nieuws/251388/qualcomm-claimt-dat-nieuwe-oryon-cpu-als-eerste-mobiele-chip-5ghz-haalt.html", "source_name": "Tweakers", "country_code": "NL", "country_flag": "\ud83c\uddf3\ud83c\uddf1", "is_background": false}, "17": {"title": "The maths whizz turned \u00a386m teenage star heading to Man City", "category": "Sport", "img": "https://picsum.photos/seed/art_17/800/600", "caption": "Voetballer Ayyoub Bouaddi aan de bal tijdens een wedstrijd.", "ai_summary": "Manchester City heeft een principeakkoord bereikt met Lille over de overstap van de jonge middenvelder Ayyoub Bouaddi. De 17-jarige speler kost de club naar verluidt zo'n 86 miljoen pond.", "full_text": "Manchester City have agreed a deal in principle with Lille to sign midfielder Ayyoub Bouaddi - what makes him such a highly rated talent?", "original_link": "https://www.bbc.co.uk/sport/football/articles/cwylg0kp5lwo?at_medium=RSS&at_campaign=rss", "source_name": "Bbc", "country_code": "GB", "country_flag": "\ud83c\uddec\ud83c\udde7", "is_background": false}, "18": {"title": "Taekwondo, stats and \u00a31m record - the rise of Arsenal striker Smith", "category": "Sport", "img": "https://picsum.photos/seed/art_18/800/600", "caption": "Arsenal-spits Olivia Smith juicht na het scoren van een doelpunt.", "ai_summary": "Arsenal-aanvaller Olivia Smith staat al sinds haar vijftiende in de schijnwerpers na een indrukwekkende opmars in het vrouwenvoetbal. Haar achtergrond in taekwondo en focus op statistieken hielpen haar naar een recordtransfer.", "full_text": "Olivia Smith's career has been in the limelight since she was 15 - but she had been preparing herself for it even before she was a professional footballer.", "original_link": "https://www.bbc.co.uk/sport/football/articles/c8jdl0n0r7mo?at_medium=RSS&at_campaign=rss", "source_name": "Bbc", "country_code": "GB", "country_flag": "\ud83c\uddec\ud83c\udde7", "is_background": false}, "19": {"title": "What does your Premier League club still need in the transfer window?", "category": "Sport", "img": "https://picsum.photos/seed/art_19/800/600", "caption": "Een sfeerbeeld van een vol Premier League-stadion voor de aftrap.", "ai_summary": "Met nog een week te gaan voor de deadline analyseert BBC Sport de laatste transferbehoeftes van de Premier League-clubs. De teams zoeken op de valreep nog naar cruciale versterkingen voor hun selectie.", "full_text": "BBC Sport takes a look at what each of the Premier League clubs still need before the summer transfer window shuts in seven days.", "original_link": "https://www.bbc.co.uk/sport/football/articles/c4gql9p0qn2o?at_medium=RSS&at_campaign=rss", "source_name": "Bbc", "country_code": "GB", "country_flag": "\ud83c\uddec\ud83c\udde7", "is_background": false}, "20": {"title": "I'm a Fitness Editor\u2014Here Are My Favorite Labor Day Deals on Training Gear", "category": "Fitness & Resistance Training", "img": "https://hips.hearstapps.com/hmg-prod/images/cd90f81b-fe90-4075-8328-c66061a2f75b.png", "caption": "Verschillende soorten fitnessapparatuur en sportkleding netjes uitgestald.", "ai_summary": "Een fitnessredacteur deelt de beste kortingen op sportuitrusting en kleding rondom Labor Day. De deals bieden een goede kans om voordelig nieuwe spullen voor workouts aan te schaffen.", "full_text": "I tracked down the best sales for leveling up your workouts.", "original_link": "https://www.menshealth.com/fitness/a73454255/labor-day-fitness-editor-picks-2026/", "source_name": "Menshealth", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "21": {"title": "Is lifting during pregnancy healthy?", "category": "Fitness & Resistance Training", "img": "https://picsum.photos/seed/art_21/800/600", "caption": "Een zwangere vrouw voert voorzichtig een oefening uit met gewichten in de sportschool.", "ai_summary": "Een grootschalige review van 50 studies onder 47.000 deelnemers onderzocht het effect van krachttraining tijdens de zwangerschap. De resultaten geven inzicht in de gevolgen voor de gezondheid van de moeder, de bevalling en het herstel.", "full_text": "A recently published systematic review and meta analysis involving 50 studies and over 47,000 participants looked at the effect of resistance training on a plethora of pregnancy-related variables, from prenatal health all the way to delivery outcomes and pelvic floor symptoms. \nThe post Is lifting during pregnancy healthy? appeared first on Stronger by Science.", "original_link": "https://www.strongerbyscience.com/lifting-during-pregnancy/", "source_name": "Strongerbyscience", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "22": {"title": "Exercise selection for the hamstrings: a guide", "category": "Fitness & Resistance Training", "img": "https://picsum.photos/seed/art_22/800/600", "caption": "Een sporter traint de beenspieren op een hamstring-krachttoestel.", "ai_summary": "Stronger by Science heeft een gids gepubliceerd met advies over de beste oefeningen voor de hamstrings. Het artikel helpt sporters bij het samenstellen van een gebalanceerd trainingsschema.", "full_text": "Exercises to include in a balanced hamstring program\nThe post Exercise selection for the hamstrings: a guide appeared first on Stronger by Science.", "original_link": "https://www.strongerbyscience.com/exercise-selection-hamstrings/", "source_name": "Strongerbyscience", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}, "23": {"title": "Pentagon unveils technology to hide fat generals from Hegseth", "category": "Humor & Luchtig", "img": "https://storage.ghost.io/c/fa/9c/fa9cd1d4-6369-4dde-bbf0-3755aa4734dc/content/images/2026/07/Screenshot-2026-07-14-at-3.37.46---PM.png", "caption": "Een hoge legerofficier draagt een augmented reality-bril tijdens een presentatie.", "ai_summary": "Het Pentagon heeft een augmented reality-systeem ge\u00efntroduceerd dat senior officieren slanker laat lijken om aan de fysieke eisen te voldoen. Het satirische bericht reageert op de strenge fitnessstandaarden van defensieminister Hegseth.", "full_text": "New augmented reality system automatically renders senior officers \u201cwithin standards\u201d", "original_link": "https://www.duffelblog.com/pentagon-fat-generals/", "source_name": "Duffelblog", "country_code": "US", "country_flag": "\ud83c\uddfa\ud83c\uddf8", "is_background": false}};
 
         function openArticle(id) {
             const a = articlesData[id];
