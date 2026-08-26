@@ -22,7 +22,6 @@ current_hour = now.hour
 
 print(f"Huidige tijd: {now.strftime('%Y-%m-%d %H:%M:%S')} (Uur: {current_hour})")
 
-# Draai alleen tussen 05:00 en 20:00 uur (inclusief 20:xx)
 if not (5 <= current_hour <= 20):
     print("⏳ Buiten de actieve uren (05:00 - 20:00 uur). Geen update uitgevoerd.")
     exit(0)
@@ -157,7 +156,7 @@ FEEDS = {
     ]
 }
 
-# 4. WEERSVERWACHTING LOKAAL WEERT (51.2517 N, 5.7068 E)
+# 4. WEERSVERWACHTING LOKAAL WEERT
 weather_html_summary = "Weergegevens niet beschikbaar."
 try:
     url_w = "https://api.open-meteo.com/v1/forecast?latitude=51.2517&longitude=5.7068&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=Europe%2FAmsterdam"
@@ -179,7 +178,7 @@ try:
 except Exception as e:
     print(f"Weerfout: {e}")
 
-# 5. DYNAMISCHE SPREUK EN TIP (1 API Call)
+# 5. DYNAMISCHE SPREUK EN TIP
 daily_quote = "De enige constante in het leven is verandering."
 daily_quote_author = "Heraclitus"
 daily_tip = "Neem elk uur even 2 minuten afstand van je scherm om je ogen rust te geven."
@@ -187,12 +186,12 @@ daily_tip = "Neem elk uur even 2 minuten afstand van je scherm om je ogen rust t
 if client:
     try:
         prompt_extras = (
-            "Bedenk voor vandaag (in het Nederlands, Engels of Duits):\n"
+            "Bedenk voor vandaag (in het Nederlands):\n"
             "1. Een inspirerende quote inclusief auteur.\n"
             "2. Een unieke, praktische dagelijkse tip op het gebied van productiviteit, fitness of gezondheid.\n"
             "Geef antwoord exact als JSON: {\"quote\": \"...\", \"auteur\": \"...\", \"tip\": \"...\"}"
         )
-        res_extras = client.models.generate_content(
+        res_extras = client.models.generate-content(
             model='gemini-3.6-flash',
             contents=prompt_extras,
             config={'response_mime_type': 'application/json', 'tools': []}
@@ -222,10 +221,10 @@ def extract_domain_name(url):
     except Exception:
         return "Bron"
 
-# Unieke Unsplash generator via Picsum ID fallback om dubbele foto's gegarandeerd uit te sluiten
-def get_unique_fallback_image(item_id, search_term="news"):
-    clean_term = urllib.parse.quote(search_term.replace(" ", ","))
-    return f"https://source.unsplash.com/800x600/?{clean_term}&sig={item_id}"
+def build_unsplash_url(keywords, item_id):
+    """ Genereert een gegarandeerd unieke en werkende Unsplash beeld-URL """
+    kw = urllib.parse.quote(keywords.replace(" ", ","))
+    return f"https://source.unsplash.com/featured/800x600/?{kw}&sig={item_id}"
 
 def extract_feed_image(entry, default_category, title, item_id):
     if 'media_content' in entry and entry.media_content:
@@ -242,7 +241,7 @@ def extract_feed_image(entry, default_category, title, item_id):
     if img_match:
         return img_match.group(1)
         
-    return get_unique_fallback_image(item_id, f"{default_category},{title[:20]}")
+    return build_unsplash_url(f"{default_category},news", item_id)
 
 # 6. FEEDS VERZAMELEN MET ONTDUBBELING
 all_headlines_with_sources = []
@@ -272,7 +271,7 @@ for cat, urls in FEEDS.items():
             "category": cat
         })
 
-# 7. OPINIESTUK GENEREREN OF UIT CACHE LADEN (1x per dag) + Betrouwbaarheidsindicator & Unieke AI Zoektermen
+# 7. OPINIESTUK GENEREREN OF UIT CACHE LADEN (1x per dag)
 OPINION_CACHE_FILE = "opinion_cache.json"
 opinion_data = None
 
@@ -292,18 +291,18 @@ if not opinion_data and client and all_headlines_with_sources:
         prompt = (
             f"Gebruik de volgende actuele nieuwsheadlines:\n"
             f"{json.dumps(sample, ensure_ascii=False)}\n\n"
-            f"Opdracht (voertaal bij voorkeur Nederlands, anders Engels of Duits):\n"
+            f"Opdracht:\n"
             f"1. Kies het meest maatschappelijk relevante onderwerp.\n"
-            f"2. Schrijf een sterk, pakkend achtergrond- en opinieartikel met een specifieke, aansprekende titel.\n"
-            f"3. Geef een nauwkeurige caption die beschrijft wat er op de foto bij dit artikel te zien moet zijn.\n"
-            f"4. Bepaal 2 hele specifieke Engelstalige Unsplash-zoekwoorden (image_search_keywords) die een exact uniek passend beeld opleveren voor dit specifieke artikel.\n"
-            f"5. Geef een betrouwbaarheidsindicator als percentage (0-100%) op basis van de bronnen en feiten, plus toelichting.\n\n"
+            f"2. Schrijf een sterk, pakkend achtergrond- en opinieartikel in het Nederlands (vertaal indien nodig).\n"
+            f"3. Geef een nauwkeurige Nederlandse caption die exact beschrijft wat er op de bijpassende foto te zien is.\n"
+            f"4. Bepaal 2 hele specifieke Engelstalige Unsplash-zoekwoorden (image_search_keywords) die direct aansluiten op het beeld.\n"
+            f"5. Geef een betrouwbaarheidsindicator als percentage (0-100%) op basis van feiten, plus toelichting.\n\n"
             f"Geef antwoord als JSON:\n"
             f"{{\n"
-            f'  "titel": "Pakkende specifieke titel",\n'
-            f'  "samenvatting": "Korte samenvatting in 2 zinnen",\n'
+            f'  "titel": "Pakkende Nederlandse titel",\n'
+            f'  "samenvatting": "Korte samenvatting in 2 zinnen in het Nederlands",\n'
             f'  "inhoud": "### Kerninzichten\\n* [Punt 1]\\n* [Punt 2]\\n\\n### Diepgaande Analyse\\n[Tekst]\\n\\n### Conclusie\\n[Conclusie]",\n'
-            f'  "image_caption": "Gedetailleerde beschrijving van het visuele beeld",\n'
+            f'  "image_caption": "Gedetailleerde Nederlandse beschrijving van het visuele beeld",\n'
             f'  "image_search_keywords": "specific_keyword1,specific_keyword2",\n'
             f'  "reliability_score": 88,\n'
             f'  "reliability_reason": "Gebaseerd op meervoudige geverifieerde bronnen."\n'
@@ -324,7 +323,7 @@ if not opinion_data and client and all_headlines_with_sources:
             "image_caption": data.get("image_caption", "Sfeerbeeld van het maatschappelijk debat"),
             "reliability_score": data.get("reliability_score", 85),
             "reliability_reason": data.get("reliability_reason", "Meervoudig geverifieerde bronnen."),
-            "img": f"https://source.unsplash.com/1200x800/?{urllib.parse.quote(search_kw)}&sig=opinion1"
+            "img": build_unsplash_url(search_kw, "opinion1")
         }
         with open(OPINION_CACHE_FILE, "w", encoding="utf-8") as f:
             json.dump({"date": today_str, "data": opinion_data}, f, ensure_ascii=False)
@@ -335,13 +334,13 @@ if not opinion_data and client and all_headlines_with_sources:
             "titel": "Maatschappelijk Dossier",
             "samenvatting": "Kon geen nieuw dossier genereren.",
             "inhoud": f"Fout bij genereren: {err}",
-            "image_caption": "Nieuwsoverzicht",
+            "image_caption": "Nieuwsoverzicht van de dag",
             "reliability_score": 50,
             "reliability_reason": "Onvoldoende data voor verificatie.",
-            "img": "https://source.unsplash.com/1200x800/?newspaper,journalism&sig=fallback_op"
+            "img": build_unsplash_url("journalism,news", "fallback_op")
         }
 
-# 8. REGULIERE ARTIKELEN VERZAMELEN & BATCH AI SAMENVATTING (1 API Call totaal)
+# 8. REGULIERE ARTIKELEN VERZAMELEN & BATCH AI SAMENVATTING (Inclusief Vertaling & Plaatjes Match)
 modal_data = {}
 article_id = 0
 
@@ -363,7 +362,7 @@ modal_data[str(article_id)] = {
 featured_html = f"""
 <div class="featured-banner" onclick="openArticle('1')">
     <div class="featured-img-wrapper">
-        <img src="{opinion_data['img']}" alt="{opinion_data['titel']}">
+        <img src="{opinion_data['img']}" alt="{opinion_data['titel']}" onerror="this.onerror=null;this.src='https://source.unsplash.com/featured/800x600/?journalism';">
         <span class="badge badge-featured">🔥 Dagelijks Opinie-Dossier</span>
     </div>
     <div class="featured-content">
@@ -390,7 +389,7 @@ for cat, count in category_counts.items():
         clean_sum = strip_tags(item.get('summary', item.get('description', '')))
         item_link = item.get('link', '#')
         source_name = extract_domain_name(item_link)
-        img_url = extract_feed_image(item, cat, item.title, article_id)
+        raw_img = extract_feed_image(item, cat, item.title, article_id)
         
         articles_to_process.append({
             "id": str(article_id),
@@ -399,24 +398,24 @@ for cat, count in category_counts.items():
             "link": item_link,
             "source_name": source_name,
             "clean_sum": clean_sum,
-            "img_url": img_url
+            "img_url": raw_img
         })
 
-# BATCH AI PROCESS: Alle nieuwsartikelen in 1 enkele API call verwerken!
+# BATCH AI PROCESS: Vertalingen, Samenvattingen & Matchende Plaatjes
 processed_summaries = {}
 if client and articles_to_process:
     try:
         input_payload = [{"id": a["id"], "title": a["title"], "text": a["clean_sum"][:300]} for a in articles_to_process]
         batch_prompt = (
             f"Verwerk de volgende lijst nieuwsartikelen:\n{json.dumps(input_payload, ensure_ascii=False)}\n\n"
-            f"Opdracht per artikel ID (Taal: bij voorkeur Nederlands, anders Engels of Duits):\n"
-            f"1. Maak een heldere samenvatting in max 2 zinnen.\n"
-            f"2. Schrijf een 'caption' die exact aansluit op de inhoud van de titel en tekst.\n"
-            f"3. Bepaal 2 hele specifieke Engelstalige Unsplash zoekwoorden (search_keywords) om een 100% unieke, perfect bij de inhoud passende foto te vinden.\n\n"
+            f"Instructies per artikel ID:\n"
+            f"1. ALS de titel/tekst NIET in het Nederlands, Engels of Duits is (bijv. Frans, Spaans), vertaal deze dan VERPLICHT naar het Nederlands.\n"
+            f"2. Maak een heldere samenvatting in max 2 zinnen (voorkeur Nederlands).\n"
+            f"3. Schrijf een bijpassende caption in het Nederlands die het verhaal op het beeld beschrijft.\n"
+            f"4. Bepaal 2 Engelstalige Unsplash zoekwoorden (search_keywords) die exact en uniek op de inhoud aansluiten.\n\n"
             f"Geef het antwoord terug als JSON dictionary met het artikel ID als key:\n"
             f"{{\n"
-            f'  "2": {{"summary": "...", "caption": "...", "search_keywords": "word1,word2"}},\n'
-            f'  "3": {{"summary": "...", "caption": "...", "search_keywords": "word3,word4"}}\n'
+            f'  "2": {{"title": "Gevraagde titel (vertaald naar NL indien vreemde taal, anders origineel)", "summary": "...", "caption": "...", "search_keywords": "word1,word2"}}\n'
             f"}}"
         )
         res_batch = client.models.generate_content(
@@ -434,17 +433,16 @@ for item in articles_to_process:
     aid = item["id"]
     ai_data = processed_summaries.get(aid, {})
     
+    final_title = ai_data.get("title", item["title"])
     ai_summary = ai_data.get("summary", item["clean_sum"][:130] + "...")
-    img_caption = ai_data.get("caption", f"Afbeelding ter illustratie van: {item['title'][:30]}")
+    img_caption = ai_data.get("caption", f"Afbeelding ter illustratie bij: {final_title[:30]}")
     
-    # Als de originele feed geen unieke image had, genereer een exact context-matched Unsplash URL via AI keywords
-    final_img_url = item["img_url"]
-    if "source.unsplash.com" in final_img_url and ai_data.get("search_keywords"):
-        kw = urllib.parse.quote(ai_data["search_keywords"])
-        final_img_url = f"https://source.unsplash.com/800x600/?{kw}&sig={aid}"
+    # Gebruik altijd contextueel matchende unieke Unsplash beelden op basis van de AI zoekwoorden
+    search_keywords = ai_data.get("search_keywords", f"{item['category']},news")
+    final_img_url = build_unsplash_url(search_keywords, aid)
     
     modal_data[aid] = {
-        "title": item["title"],
+        "title": final_title,
         "category": item["category"],
         "img": final_img_url,
         "caption": img_caption,
@@ -459,11 +457,11 @@ for item in articles_to_process:
     articles_html += f"""
     <div class="card{full_width}" onclick="openArticle('{aid}')">
         <div class="card-img-wrapper">
-            <img src="{final_img_url}" alt="{item['title']}" onerror="this.onerror=null;this.src='https://source.unsplash.com/800x600/?news&sig={aid}';">
+            <img src="{final_img_url}" alt="{final_title}" onerror="this.onerror=null;this.src='https://source.unsplash.com/featured/800x600/?news&sig={aid}';">
             <span class="badge">{item['category']}</span>
         </div>
         <div class="card-content">
-            <h3>{item['title']}</h3>
+            <h3>{final_title}</h3>
             <p>{ai_summary}</p>
             <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 {img_caption}</div>
             <div class="read-more">Lees bericht &rarr;</div>
@@ -551,12 +549,12 @@ html_content = f"""<!DOCTYPE html>
     </div>
 
     <footer>
-        <p>Build ID: <code>{build_id}</code> | AI Engine: Gemini 3.6 Flash (Optimized Rate Limit Batching)</p>
+        <p>Build ID: <code>{build_id}</code> | AI Engine: Gemini 3.6 Flash (Dynamic Image & Translation Enabled)</p>
     </footer>
 
     <div id="modalOverlay" class="modal-overlay" onclick="if(event.target.id==='modalOverlay') closeModal();">
         <div class="modal-container">
-            <img id="modalImg" style="width:100%; height:240px; object-fit:cover; border-radius:8px;" src="" alt="">
+            <img id="modalImg" style="width:100%; height:240px; object-fit:cover; border-radius:8px;" src="" alt="" onerror="this.onerror=null;this.src='https://source.unsplash.com/featured/800x600/?news';">
             <div id="modalCaption" style="font-size:0.8rem; color:#90e0ef; margin-top:6px; font-style:italic;"></div>
             <span id="modalBadge" style="background:#00b4d8; color:white; padding:3px 8px; border-radius:10px; font-size:0.7rem; font-weight:bold; margin-top:10px; display:inline-block;"></span>
             <h2 id="modalTitle" style="color:white; font-size:1.3rem;"></h2>
