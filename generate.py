@@ -156,25 +156,85 @@ FEEDS = {
     ]
 }
 
-# 4. WEERSVERWACHTING LOKAAL WEERT
+# 4. WEERSVERWACHTING LOKAAL WEERT (INCL. WIND, NEERSLAG EN ONE-LINER)
 weather_html_summary = "Weergegevens niet beschikbaar."
+
+def kmh_to_bft(kmh):
+    if kmh < 2: return 0
+    elif kmh <= 5: return 1
+    elif kmh <= 11: return 2
+    elif kmh <= 19: return 3
+    elif kmh <= 28: return 4
+    elif kmh <= 38: return 5
+    elif kmh <= 49: return 6
+    elif kmh <= 61: return 7
+    elif kmh <= 74: return 8
+    elif kmh <= 88: return 9
+    elif kmh <= 102: return 10
+    elif kmh <= 117: return 11
+    else: return 12
+
+def weather_code_to_desc(code):
+    codes = {
+        0: "Helder en zonnig", 1: "Vrijwel helder", 2: "Licht bewolkt", 3: "Bewolkt",
+        45: "Mistig", 48: "Rijpnevel", 51: "Lichte motregen", 53: "Motregen", 55: "Dichte motregen",
+        61: "Lichte regen", 63: "Matige regen", 65: "Zware regen", 71: "Lichte sneeuw",
+        73: "Matige sneeuw", 75: "Zware sneeuw", 80: "Lichte buien", 81: "Matige buien",
+        82: "Hevige buien", 95: "Onweersbui"
+    }
+    return codes.get(code, "Wisselvallig weer")
+
 try:
-    url_w = "https://api.open-meteo.com/v1/forecast?latitude=51.2517&longitude=5.7068&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=Europe%2FAmsterdam"
+    url_w = "https://api.open-meteo.com/v1/forecast?latitude=51.2517&longitude=5.7068&current_weather=true&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,weathercode&timezone=Europe%2FAmsterdam"
     req_w = urllib.request.Request(url_w, headers=HEADERS)
     w_data = json.loads(urllib.request.urlopen(req_w, timeout=5).read())
     
     cur_temp = round(w_data['current_weather']['temperature'])
+    cur_wind = round(w_data['current_weather']['windspeed'])
+    cur_bft = kmh_to_bft(cur_wind)
+    cur_code = w_data['current_weather']['weathercode']
+    
     daily_dates = w_data['daily']['time']
     daily_max = w_data['daily']['temperature_2m_max']
     daily_min = w_data['daily']['temperature_2m_min']
+    daily_precip = w_data['daily']['precipitation_sum']
+    daily_wind = w_data['daily']['windspeed_10m_max']
+    
+    cur_today_precip = daily_precip[0] if len(daily_precip) > 0 else 0.0
+    weather_desc = weather_code_to_desc(cur_code)
+    
+    one_liner = f"Vandaag in Weert: {weather_desc.lower()} met hoogstens {round(daily_max[0])}°C, {cur_bft} Bft wind en {cur_today_precip}mm neerslag."
     
     days_html = ""
     for idx in range(min(7, len(daily_dates))):
         d_obj = datetime.strptime(daily_dates[idx], "%Y-%m-%d")
         day_name = d_obj.strftime("%a")
-        days_html += f"<div style='text-align:center; padding: 2px 4px;'><span style='color:#90e0ef; font-size:0.75rem;'>{day_name}</span><br><b style='font-size:0.85rem;'>{round(daily_max[idx])}°</b> <small style='color:#cbd5e1;'>{round(daily_min[idx])}°</small></div>"
+        d_max = round(daily_max[idx])
+        d_min = round(daily_min[idx])
+        d_rain = round(daily_precip[idx], 1)
+        d_bft = kmh_to_bft(daily_wind[idx])
         
-    weather_html_summary = f"<b>📍 Weert nu: {cur_temp}°C</b><div style='display:flex; justify-content:space-between; margin-top:8px;'>{days_html}</div>"
+        days_html += f"""
+        <div style='text-align:center; padding: 4px 2px; background: rgba(255,255,255,0.03); border-radius:6px;'>
+            <span style='color:#90e0ef; font-size:0.75rem; font-weight:bold;'>{day_name}</span><br>
+            <b style='font-size:0.85rem;'>{d_max}°</b> <small style='color:#cbd5e1;'>{d_min}°</small><br>
+            <span style='font-size:0.7rem; color:#4cc9f0;'>💧 {d_rain}m</span><br>
+            <span style='font-size:0.7rem; color:#cbd5e1;'>💨 {d_bft}Bft</span>
+        </div>
+        """
+        
+    weather_html_summary = f"""
+    <div style='margin-bottom:8px;'>
+        <b>📍 Weert nu: {cur_temp}°C</b> <span style='font-size:0.8rem; color:#caf0f8;'>({weather_desc})</span>
+        <br><small style='color:#cbd5e1;'>Wind: {cur_wind} km/h ({cur_bft} Bft) | Neerslag vandaag: {cur_today_precip} mm</small>
+    </div>
+    <div style='font-size:0.8rem; color:#00b4d8; font-style:italic; margin-bottom:10px; padding:4px 8px; background:rgba(0,180,216,0.1); border-radius:6px;'>
+        💬 {one_liner}
+    </div>
+    <div style='display:grid; grid-template-columns: repeat(7, 1fr); gap:4px;'>
+        {days_html}
+    </div>
+    """
 except Exception as e:
     print(f"Weerfout: {e}")
 
@@ -506,12 +566,12 @@ html_content = f"""<!DOCTYPE html>
         body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0b132b; margin: 0; padding: 20px; color: #e0e6ed; }}
         header {{ text-align: center; padding: 25px 15px 15px 15px; background: linear-gradient(135deg, #1c2541, #3a506b, #00b4d8); color: #ffffff; border-radius: 16px; margin-bottom: 25px; }}
         
-        /* TICKER TAPE STYLES */
+        /* TICKER TAPE STYLES - TRAGER EN MET ALLEEN SATELLIET ICOON */
         .ticker-wrap {{ width: 100%; background: rgba(11, 19, 43, 0.6); overflow: hidden; height: 38px; line-height: 38px; border-radius: 8px; margin-top: 15px; border: 1px solid rgba(0, 180, 216, 0.4); display: flex; align-items: center; }}
-        .ticker-title {{ background: #00b4d8; color: #0b132b; padding: 0 12px; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; white-space: nowrap; height: 100%; display: flex; align-items: center; z-index: 2; }}
-        .ticker-move {{ display: inline-block; white-space: nowrap; padding-left: 100%; animation: ticker 75s linear infinite; }}
+        .ticker-icon {{ background: #00b4d8; color: #0b132b; padding: 0 12px; font-size: 1.1rem; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 2; }}
+        .ticker-move {{ display: inline-block; white-space: nowrap; padding-left: 100%; animation: ticker 150s linear infinite; }}
         .ticker-wrap:hover .ticker-move {{ animation-play-state: paused; }}
-        .ticker-item {{ display: inline-block; padding: 0 20px; font-size: 0.85rem; color: #caf0f8; }}
+        .ticker-item {{ display: inline-block; padding: 0 25px; font-size: 0.85rem; color: #caf0f8; }}
         .ticker-flag {{ font-size: 0.75rem; opacity: 0.9; margin-right: 4px; }}
         @keyframes ticker {{
             0% {{ transform: translate3d(0, 0, 0); }}
@@ -560,7 +620,7 @@ html_content = f"""<!DOCTYPE html>
         
         <!-- TICKER TAPE BAR -->
         <div class="ticker-wrap">
-            <div class="ticker-title">📡 Laatste Nieuws</div>
+            <div class="ticker-icon">📡</div>
             <div class="ticker-move">
                 {ticker_items_html}
             </div>
@@ -568,7 +628,7 @@ html_content = f"""<!DOCTYPE html>
     </header>
     
     <div class="widget-bar">
-        <div class="widget">
+        <div class="widget" style="grid-column: span 2;">
             <div class="widget-title">🌤️ Weersverwachting Weert</div>
             <div class="widget-body">{weather_html_summary}</div>
         </div>
@@ -579,10 +639,6 @@ html_content = f"""<!DOCTYPE html>
         <div class="widget">
             <div class="widget-title">📌 Praktische Tip</div>
             <div class="widget-body"><small>{daily_tip}</small></div>
-        </div>
-        <div class="widget">
-            <div class="widget-title">🤖 AI Status</div>
-            <div class="widget-body"><small>{ai_status}</small></div>
         </div>
     </div>
 
