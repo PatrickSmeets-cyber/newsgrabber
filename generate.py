@@ -44,7 +44,7 @@ if api_key:
 
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
 
-# 3. UITGEBREIDE FEEDS MET LANDCODERING (NL, EN, DE)
+# 3. FEEDS INCLUSIEF DE HERSTELDE RUBRIEK "REGIONAAL"
 FEEDS = {
     "Wereld": [
         {"url": "https://feeds.nos.nl/nosnieuwsbuitenland", "country": "NL", "flag": "🇳🇱"},
@@ -82,7 +82,7 @@ FEEDS = {
         {"url": "https://www.nrc.nl/rss/", "country": "NL", "flag": "🇳🇱"},
         {"url": "https://www.metrotime.be/nl/rss.xml", "country": "BE", "flag": "🇧🇪"}
     ],
-    "Midden-Limburg": [
+    "Regionaal": [
         {"url": "https://www.weertdegekste.nl/feed/", "country": "NL", "flag": "🇳🇱"},
         {"url": "https://www.nederweert24.nl/feed/", "country": "NL", "flag": "🇳🇱"},
         {"url": "https://www.l1nieuws.nl/rss/nieuws", "country": "NL", "flag": "🇳🇱"},
@@ -90,9 +90,7 @@ FEEDS = {
         {"url": "https://www.middenlimburgactueel.nl/feed/", "country": "NL", "flag": "🇳🇱"},
         {"url": "https://www.weert.nl/rss", "country": "NL", "flag": "🇳🇱"},
         {"url": "https://www.roermond.nl/rss", "country": "NL", "flag": "🇳🇱"},
-        {"url": "https://www.1limburg.nl/rss", "country": "NL", "flag": "🇳🇱"},
-        {"url": "https://www.vilt.be/rss", "country": "BE", "flag": "🇧🇪"},
-        {"url": "https://www.vvd-weert.nl/feed/", "country": "NL", "flag": "🇳🇱"}
+        {"url": "https://www.1limburg.nl/rss", "country": "NL", "flag": "🇳🇱"}
     ],
     "Wiskunde & Wetenschap": [
         {"url": "https://www.nu.nl/rss/Wetenschap", "country": "NL", "flag": "🇳🇱"},
@@ -156,7 +154,7 @@ FEEDS = {
     ]
 }
 
-# 4. WEERSVERWACHTING LOKAAL WEERT (INCL. WIND, NEERSLAG EN ONE-LINER)
+# 4. WEERSVERWACHTING LOKAAL WEERT
 weather_html_summary = "Weergegevens niet beschikbaar."
 
 def kmh_to_bft(kmh):
@@ -281,7 +279,6 @@ def extract_domain_name(url):
         return "Bron"
 
 def get_guaranteed_image(item_id):
-    """ Genereert een gegarandeerde, unieke foto via Picsum Photos """
     return f"https://picsum.photos/seed/{item_id}/800/600"
 
 def extract_feed_image(entry, item_id):
@@ -301,7 +298,7 @@ def extract_feed_image(entry, item_id):
         
     return get_guaranteed_image(item_id)
 
-# 6. FEEDS VERZAMELEN MET STRIKTE SCHEIDING EN ONTDUBBELING
+# 6. FEEDS VERZAMELEN
 all_headlines_with_sources = []
 ticker_headlines = []
 feed_results = {}
@@ -322,10 +319,9 @@ for cat, feed_list in FEEDS.items():
                         seen_titles.add(clean_t)
                         entry['country_code'] = country
                         entry['country_flag'] = flag
-                        entry['category'] = cat  # Borg strikte categorisering
+                        entry['category'] = cat
                         pool_items.append(entry)
                         
-                        # Bewaar headline voor ticker-tape
                         ticker_headlines.append({
                             "title": entry.title,
                             "flag": flag,
@@ -344,7 +340,6 @@ for cat, feed_list in FEEDS.items():
             "category": cat
         })
 
-# Selecteer de 30 meest recente unieke headlines voor de ticker-tape
 recent_ticker_items = ticker_headlines[:30]
 ticker_items_html = ""
 for t_item in recent_ticker_items:
@@ -453,7 +448,7 @@ featured_html = f"""
 """
 
 category_counts = {
-    "Wereld": 3, "Europa": 3, "Nederland": 3, "Midden-Limburg": 3,
+    "Wereld": 3, "Europa": 3, "Nederland": 3, "Regionaal": 3,
     "Wiskunde & Wetenschap": 3, "Technologie": 3, "Sport": 3,
     "Fitness & Resistance Training": 3, "Humor & Luchtig": 1
 }
@@ -462,8 +457,8 @@ articles_to_process = []
 for cat, count in category_counts.items():
     items = feed_results.get(cat, [])[:count]
     for item in items:
-        # Extra controle op categorie borgen
-        if cat == "Midden-Limburg" and item.get("category") != "Midden-Limburg":
+        # Borging dat Regionaal uitsluitend uit regionale bronnen gepakt wordt
+        if cat == "Regionaal" and item.get("category") != "Regionaal":
             continue
             
         article_id += 1
@@ -484,7 +479,7 @@ for cat, count in category_counts.items():
             "img_url": img_url
         })
 
-# BATCH AI PROCESS (Vertaling, Samenvatting & Captions)
+# BATCH AI PROCESS
 processed_summaries = {}
 if client and articles_to_process:
     try:
@@ -534,7 +529,6 @@ for item in articles_to_process:
         "is_background": False
     }
 
-    # Bepaal of kaart de volle breedte moet beslaan (bijv. voor Humor & Luchtig)
     full_width = " card-full-width" if item["category"] == "Humor & Luchtig" else ""
     articles_html += f"""
     <div class="card{full_width}" onclick="openArticle('{aid}')">
@@ -561,7 +555,6 @@ html_content = f"""<!DOCTYPE html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Cache-Control Meta Tags voor directe verversing -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -572,7 +565,6 @@ html_content = f"""<!DOCTYPE html>
         body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0b132b; margin: 0; padding: 20px; color: #e0e6ed; }}
         header {{ text-align: center; padding: 25px 15px 15px 15px; background: linear-gradient(135deg, #1c2541, #3a506b, #00b4d8); color: #ffffff; border-radius: 16px; margin-bottom: 25px; }}
         
-        /* TICKER TAPE STYLES */
         .ticker-wrap {{ width: 100%; background: rgba(11, 19, 43, 0.6); overflow: hidden; height: 38px; line-height: 38px; border-radius: 8px; margin-top: 15px; border: 1px solid rgba(0, 180, 216, 0.4); display: flex; align-items: center; }}
         .ticker-icon {{ background: #00b4d8; color: #0b132b; padding: 0 12px; font-size: 1.1rem; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 2; }}
         .ticker-move {{ display: inline-block; white-space: nowrap; padding-left: 100%; animation: ticker 150s linear infinite; }}
@@ -584,7 +576,15 @@ html_content = f"""<!DOCTYPE html>
             100% {{ transform: translate3d(-100%, 0, 0); }}
         }}
 
+        /* RESPONSIVE WIDGET BAR: IPAD EN GROTER NAAST ELKAAR, IPHONE ONDER ELKAAR */
         .widget-bar {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-bottom: 25px; }}
+        .widget-weather {{ grid-column: span 2; }}
+
+        @media (max-width: 600px) {{
+            .widget-bar {{ grid-template-columns: 1fr !important; }}
+            .widget-weather {{ grid-column: span 1 !important; }}
+        }}
+
         .widget {{ background: #1c2541; padding: 16px; border-radius: 12px; border-left: 4px solid #00b4d8; }}
         .widget-title {{ font-size: 0.75rem; text-transform: uppercase; color: #90e0ef; font-weight: bold; margin-bottom: 5px; }}
 
@@ -599,8 +599,6 @@ html_content = f"""<!DOCTYPE html>
         .grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }}
         @media (max-width: 900px) {{ .grid {{ grid-template-columns: 1fr; }} }}
         .card {{ background: #1c2541; border-radius: 14px; overflow: hidden; border: 1px solid #3a506b; cursor: pointer; display: flex; flex-direction: column; }}
-        
-        /* STYLING VOOR VOLLEDIGE BREEDTE (O.A. HUMOR & LUCHTIG) */
         .card-full-width {{ grid-column: 1 / -1; }}
         
         .card-img-wrapper {{ position: relative; height: 160px; }}
@@ -627,7 +625,6 @@ html_content = f"""<!DOCTYPE html>
         <h1 style="margin: 0 0 5px 0;">⚡ Patrick’s Nieuwsboard</h1>
         <p style="margin: 0;">Laatst bijgewerkt: <b>{last_updated}</b> (Actieve uren: 05:00-20:00 CET)</p>
         
-        <!-- TICKER TAPE BAR -->
         <div class="ticker-wrap">
             <div class="ticker-icon">📡</div>
             <div class="ticker-move">
@@ -637,7 +634,7 @@ html_content = f"""<!DOCTYPE html>
     </header>
     
     <div class="widget-bar">
-        <div class="widget" style="grid-column: span 2;">
+        <div class="widget widget-weather">
             <div class="widget-title">🌤️ Weersverwachting Weert</div>
             <div class="widget-body">{weather_html_summary}</div>
         </div>
@@ -657,7 +654,6 @@ html_content = f"""<!DOCTYPE html>
         {articles_html}
     </div>
 
-    <!-- OPSCHOONING FOOTER -->
     <footer>
         <p>Build ID: <code>{build_id}</code> | AI Engine: Gemini 3.6 Flash</p>
     </footer>
