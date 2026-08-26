@@ -6,21 +6,32 @@ import random
 import urllib.request
 import urllib.parse
 import uuid
+import time
 from datetime import datetime
 import zoneinfo
 import warnings
 
-# Onderdruk de Google GenAI AFC waarschuwing
 warnings.filterwarnings("ignore", category=UserWarning, module="google.genai")
 
 from google import genai
 
-# Timezone & Unieke Run ID
+# 1. TIJDZONE & UUR-CHECK (05:00 t/m 20:00 CET/CEST)
 tz = zoneinfo.ZoneInfo("Europe/Amsterdam")
-last_updated = datetime.now(tz).strftime("%d-%m-%Y om %H:%M uur")
+now = datetime.now(tz)
+current_hour = now.hour
+
+print(f"Huidige tijd: {now.strftime('%Y-%m-%d %H:%M:%S')} (Uur: {current_hour})")
+
+# Draai alleen tussen 05:00 en 20:00 uur (inclusief 20:xx)
+if not (5 <= current_hour <= 20):
+    print("⏳ Buiten de actieve uren (05:00 - 20:00 uur). Geen update uitgevoerd.")
+    exit(0)
+
+last_updated = now.strftime("%d-%m-%Y om %H:%M uur")
+today_str = now.strftime("%Y-%m-%d")
 build_id = str(uuid.uuid4())[:8]
 
-# Gemini Client initialiseren
+# 2. GEMINI CLIENT INITIALISEREN
 api_key = os.environ.get("AI_API_KEY", "").strip()
 ai_status = "Niet actief (geen API key)"
 client = None
@@ -34,56 +45,63 @@ if api_key:
 
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
 
+# 3. UITGEBREIDE FEEDS (NL, EN, DE + Men's Health & Ironman)
 FEEDS = {
-    "Wereld": ["https://feeds.nos.nl/nosnieuwsbuitenland", "https://www.nu.nl/rss/Buitenland"],
-    "Europa": ["https://feeds.nos.nl/nosnieuwseuropa", "https://www.bnr.nl/rss/nieuws"],
-    "Nederland": ["https://feeds.nos.nl/nosnieuwsbinnenland", "https://www.rtlnieuws.nl/rss.xml"],
-    "Midden-Limburg": ["https://www.weertdegekste.nl/feed/", "https://www.nederweert24.nl/feed/", "https://www.l1nieuws.nl/rss/nieuws"],
-    "Wiskunde & Wetenschap": ["https://www.nu.nl/rss/Wetenschap", "https://feeds.nos.nl/nosnieuwswetenschap"],
-    "Technologie": ["https://www.bright.nl/rss", "https://www.nu.nl/rss/Tech"],
-    "Sport": ["https://feeds.nos.nl/nossport", "https://www.nu.nl/rss/Sport"],
-    "Fitness & Resistance Training": ["https://www.fit.nl/feed", "https://www.nu.nl/rss/Gezondheid"],
-    "Humor & Luchtig": ["https://speld.nl/feed/", "https://www.nu.nl/rss/Opmerkelijk"]
+    "Wereld": [
+        "https://feeds.nos.nl/nosnieuwsbuitenland",
+        "https://www.nu.nl/rss/Buitenland",
+        "http://feeds.bbci.co.uk/news/world/rss.xml",
+        "https://www.tagesschau.de/xml/rss2/"
+    ],
+    "Europa": [
+        "https://feeds.nos.nl/nosnieuwseuropa",
+        "https://www.bnr.nl/rss/nieuws",
+        "https://www.politico.eu/feed/"
+    ],
+    "Nederland": [
+        "https://feeds.nos.nl/nosnieuwsbinnenland",
+        "https://www.rtlnieuws.nl/rss.xml",
+        "https://www.nu.nl/rss/Binnenland"
+    ],
+    "Midden-Limburg": [
+        "https://www.weertdegekste.nl/feed/",
+        "https://www.nederweert24.nl/feed/",
+        "https://www.l1nieuws.nl/rss/nieuws"
+    ],
+    "Wiskunde & Wetenschap": [
+        "https://www.nu.nl/rss/Wetenschap",
+        "https://feeds.nos.nl/nosnieuwswetenschap",
+        "https://www.sciencedaily.com/rss/all.xml",
+        "https://www.spektrum.de/alias/rss/spektrum-de-rss-feed/996406"
+    ],
+    "Technologie": [
+        "https://www.bright.nl/rss",
+        "https://www.nu.nl/rss/Tech",
+        "https://feeds.arstechnica.com/arstechnica/index",
+        "https://www.heise.de/rss/heise-atom.xml"
+    ],
+    "Sport": [
+        "https://feeds.nos.nl/nossport",
+        "https://www.nu.nl/rss/Sport",
+        "https://www.espn.com/espn/rss/news",
+        "https://www.kicker.de/news.rss"
+    ],
+    "Fitness & Resistance Training": [
+        "https://www.fit.nl/feed",
+        "https://www.menshealth.com/nl/rss/all.xml/",
+        "https://www.menshealth.com/rss/all.xml/",
+        "https://www.ironman.com/news/rss"
+    ],
+    "Humor & Luchtig": [
+        "https://speld.nl/feed/",
+        "https://www.nu.nl/rss/Opmerkelijk"
+    ]
 }
 
-# --- DYNAMISCH GENEREREN SPREUK & TIP VIA AI ---
-daily_quote = "De enige constante in het leven is verandering."
-daily_quote_author = "Heraclitus"
-daily_tip = "Neem elk uur even 2 minuten afstand van je scherm om je ogen rust te geven."
-
-if client:
-    try:
-        prompt_extras = (
-            "Bedenk voor vandaag:\n"
-            "1. Een inspirerende, filosofische of motiverende spreuk/quote inclusief auteur.\n"
-            "2. Een unieke, praktische en direct toepasbare dagelijkse tip op het gebied van productiviteit, gezondheid of welzijn.\n\n"
-            "Geef het antwoord exact in het volgende JSON-formaat terug:\n"
-            "{\n"
-            '  "quote": "Tekst van de spreuk",\n'
-            '  "auteur": "Auteur naam",\n'
-            '  "tip": "Praktische tip tekst"\n'
-            "}"
-        )
-        res_extras = client.models.generate_content(
-            model='gemini-3.6-flash',
-            contents=prompt_extras,
-            config={
-                'response_mime_type': 'application/json',
-                'tools': []
-            }
-        )
-        data_extras = json.loads(res_extras.text.strip())
-        daily_quote = data_extras.get("quote", daily_quote)
-        daily_quote_author = data_extras.get("auteur", daily_quote_author)
-        daily_tip = data_extras.get("tip", daily_tip)
-        print("✅ Spreuk en Tip dynamisch gegenereerd door Gemini")
-    except Exception as err:
-        print(f"❌ Fout bij genereren Spreuk/Tip: {err}")
-
-# --- 7-DAAGSE WEERSVERWACHTING ---
+# 4. WEERSVERWACHTING LOKAAL WEERT (51.2517 N, 5.7068 E)
 weather_html_summary = "Weergegevens niet beschikbaar."
 try:
-    url_w = "https://api.open-meteo.com/v1/forecast?latitude=51.19&longitude=5.99&current_weather=true&daily=temperature_2m_max,temperature_2m_min&timezone=Europe%2FAmsterdam"
+    url_w = "https://api.open-meteo.com/v1/forecast?latitude=51.2517&longitude=5.7068&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=Europe%2FAmsterdam"
     req_w = urllib.request.Request(url_w, headers=HEADERS)
     w_data = json.loads(urllib.request.urlopen(req_w, timeout=5).read())
     
@@ -98,9 +116,34 @@ try:
         day_name = d_obj.strftime("%a")
         days_html += f"<div style='text-align:center; padding: 2px 4px;'><span style='color:#90e0ef; font-size:0.75rem;'>{day_name}</span><br><b style='font-size:0.85rem;'>{round(daily_max[idx])}°</b> <small style='color:#cbd5e1;'>{round(daily_min[idx])}°</small></div>"
         
-    weather_html_summary = f"<b>Nu: {cur_temp}°C</b><div style='display:flex; justify-content:space-between; margin-top:8px;'>{days_html}</div>"
+    weather_html_summary = f"<b>📍 Weert nu: {cur_temp}°C</b><div style='display:flex; justify-content:space-between; margin-top:8px;'>{days_html}</div>"
 except Exception as e:
     print(f"Weerfout: {e}")
+
+# 5. DYNAMISCHE SPREUK EN TIP (1 API Call)
+daily_quote = "De enige constante in het leven is verandering."
+daily_quote_author = "Heraclitus"
+daily_tip = "Neem elk uur even 2 minuten afstand van je scherm om je ogen rust te geven."
+
+if client:
+    try:
+        prompt_extras = (
+            "Bedenk voor vandaag:\n"
+            "1. Een inspirerende quote inclusief auteur.\n"
+            "2. Een unieke, praktische dagelijkse tip op het gebied van productiviteit, fitness of gezondheid.\n"
+            "Geef antwoord exact als JSON: {\"quote\": \"...\", \"auteur\": \"...\", \"tip\": \"...\"}"
+        )
+        res_extras = client.models.generate_content(
+            model='gemini-3.6-flash',
+            contents=prompt_extras,
+            config={'response_mime_type': 'application/json', 'tools': []}
+        )
+        data_extras = json.loads(res_extras.text.strip())
+        daily_quote = data_extras.get("quote", daily_quote)
+        daily_quote_author = data_extras.get("auteur", daily_quote_author)
+        daily_tip = data_extras.get("tip", daily_tip)
+    except Exception as err:
+        print(f"⚠️ Fout bij genereren Spreuk/Tip: {err}")
 
 def clean_markdown(text):
     text = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', text)
@@ -111,29 +154,37 @@ def clean_markdown(text):
 def strip_tags(text):
     return re.sub('<[^<]+?>', '', text)
 
+# Fallback afbeeldingen per categorie (Unsplash HD)
+FALLBACK_IMAGES = {
+    "Wereld": "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=800",
+    "Europa": "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=800",
+    "Nederland": "https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=800",
+    "Midden-Limburg": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800",
+    "Wiskunde & Wetenschap": "https://images.unsplash.com/photo-1507668077129-56e32842fceb?w=800",
+    "Technologie": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800",
+    "Sport": "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800",
+    "Fitness & Resistance Training": "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=800",
+    "Humor & Luchtig": "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=800"
+}
+
 def extract_feed_image(entry, default_category):
     if 'media_content' in entry and entry.media_content:
         for media in entry.media_content:
-            if 'url' in media:
+            if 'url' in media and media['url'].startswith('http'):
                 return media['url']
     if 'enclosures' in entry and entry.enclosures:
         for enc in entry.enclosures:
-            if enc.get('type', '').startswith('image'):
+            if enc.get('type', '').startswith('image') and enc.get('href', '').startswith('http'):
                 return enc.get('href')
     
     desc = entry.get('summary', '') or entry.get('description', '')
-    img_match = re.search(r'<img [^>]*src=["\']([^"\']+)["\']', desc)
+    img_match = re.search(r'<img [^>]*src=["\'](https?://[^"\']+)["\']', desc)
     if img_match:
         return img_match.group(1)
         
-    keywords = re.findall(r'\b[a-zA-Z]{5,}\b', entry.title)
-    query = keywords[0] if keywords else default_category
-    return f"https://loremflickr.com/600/400/{urllib.parse.quote(query)}"
+    return FALLBACK_IMAGES.get(default_category, "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800")
 
-articles_html = ""
-modal_data = {}
-article_id = 0
-
+# 6. FEEDS VERZAMELEN
 all_headlines_with_sources = []
 feed_results = {}
 
@@ -149,150 +200,188 @@ for cat, urls in FEEDS.items():
             
     random.shuffle(pool_items)
     feed_results[cat] = pool_items
-    for entry in pool_items[:5]:
+    for entry in pool_items[:4]:
         all_headlines_with_sources.append({
             "title": entry.title,
-            "link": entry.get("link", "")
+            "link": entry.get("link", ""),
+            "category": cat
         })
 
-# --- 1. OPINIESTUK GENEREREN ---
-article_id += 1
-category = "Dagelijks Opinie-Dossier"
-featured_title = "Actueel Maatschappelijk Dossier"
-summary = "AI Analyse van een actueel onderwerp..."
-full_text = "Dossier wordt geladen..."
-featured_img = "https://loremflickr.com/1200/600/news,editorial"
-featured_caption = "Sfeerbeeld maatschappelijk debat"
+# 7. OPINIESTUK GENEREREN OF UIT CACHE LADEN (1x per dag)
+OPINION_CACHE_FILE = "opinion_cache.json"
+opinion_data = None
 
-if client and all_headlines_with_sources:
+if os.path.exists(OPINION_CACHE_FILE):
+    try:
+        with open(OPINION_CACHE_FILE, "r", encoding="utf-8") as f:
+            cached = json.load(f)
+            if cached.get("date") == today_str:
+                opinion_data = cached.get("data")
+                print("ℹ️ Opiniestuk van vandaag geladen uit cache.")
+    except Exception as e:
+        print(f"Cache leesfout: {e}")
+
+if not opinion_data and client and all_headlines_with_sources:
     try:
         sample = random.sample(all_headlines_with_sources, min(len(all_headlines_with_sources), 12))
         prompt = (
-            f"Gebruik de onderstaande nieuwsbronnen:\n"
+            f"Gebruik de volgende actuele nieuwsheadlines:\n"
             f"{json.dumps(sample, ensure_ascii=False)}\n\n"
             f"Opdracht:\n"
-            f"1. Kies het meest actuele onderwerp.\n"
-            f"2. Bedenk een pakkende titel.\n"
-            f"3. Schrijf een achtergrond- en opinieartikel.\n"
-            f"4. Bedenk een korte bijbehorende foto-caption (max 10 woorden).\n\n"
-            f"Geef exact het volgende JSON-formaat terug:\n"
+            f"1. Kies het meest maatschappelijk relevante onderwerp.\n"
+            f"2. Schrijf een sterk, pakkend achtergrond- en opinieartikel met een specifieke, aansprekende titel.\n"
+            f"3. Geef een visuele beschrijving voor een bijpassend beeld (image_caption) dat exact beschrijft wat er op de afbeelding te zien is.\n\n"
+            f"Geef antwoord als JSON:\n"
             f"{{\n"
-            f'  "titel": "Titel",\n'
-            f'  "samenvatting": "Korte samenvatting in 1-2 zinnen",\n'
-            f'  "inhoud": "### Kerninzichten\\n* [Punt 1]\\n* [Punt 2]\\n\\n### Analyse & Context\\n[Uitgebreide tekst]\\n\\n### Conclusie\\n[Conclusie]",\n'
-            f'  "image_caption": "Korte uitleg bij het plaatje"\n'
+            f'  "titel": "Pakkende specifieke titel",\n'
+            f'  "samenvatting": "Korte samenvatting in 2 zinnen",\n'
+            f'  "inhoud": "### Kerninzichten\\n* [Punt 1]\\n* [Punt 2]\\n\\n### Diepgaande Analyse\\n[Tekst]\\n\\n### Conclusie\\n[Conclusie]",\n'
+            f'  "image_caption": "Gedetailleerde beschrijving van het visuele beeld bij dit onderwerp"\n'
             f"}}"
         )
         res = client.models.generate_content(
-            model='gemini-3.6-flash', 
+            model='gemini-3.6-flash',
             contents=prompt,
-            config={
-                'response_mime_type': 'application/json',
-                'tools': []
-            }
+            config={'response_mime_type': 'application/json', 'tools': []}
         )
-        
         data = json.loads(res.text.strip())
-        featured_title = data.get("titel", featured_title)
-        summary = data.get("samenvatting", summary)
-        full_text = clean_markdown(data.get("inhoud", ""))
-        featured_caption = data.get("image_caption", featured_caption)
-        print(f"✅ AI Opiniedossier gegenereerd: {featured_title}")
+        opinion_data = {
+            "titel": data.get("titel", "Actueel Maatschappelijk Debat"),
+            "samenvatting": data.get("samenvatting", ""),
+            "inhoud": clean_markdown(data.get("inhoud", "")),
+            "image_caption": data.get("image_caption", "Sfeerbeeld van het maatschappelijk debat"),
+            "img": "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200"
+        }
+        with open(OPINION_CACHE_FILE, "w", encoding="utf-8") as f:
+            json.dump({"date": today_str, "data": opinion_data}, f, ensure_ascii=False)
+        print(f"✅ Nieuw AI Opiniestuk gegenereerd: {opinion_data['titel']}")
     except Exception as err:
         print(f"❌ AI Opinie Fout: {err}")
-        full_text = f"Fout bij genereren AI dossier: {err}"
+        opinion_data = {
+            "titel": "Maatschappelijk Dossier",
+            "samenvatting": "Kon geen nieuw dossier genereren.",
+            "inhoud": f"Fout bij genereren: {err}",
+            "image_caption": "Nieuwsoverzicht",
+            "img": "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200"
+        }
 
+# 8. REGULIERE ARTIKELEN VERZAMELEN & BATCH AI SAMENVATTING (1 API Call totaal)
+modal_data = {}
+article_id = 0
+
+# Voeg opiniestuk toe als artikel #1
+article_id += 1
 modal_data[str(article_id)] = {
-    "title": featured_title,
-    "category": category,
-    "img": featured_img,
-    "caption": featured_caption,
-    "ai_summary": summary,
-    "full_text": full_text,
+    "title": opinion_data["titel"],
+    "category": "Dagelijks Opinie-Dossier",
+    "img": opinion_data["img"],
+    "caption": opinion_data["image_caption"],
+    "ai_summary": opinion_data["samenvatting"],
+    "full_text": opinion_data["inhoud"],
     "is_background": True
 }
 
 featured_html = f"""
-<div class="featured-banner" onclick="openArticle('{article_id}')">
+<div class="featured-banner" onclick="openArticle('1')">
     <div class="featured-img-wrapper">
-        <img src="{featured_img}" alt="{featured_title}">
-        <span class="badge badge-featured">🔥 {category}</span>
+        <img src="{opinion_data['img']}" alt="{opinion_data['titel']}">
+        <span class="badge badge-featured">🔥 Dagelijks Opinie-Dossier</span>
     </div>
     <div class="featured-content">
-        <h2>{featured_title}</h2>
-        <p>{summary}</p>
-        <div style="font-size:0.75rem; color:#ffb703; margin-top:5px;">📷 {featured_caption}</div>
+        <h2>{opinion_data['titel']}</h2>
+        <p>{opinion_data['samenvatting']}</p>
+        <div style="font-size:0.75rem; color:#ffb703; margin-top:8px;">📷 {opinion_data['image_caption']}</div>
         <div class="read-more">Lees het volledige opiniedossier &rarr;</div>
     </div>
 </div>
 """
 
-# --- 2. REGULIERE RUBRIEKEN ---
 category_counts = {
     "Wereld": 3, "Europa": 3, "Nederland": 3, "Midden-Limburg": 3,
     "Wiskunde & Wetenschap": 3, "Technologie": 3, "Sport": 3,
     "Fitness & Resistance Training": 3, "Humor & Luchtig": 1
 }
 
-for cat, required_count in category_counts.items():
-    pool_items = feed_results.get(cat, [])
-    selected_items = pool_items[:required_count]
-    
-    for item in selected_items:
+articles_to_process = []
+for cat, count in category_counts.items():
+    items = feed_results.get(cat, [])[:count]
+    for item in items:
         article_id += 1
-        title = item.title
-        link = item.get('link', '#')
         clean_sum = strip_tags(item.get('summary', item.get('description', '')))
-        
         img_url = extract_feed_image(item, cat)
-        ai_summary = clean_sum[:130] + "..."
-        img_caption = f"Afbeelding bij {cat}"
+        articles_to_process.append({
+            "id": str(article_id),
+            "title": item.title,
+            "category": cat,
+            "link": item.get('link', '#'),
+            "clean_sum": clean_sum,
+            "img_url": img_url
+        })
 
-        if client:
-            try:
-                res = client.models.generate_content(
-                    model='gemini-3.6-flash', 
-                    contents=(
-                        f"Geef een korte samenvatting (max 2 zinnen) en een foto-caption (max 8 woorden) voor dit bericht:\n"
-                        f"Titel: {title}\nInhoud: {clean_sum}\n\n"
-                        f"Geef antwoord als JSON: {{\n\"summary\": \"...\",\n\"caption\": \"...\"\n}}"
-                    ),
-                    config={
-                        'response_mime_type': 'application/json',
-                        'tools': []
-                    }
-                )
-                res_data = json.loads(res.text.strip())
-                ai_summary = res_data.get("summary", ai_summary)
-                img_caption = res_data.get("caption", img_caption)
-            except Exception as err:
-                print(f"AI verwerkingsfout: {err}")
+# BATCH AI PROCESS: Alle nieuwsartikelen in 1 enkele API call verwerken!
+processed_summaries = {}
+if client and articles_to_process:
+    try:
+        input_payload = [{"id": a["id"], "title": a["title"], "text": a["clean_sum"][:300]} for a in articles_to_process]
+        batch_prompt = (
+            f"Verwerk de volgende lijst nieuwsartikelen:\n{json.dumps(input_payload, ensure_ascii=False)}\n\n"
+            f"Opdracht per artikel ID:\n"
+            f"1. Maak een heldere samenvatting in max 2 zinnen.\n"
+            f"2. Schrijf een 'caption' die een nauwkeurige, inhoudelijke beschrijving geeft van wat er op de bijbehorende nieuwsfoto te zien is (max 10 woorden).\n\n"
+            f"Geef het antwoord terug als JSON dictionary met het artikel ID als key:\n"
+            f"{{\n"
+            f'  "2": {{"summary": "...", "caption": "..."}},\n'
+            f'  "3": {{"summary": "...", "caption": "..."}}\n'
+            f"}}"
+        )
+        res_batch = client.models.generate_content(
+            model='gemini-3.6-flash',
+            contents=batch_prompt,
+            config={'response_mime_type': 'application/json', 'tools': []}
+        )
+        processed_summaries = json.loads(res_batch.text.strip())
+        print(f"✅ Batch verwerking geslaagd voor {len(processed_summaries)} artikelen.")
+    except Exception as err:
+        print(f"⚠️ Batch AI Fout: {err}")
 
-        modal_data[str(article_id)] = {
-            "title": title, "category": cat, "img": img_url,
-            "caption": img_caption, "ai_summary": ai_summary,
-            "full_text": clean_sum, "original_link": link, "is_background": False
-        }
+articles_html = ""
+for item in articles_to_process:
+    aid = item["id"]
+    ai_data = processed_summaries.get(aid, {})
+    
+    ai_summary = ai_data.get("summary", item["clean_sum"][:130] + "...")
+    img_caption = ai_data.get("caption", f"Nieuwsafbeelding bij {item['title'][:30]}")
+    
+    modal_data[aid] = {
+        "title": item["title"],
+        "category": item["category"],
+        "img": item["img_url"],
+        "caption": img_caption,
+        "ai_summary": ai_summary,
+        "full_text": item["clean_sum"],
+        "original_link": item["link"],
+        "is_background": False
+    }
 
-        full_width_class = " card-full-width" if cat == "Humor & Luchtig" else ""
-
-        articles_html += f"""
-        <div class="card{full_width_class}" onclick="openArticle('{article_id}')">
-            <div class="card-img-wrapper">
-                <img src="{img_url}" alt="{title}" onerror="this.onerror=null;this.src='https://loremflickr.com/600/400/news';">
-                <span class="badge">{cat}</span>
-            </div>
-            <div class="card-content">
-                <h3>{title}</h3>
-                <p>{ai_summary}</p>
-                <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 {img_caption}</div>
-                <div class="read-more">Lees bericht &rarr;</div>
-            </div>
+    full_width = " card-full-width" if item["category"] == "Humor & Luchtig" else ""
+    articles_html += f"""
+    <div class="card{full_width}" onclick="openArticle('{aid}')">
+        <div class="card-img-wrapper">
+            <img src="{item['img_url']}" alt="{item['title']}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800';">
+            <span class="badge">{item['category']}</span>
         </div>
-        """
+        <div class="card-content">
+            <h3>{item['title']}</h3>
+            <p>{ai_summary}</p>
+            <div style="font-size:0.75rem; color:#90e0ef; margin-top:8px;">📷 {img_caption}</div>
+            <div class="read-more">Lees bericht &rarr;</div>
+        </div>
+    </div>
+    """
 
 json_modal_data = json.dumps(modal_data).replace('</', r'<\/')
 
+# 9. HTML LAYOUT OPBOUWEN
 html_content = f"""<!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -309,12 +398,12 @@ html_content = f"""<!DOCTYPE html>
         .widget-title {{ font-size: 0.75rem; text-transform: uppercase; color: #90e0ef; font-weight: bold; margin-bottom: 5px; }}
 
         .featured-banner {{ width: 100%; background: #1e293b; border-radius: 16px; border: 2px solid #ffb703; overflow: hidden; margin-bottom: 25px; cursor: pointer; display: flex; flex-direction: column; }}
-        @media (min-width: 768px) {{ .featured-banner {{ flex-direction: row; height: 300px; }} .featured-img-wrapper {{ width: 50%; height: 100% !important; }} .featured-content {{ width: 50%; padding: 30px !important; }} }}
+        @media (min-width: 768px) {{ .featured-banner {{ flex-direction: row; height: 320px; }} .featured-img-wrapper {{ width: 50%; height: 100% !important; }} .featured-content {{ width: 50%; padding: 30px !important; }} }}
         .featured-img-wrapper {{ position: relative; height: 200px; }}
         .featured-img-wrapper img {{ width: 100%; height: 100%; object-fit: cover; }}
         .badge-featured {{ background: #ffb703; color: #000; position: absolute; top: 15px; left: 15px; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; }}
         .featured-content {{ padding: 20px; display: flex; flex-direction: column; justify-content: center; }}
-        .featured-content h2 {{ margin: 0 0 10px 0; color: #ffffff; font-size: 1.5rem; }}
+        .featured-content h2 {{ margin: 0 0 10px 0; color: #ffffff; font-size: 1.4rem; }}
 
         .grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }}
         @media (max-width: 900px) {{ .grid {{ grid-template-columns: 1fr; }} }}
@@ -341,12 +430,12 @@ html_content = f"""<!DOCTYPE html>
 <body>
     <header>
         <h1>⚡ Patrick’s Nieuwsboard</h1>
-        <p>Laatst bijgewerkt: <b>{last_updated}</b></p>
+        <p>Laatst bijgewerkt: <b>{last_updated}</b> (Actieve uren: 05:00-20:00 CET)</p>
     </header>
     
     <div class="widget-bar">
         <div class="widget">
-            <div class="widget-title">🌤️ 7-Daagse Weersverwachting</div>
+            <div class="widget-title">🌤️ Weersverwachting Weert</div>
             <div class="widget-body">{weather_html_summary}</div>
         </div>
         <div class="widget">
@@ -370,13 +459,13 @@ html_content = f"""<!DOCTYPE html>
     </div>
 
     <footer>
-        <p>Build ID: <code>{build_id}</code> | AI Provider: Gemini 3.6 Flash</p>
+        <p>Build ID: <code>{build_id}</code> | AI Engine: Gemini 3.6 Flash (Optimized Rate Limit Batching)</p>
     </footer>
 
     <div id="modalOverlay" class="modal-overlay" onclick="if(event.target.id==='modalOverlay') closeModal();">
         <div class="modal-container">
-            <img id="modalImg" style="width:100%; height:220px; object-fit:cover; border-radius:8px;" src="" alt="">
-            <div id="modalCaption" style="font-size:0.8rem; color:#90e0ef; margin-top:5px; font-style:italic;"></div>
+            <img id="modalImg" style="width:100%; height:240px; object-fit:cover; border-radius:8px;" src="" alt="">
+            <div id="modalCaption" style="font-size:0.8rem; color:#90e0ef; margin-top:6px; font-style:italic;"></div>
             <span id="modalBadge" style="background:#00b4d8; color:white; padding:3px 8px; border-radius:10px; font-size:0.7rem; font-weight:bold; margin-top:10px; display:inline-block;"></span>
             <h2 id="modalTitle" style="color:white; font-size:1.3rem;"></h2>
             <div id="modalAiBox" style="background:#0b132b; padding:10px; border-left:3px solid #00b4d8; margin:10px 0; color:#90e0ef; font-size:0.9rem;"></div>
@@ -398,7 +487,7 @@ html_content = f"""<!DOCTYPE html>
             document.getElementById('modalCaption').innerText = '📷 ' + a.caption;
             document.getElementById('modalBadge').innerText = a.category;
             document.getElementById('modalTitle').innerText = a.title;
-            document.getElementById('modalAiBox').innerHTML = '<b>Samenvatting / Focus:</b><br>' + a.ai_summary;
+            document.getElementById('modalAiBox').innerHTML = '<b>Samenvatting & Visuele Focus:</b><br>' + a.ai_summary;
             document.getElementById('modalFullText').innerHTML = a.full_text;
             
             const srcBtn = document.getElementById('modalSourceLink');
