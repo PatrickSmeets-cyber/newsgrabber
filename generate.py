@@ -301,7 +301,7 @@ def extract_feed_image(entry, item_id):
         
     return get_guaranteed_image(item_id)
 
-# 6. FEEDS VERZAMELEN MET LANDCODERING EN ONTDUBBELING
+# 6. FEEDS VERZAMELEN MET STRIKTE SCHEIDING EN ONTDUBBELING
 all_headlines_with_sources = []
 ticker_headlines = []
 feed_results = {}
@@ -322,6 +322,7 @@ for cat, feed_list in FEEDS.items():
                         seen_titles.add(clean_t)
                         entry['country_code'] = country
                         entry['country_flag'] = flag
+                        entry['category'] = cat  # Borg strikte categorisering
                         pool_items.append(entry)
                         
                         # Bewaar headline voor ticker-tape
@@ -461,6 +462,10 @@ articles_to_process = []
 for cat, count in category_counts.items():
     items = feed_results.get(cat, [])[:count]
     for item in items:
+        # Extra controle op categorie borgen
+        if cat == "Midden-Limburg" and item.get("category") != "Midden-Limburg":
+            continue
+            
         article_id += 1
         clean_sum = strip_tags(item.get('summary', item.get('description', '')))
         item_link = item.get('link', '#')
@@ -529,6 +534,7 @@ for item in articles_to_process:
         "is_background": False
     }
 
+    # Bepaal of kaart de volle breedte moet beslaan (bijv. voor Humor & Luchtig)
     full_width = " card-full-width" if item["category"] == "Humor & Luchtig" else ""
     articles_html += f"""
     <div class="card{full_width}" onclick="openArticle('{aid}')">
@@ -555,7 +561,7 @@ html_content = f"""<!DOCTYPE html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Cache-Control Meta Tags voor directe verversing (o.a. iPad Safari) -->
+    <!-- Cache-Control Meta Tags voor directe verversing -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -566,7 +572,7 @@ html_content = f"""<!DOCTYPE html>
         body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0b132b; margin: 0; padding: 20px; color: #e0e6ed; }}
         header {{ text-align: center; padding: 25px 15px 15px 15px; background: linear-gradient(135deg, #1c2541, #3a506b, #00b4d8); color: #ffffff; border-radius: 16px; margin-bottom: 25px; }}
         
-        /* TICKER TAPE STYLES - TRAGER EN MET ALLEEN SATELLIET ICOON */
+        /* TICKER TAPE STYLES */
         .ticker-wrap {{ width: 100%; background: rgba(11, 19, 43, 0.6); overflow: hidden; height: 38px; line-height: 38px; border-radius: 8px; margin-top: 15px; border: 1px solid rgba(0, 180, 216, 0.4); display: flex; align-items: center; }}
         .ticker-icon {{ background: #00b4d8; color: #0b132b; padding: 0 12px; font-size: 1.1rem; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 2; }}
         .ticker-move {{ display: inline-block; white-space: nowrap; padding-left: 100%; animation: ticker 150s linear infinite; }}
@@ -593,7 +599,10 @@ html_content = f"""<!DOCTYPE html>
         .grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }}
         @media (max-width: 900px) {{ .grid {{ grid-template-columns: 1fr; }} }}
         .card {{ background: #1c2541; border-radius: 14px; overflow: hidden; border: 1px solid #3a506b; cursor: pointer; display: flex; flex-direction: column; }}
+        
+        /* STYLING VOOR VOLLEDIGE BREEDTE (O.A. HUMOR & LUCHTIG) */
         .card-full-width {{ grid-column: 1 / -1; }}
+        
         .card-img-wrapper {{ position: relative; height: 160px; }}
         .card img {{ width: 100%; height: 100%; object-fit: cover; }}
         .badge {{ position: absolute; top: 10px; left: 10px; background: rgba(0, 180, 216, 0.9); color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; }}
@@ -648,8 +657,9 @@ html_content = f"""<!DOCTYPE html>
         {articles_html}
     </div>
 
+    <!-- OPSCHOONING FOOTER -->
     <footer>
-        <p>Build ID: <code>{build_id}</code> | AI Engine: Gemini 3.6 Flash (Ticker Tape & Guaranteed Images Active)</p>
+        <p>Build ID: <code>{build_id}</code> | AI Engine: Gemini 3.6 Flash</p>
     </footer>
 
     <div id="modalOverlay" class="modal-overlay" onclick="if(event.target.id==='modalOverlay') closeModal();">
@@ -710,7 +720,6 @@ html_content = f"""<!DOCTYPE html>
             document.getElementById('modalOverlay').style.display = 'none';
         }}
 
-        // Automatische herlaad-trigger voor iPad/Safari bij hervatten van actieve status
         document.addEventListener("visibilitychange", function() {{
             if (document.visibilityState === "visible") {{
                 window.location.reload(true);
