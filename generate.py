@@ -44,7 +44,7 @@ if api_key:
 
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
 
-# 3. FEEDS INCLUSIEF DE HERSTELDE RUBRIEK "REGIONAAL"
+# 3. FEEDS INCLUSIEF DE EXPLICIETE RUBRIEK "REGIONAAL"
 FEEDS = {
     "Wereld": [
         {"url": "https://feeds.nos.nl/nosnieuwsbuitenland", "country": "NL", "flag": "🇳🇱"},
@@ -126,7 +126,7 @@ FEEDS = {
         {"url": "https://www.bbc.com/sport/rss.xml", "country": "GB", "flag": "🇬🇧"},
         {"url": "https://www.skysports.com/rss/12040", "country": "GB", "flag": "🇬🇧"},
         {"url": "https://www.marca.com/en/rss/index.xml", "country": "ES", "flag": "🇪🇸"},
-        {"url": "https://www.laola1.at/de/rss/", "country": "AT", "flag": "🇦🇹"}
+        {"url": "https://www.laola1.at/de/rss/", "country": "AT", "flag": "🇦T"}
     ],
     "Fitness & Resistance Training": [
         {"url": "https://www.fit.nl/feed", "country": "NL", "flag": "🇳🇱"},
@@ -278,8 +278,10 @@ def extract_domain_name(url):
     except Exception:
         return "Bron"
 
-def get_guaranteed_image(item_id):
-    return f"https://picsum.photos/seed/{item_id}/800/600"
+def get_guaranteed_image(item_id, keywords="news"):
+    """ Haalt een contextuele foto op via Unsplash op basis van relevante trefwoorden """
+    kw_encoded = urllib.parse.quote(keywords)
+    return f"https://source.unsplash.com/800x600/?{kw_encoded}"
 
 def extract_feed_image(entry, item_id):
     if 'media_content' in entry and entry.media_content:
@@ -296,7 +298,7 @@ def extract_feed_image(entry, item_id):
     if img_match:
         return img_match.group(1)
         
-    return get_guaranteed_image(item_id)
+    return f"https://picsum.photos/seed/{item_id}/800/600"
 
 # 6. FEEDS VERZAMELEN
 all_headlines_with_sources = []
@@ -345,7 +347,7 @@ ticker_items_html = ""
 for t_item in recent_ticker_items:
     ticker_items_html += f'<span class="ticker-item"><span class="ticker-flag">{t_item["flag"]} {t_item["country"]}</span> <b>{t_item["source"]}:</b> {t_item["title"]}</span>'
 
-# 7. OPINIESTUK GENEREREN OF CACHE LADEN
+# 7. OPINIESTUK GENEREREN OF CACHE LADEN MET CONTEXTUELE AFBEELDING
 OPINION_CACHE_FILE = "opinion_cache.json"
 opinion_data = None
 
@@ -369,13 +371,15 @@ if not opinion_data and client and all_headlines_with_sources:
             f"1. Kies het meest maatschappelijk relevante onderwerp.\n"
             f"2. Schrijf een sterk achtergrond- en opinieartikel in het Nederlands.\n"
             f"3. Geef een nauwkeurige Nederlandse caption die aansluit bij de foto.\n"
-            f"4. Geef een betrouwbaarheidsindicator als percentage (0-100%) op basis van feiten, plus toelichting.\n\n"
+            f"4. Geef 3-5 Engelse trefwoorden (keywords) voor het zoeken van een exact passende foto (bijv. 'cybersecurity,technology' of 'politics,government').\n"
+            f"5. Geef een betrouwbaarheidsindicator als percentage (0-100%) op basis van feiten, plus toelichting.\n\n"
             f"Geef antwoord als JSON:\n"
             f"{{\n"
             f'  "titel": "Pakkende Nederlandse titel",\n'
             f'  "samenvatting": "Korte samenvatting in 2 zinnen in het Nederlands",\n'
             f'  "inhoud": "### Kerninzichten\\n* [Punt 1]\\n* [Punt 2]\\n\\n### Diepgaande Analyse\\n[Tekst]\\n\\n### Conclusie\\n[Conclusie]",\n'
             f'  "image_caption": "Gedetailleerde Nederlandse beschrijving van het visuele beeld",\n'
+            f'  "image_keywords": "politics,government,building",\n'
             f'  "reliability_score": 88,\n'
             f'  "reliability_reason": "Gebaseerd op meervoudige geverifieerde bronnen."\n'
             f"}}"
@@ -387,14 +391,17 @@ if not opinion_data and client and all_headlines_with_sources:
         )
         data = json.loads(res.text.strip())
         
+        img_keywords = data.get("image_keywords", "news,politics")
+        matching_img = get_guaranteed_image("opinion_today", img_keywords)
+
         opinion_data = {
             "titel": data.get("titel", "Actueel Maatschappelijk Debat"),
             "samenvatting": data.get("samenvatting", ""),
             "inhoud": clean_markdown(data.get("inhoud", "")),
-            "image_caption": data.get("image_caption", "Sfeerbeeld van het maatschappelijk debat"),
+            "image_caption": data.get("image_caption", "Sfeerbeeld bij het onderwerp"),
             "reliability_score": data.get("reliability_score", 85),
             "reliability_reason": data.get("reliability_reason", "Meervoudig geverifieerde bronnen."),
-            "img": get_guaranteed_image("opinion_today_1")
+            "img": matching_img
         }
         with open(OPINION_CACHE_FILE, "w", encoding="utf-8") as f:
             json.dump({"date": today_str, "data": opinion_data}, f, ensure_ascii=False)
@@ -408,7 +415,7 @@ if not opinion_data and client and all_headlines_with_sources:
             "image_caption": "Nieuwsoverzicht van de dag",
             "reliability_score": 50,
             "reliability_reason": "Onvoldoende data voor verificatie.",
-            "img": get_guaranteed_image("fallback_op")
+            "img": "https://picsum.photos/seed/fallback_op/800/600"
         }
 
 # 8. REGULIERE ARTIKELEN VERZAMELEN
@@ -457,10 +464,6 @@ articles_to_process = []
 for cat, count in category_counts.items():
     items = feed_results.get(cat, [])[:count]
     for item in items:
-        # Borging dat Regionaal uitsluitend uit regionale bronnen gepakt wordt
-        if cat == "Regionaal" and item.get("category") != "Regionaal":
-            continue
-            
         article_id += 1
         clean_sum = strip_tags(item.get('summary', item.get('description', '')))
         item_link = item.get('link', '#')
@@ -576,7 +579,6 @@ html_content = f"""<!DOCTYPE html>
             100% {{ transform: translate3d(-100%, 0, 0); }}
         }}
 
-        /* RESPONSIVE WIDGET BAR: IPAD EN GROTER NAAST ELKAAR, IPHONE ONDER ELKAAR */
         .widget-bar {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-bottom: 25px; }}
         .widget-weather {{ grid-column: span 2; }}
 
