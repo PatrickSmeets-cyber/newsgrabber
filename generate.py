@@ -561,6 +561,7 @@ html_content = f"""<!DOCTYPE html>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <meta http-equiv="refresh" content="900">
 
     <title>Patrick’s Nieuwsboard</title>
     <style>
@@ -681,6 +682,7 @@ html_content = f"""<!DOCTYPE html>
 
     <script>
         const articlesData = {json_modal_data};
+        let lastActiveTime = Date.now();
 
         function openArticle(id) {{
             const a = articlesData[id];
@@ -718,11 +720,34 @@ html_content = f"""<!DOCTYPE html>
             document.getElementById('modalOverlay').style.display = 'none';
         }}
 
-        document.addEventListener("visibilitychange", function() {{
-            if (document.visibilityState === "visible") {{
+        // --- VERVERS-LOGICA GEOPTIMALISEERD VOOR IPAD / SAFARI ---
+        function checkAndReload() {{
+            const now = Date.now();
+            // Als het scherm langer dan 60 seconden niet actief was, ververs de pagina
+            if (now - lastActiveTime > 60000) {{
                 window.location.reload(true);
             }}
+            lastActiveTime = now;
+        }}
+
+        // 1. Heropenen vanuit Safari-geheugen (BFcache)
+        window.addEventListener('pageshow', function(event) {{
+            if (event.persisted) {{
+                window.location.reload(true);
+            }} else {{
+                checkAndReload();
+            }}
         }});
+
+        // 2. Tab-wissel of ontgrendeling
+        document.addEventListener('visibilitychange', function() {{
+            if (document.visibilityState === 'visible') {{
+                checkAndReload();
+            }}
+        }});
+
+        // 3. Focus wanneer PWA of Safari op de voorgrond komt
+        window.addEventListener('focus', checkAndReload);
     </script>
 </body>
 </html>
