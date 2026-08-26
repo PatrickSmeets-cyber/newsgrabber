@@ -187,7 +187,7 @@ daily_tip = "Neem elk uur even 2 minuten afstand van je scherm om je ogen rust t
 if client:
     try:
         prompt_extras = (
-            "Bedenk voor vandaag:\n"
+            "Bedenk voor vandaag (in het Nederlands, Engels of Duits):\n"
             "1. Een inspirerende quote inclusief auteur.\n"
             "2. Een unieke, praktische dagelijkse tip op het gebied van productiviteit, fitness of gezondheid.\n"
             "Geef antwoord exact als JSON: {\"quote\": \"...\", \"auteur\": \"...\", \"tip\": \"...\"}"
@@ -213,13 +213,21 @@ def clean_markdown(text):
 def strip_tags(text):
     return re.sub('<[^<]+?>', '', text)
 
-# Dynamic Context-Based Image Generator (Unsplash Topic Specific)
-def get_topic_image_url(title, category):
-    keywords = re.findall(r'\b[a-zA-Z]{4,}\b', title.lower())
-    query = ",".join(keywords[:2]) if keywords else category.lower()
-    return f"https://source.unsplash.com/featured/800x600/?{urllib.parse.quote(query)}"
+def extract_domain_name(url):
+    """ Haalt 1 of 2 woorden bronnaam op uit een URL voor de knop """
+    try:
+        domain = urllib.parse.urlparse(url).netloc
+        domain = domain.replace('www.', '').split('.')[0]
+        return domain.capitalize()
+    except Exception:
+        return "Bron"
 
-def extract_feed_image(entry, default_category, title):
+# Unieke Unsplash generator via Picsum ID fallback om dubbele foto's gegarandeerd uit te sluiten
+def get_unique_fallback_image(item_id, search_term="news"):
+    clean_term = urllib.parse.quote(search_term.replace(" ", ","))
+    return f"https://source.unsplash.com/800x600/?{clean_term}&sig={item_id}"
+
+def extract_feed_image(entry, default_category, title, item_id):
     if 'media_content' in entry and entry.media_content:
         for media in entry.media_content:
             if 'url' in media and media['url'].startswith('http'):
@@ -234,7 +242,7 @@ def extract_feed_image(entry, default_category, title):
     if img_match:
         return img_match.group(1)
         
-    return get_topic_image_url(title, default_category)
+    return get_unique_fallback_image(item_id, f"{default_category},{title[:20]}")
 
 # 6. FEEDS VERZAMELEN MET ONTDUBBELING
 all_headlines_with_sources = []
@@ -248,7 +256,6 @@ for cat, urls in FEEDS.items():
             feed = feedparser.parse(url, request_headers=HEADERS)
             if feed.entries:
                 for entry in feed.entries:
-                    # Ontdubbeling op basis van opgeschoonde titel
                     clean_t = re.sub(r'[^\w\s]', '', entry.title.lower()).strip()
                     if clean_t not in seen_titles:
                         seen_titles.add(clean_t)
@@ -265,7 +272,7 @@ for cat, urls in FEEDS.items():
             "category": cat
         })
 
-# 7. OPINIESTUK GENEREREN OF UIT CACHE LADEN (1x per dag) + Betrouwbaarheidsindicator
+# 7. OPINIESTUK GENEREREN OF UIT CACHE LADEN (1x per dag) + Betrouwbaarheidsindicator & Unieke AI Zoektermen
 OPINION_CACHE_FILE = "opinion_cache.json"
 opinion_data = None
 
@@ -285,19 +292,21 @@ if not opinion_data and client and all_headlines_with_sources:
         prompt = (
             f"Gebruik de volgende actuele nieuwsheadlines:\n"
             f"{json.dumps(sample, ensure_ascii=False)}\n\n"
-            f"Opdracht:\n"
+            f"Opdracht (voertaal bij voorkeur Nederlands, anders Engels of Duits):\n"
             f"1. Kies het meest maatschappelijk relevante onderwerp.\n"
             f"2. Schrijf een sterk, pakkend achtergrond- en opinieartikel met een specifieke, aansprekende titel.\n"
-            f"3. Geef een visuele beschrijving voor een bijpassend beeld (image_caption) dat exact beschrijft wat er op de afbeelding te zien is en past bij de inhoud.\n"
-            f"4. Bepaal een betrouwbaarheidsindicator als percentage (score 0-100%) op basis van de gebruikte bronnen en de verifieerbaarheid van de feiten, en geef een korte toelichting.\n\n"
+            f"3. Geef een nauwkeurige caption die beschrijft wat er op de foto bij dit artikel te zien moet zijn.\n"
+            f"4. Bepaal 2 hele specifieke Engelstalige Unsplash-zoekwoorden (image_search_keywords) die een exact uniek passend beeld opleveren voor dit specifieke artikel.\n"
+            f"5. Geef een betrouwbaarheidsindicator als percentage (0-100%) op basis van de bronnen en feiten, plus toelichting.\n\n"
             f"Geef antwoord als JSON:\n"
             f"{{\n"
             f'  "titel": "Pakkende specifieke titel",\n'
             f'  "samenvatting": "Korte samenvatting in 2 zinnen",\n'
             f'  "inhoud": "### Kerninzichten\\n* [Punt 1]\\n* [Punt 2]\\n\\n### Diepgaande Analyse\\n[Tekst]\\n\\n### Conclusie\\n[Conclusie]",\n'
-            f'  "image_caption": "Gedetailleerde beschrijving die exact aansluit op de afbeelding en tekst",\n'
-            f'  "reliability_score": 85,\n'
-            f'  "reliability_reason": "Gebaseerd op meervoudige internationale kwaliteitsmediameldingen."\n'
+            f'  "image_caption": "Gedetailleerde beschrijving van het visuele beeld",\n'
+            f'  "image_search_keywords": "specific_keyword1,specific_keyword2",\n'
+            f'  "reliability_score": 88,\n'
+            f'  "reliability_reason": "Gebaseerd op meervoudige geverifieerde bronnen."\n'
             f"}}"
         )
         res = client.models.generate_content(
@@ -306,6 +315,8 @@ if not opinion_data and client and all_headlines_with_sources:
             config={'response_mime_type': 'application/json', 'tools': []}
         )
         data = json.loads(res.text.strip())
+        search_kw = data.get("image_search_keywords", "opinion,news")
+        
         opinion_data = {
             "titel": data.get("titel", "Actueel Maatschappelijk Debat"),
             "samenvatting": data.get("samenvatting", ""),
@@ -313,7 +324,7 @@ if not opinion_data and client and all_headlines_with_sources:
             "image_caption": data.get("image_caption", "Sfeerbeeld van het maatschappelijk debat"),
             "reliability_score": data.get("reliability_score", 85),
             "reliability_reason": data.get("reliability_reason", "Meervoudig geverifieerde bronnen."),
-            "img": get_topic_image_url(data.get("titel", "news"), "Wereld")
+            "img": f"https://source.unsplash.com/1200x800/?{urllib.parse.quote(search_kw)}&sig=opinion1"
         }
         with open(OPINION_CACHE_FILE, "w", encoding="utf-8") as f:
             json.dump({"date": today_str, "data": opinion_data}, f, ensure_ascii=False)
@@ -327,7 +338,7 @@ if not opinion_data and client and all_headlines_with_sources:
             "image_caption": "Nieuwsoverzicht",
             "reliability_score": 50,
             "reliability_reason": "Onvoldoende data voor verificatie.",
-            "img": "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200"
+            "img": "https://source.unsplash.com/1200x800/?newspaper,journalism&sig=fallback_op"
         }
 
 # 8. REGULIERE ARTIKELEN VERZAMELEN & BATCH AI SAMENVATTING (1 API Call totaal)
@@ -345,6 +356,7 @@ modal_data[str(article_id)] = {
     "full_text": opinion_data["inhoud"],
     "reliability_score": opinion_data.get("reliability_score", 85),
     "reliability_reason": opinion_data.get("reliability_reason", ""),
+    "source_name": "Opinie Redactie",
     "is_background": True
 }
 
@@ -376,30 +388,35 @@ for cat, count in category_counts.items():
     for item in items:
         article_id += 1
         clean_sum = strip_tags(item.get('summary', item.get('description', '')))
-        img_url = extract_feed_image(item, cat, item.title)
+        item_link = item.get('link', '#')
+        source_name = extract_domain_name(item_link)
+        img_url = extract_feed_image(item, cat, item.title, article_id)
+        
         articles_to_process.append({
             "id": str(article_id),
             "title": item.title,
             "category": cat,
-            "link": item.get('link', '#'),
+            "link": item_link,
+            "source_name": source_name,
             "clean_sum": clean_sum,
             "img_url": img_url
         })
 
-# BATCH AI PROCESS: Alle nieuwsartikelen in 1 enkele API call verwerken
+# BATCH AI PROCESS: Alle nieuwsartikelen in 1 enkele API call verwerken!
 processed_summaries = {}
 if client and articles_to_process:
     try:
         input_payload = [{"id": a["id"], "title": a["title"], "text": a["clean_sum"][:300]} for a in articles_to_process]
         batch_prompt = (
             f"Verwerk de volgende lijst nieuwsartikelen:\n{json.dumps(input_payload, ensure_ascii=False)}\n\n"
-            f"Opdracht per artikel ID:\n"
-            f"1. Maak een heldere samenvatting in max 2 zinnen in het Nederlands.\n"
-            f"2. Schrijf een 'caption' die het getoonde visuele beeld exact beschrijft in relatie tot de inhoud van de tekst (max 12 woorden).\n\n"
+            f"Opdracht per artikel ID (Taal: bij voorkeur Nederlands, anders Engels of Duits):\n"
+            f"1. Maak een heldere samenvatting in max 2 zinnen.\n"
+            f"2. Schrijf een 'caption' die exact aansluit op de inhoud van de titel en tekst.\n"
+            f"3. Bepaal 2 hele specifieke Engelstalige Unsplash zoekwoorden (search_keywords) om een 100% unieke, perfect bij de inhoud passende foto te vinden.\n\n"
             f"Geef het antwoord terug als JSON dictionary met het artikel ID als key:\n"
             f"{{\n"
-            f'  "2": {{"summary": "...", "caption": "..."}},\n'
-            f'  "3": {{"summary": "...", "caption": "..."}}\n'
+            f'  "2": {{"summary": "...", "caption": "...", "search_keywords": "word1,word2"}},\n'
+            f'  "3": {{"summary": "...", "caption": "...", "search_keywords": "word3,word4"}}\n'
             f"}}"
         )
         res_batch = client.models.generate_content(
@@ -420,14 +437,21 @@ for item in articles_to_process:
     ai_summary = ai_data.get("summary", item["clean_sum"][:130] + "...")
     img_caption = ai_data.get("caption", f"Afbeelding ter illustratie van: {item['title'][:30]}")
     
+    # Als de originele feed geen unieke image had, genereer een exact context-matched Unsplash URL via AI keywords
+    final_img_url = item["img_url"]
+    if "source.unsplash.com" in final_img_url and ai_data.get("search_keywords"):
+        kw = urllib.parse.quote(ai_data["search_keywords"])
+        final_img_url = f"https://source.unsplash.com/800x600/?{kw}&sig={aid}"
+    
     modal_data[aid] = {
         "title": item["title"],
         "category": item["category"],
-        "img": item["img_url"],
+        "img": final_img_url,
         "caption": img_caption,
         "ai_summary": ai_summary,
         "full_text": item["clean_sum"],
         "original_link": item["link"],
+        "source_name": item["source_name"],
         "is_background": False
     }
 
@@ -435,7 +459,7 @@ for item in articles_to_process:
     articles_html += f"""
     <div class="card{full_width}" onclick="openArticle('{aid}')">
         <div class="card-img-wrapper">
-            <img src="{item['img_url']}" alt="{item['title']}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800';">
+            <img src="{final_img_url}" alt="{item['title']}" onerror="this.onerror=null;this.src='https://source.unsplash.com/800x600/?news&sig={aid}';">
             <span class="badge">{item['category']}</span>
         </div>
         <div class="card-content">
@@ -569,8 +593,13 @@ html_content = f"""<!DOCTYPE html>
             document.getElementById('modalFullText').innerHTML = a.full_text;
             
             const srcBtn = document.getElementById('modalSourceLink');
-            if (a.is_background) {{ srcBtn.style.display = 'none'; }} 
-            else {{ srcBtn.style.display = 'inline-block'; srcBtn.href = a.original_link; }}
+            if (a.is_background) {{ 
+                srcBtn.style.display = 'none'; 
+            }} else {{ 
+                srcBtn.style.display = 'inline-block'; 
+                srcBtn.href = a.original_link; 
+                srcBtn.innerText = 'Origineel (' + (a.source_name || 'Bron') + ') \u2192';
+            }}
             
             document.getElementById('modalOverlay').style.display = 'block';
         }}
