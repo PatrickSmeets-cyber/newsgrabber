@@ -241,8 +241,9 @@ def extract_feed_image(entry, item_id):
         
     return get_guaranteed_image(item_id)
 
-# 6. FEEDS VERZAMELEN MET LANDCODE EN ONTDUBBELING
+# 6. FEEDS VERZAMELEN MET LANDCODERING EN ONTDUBBELING
 all_headlines_with_sources = []
+ticker_headlines = []
 feed_results = {}
 seen_titles = set()
 
@@ -262,6 +263,14 @@ for cat, feed_list in FEEDS.items():
                         entry['country_code'] = country
                         entry['country_flag'] = flag
                         pool_items.append(entry)
+                        
+                        # Bewaar headline voor ticker-tape
+                        ticker_headlines.append({
+                            "title": entry.title,
+                            "flag": flag,
+                            "country": country,
+                            "source": extract_domain_name(entry.get("link", ""))
+                        })
         except Exception as err:
             print(f"Feed fout {url}: {err}")
             
@@ -273,6 +282,12 @@ for cat, feed_list in FEEDS.items():
             "link": entry.get("link", ""),
             "category": cat
         })
+
+# Selecteer de 30 meest recente unieke headlines voor de ticker-tape
+recent_ticker_items = ticker_headlines[:30]
+ticker_items_html = ""
+for t_item in recent_ticker_items:
+    ticker_items_html += f'<span class="ticker-item"><span class="ticker-flag">{t_item["flag"]} {t_item["country"]}</span> <b>{t_item["source"]}:</b> {t_item["title"]}</span>'
 
 # 7. OPINIESTUK GENEREREN OF CACHE LADEN
 OPINION_CACHE_FILE = "opinion_cache.json"
@@ -479,12 +494,30 @@ html_content = f"""<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Cache-Control Meta Tags voor directe verversing (o.a. iPad Safari) -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
     <title>Patrick’s Nieuwsboard</title>
     <style>
         * {{ box-sizing: border-box; }}
         body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0b132b; margin: 0; padding: 20px; color: #e0e6ed; }}
-        header {{ text-align: center; padding: 25px 15px; background: linear-gradient(135deg, #1c2541, #3a506b, #00b4d8); color: #ffffff; border-radius: 16px; margin-bottom: 25px; }}
+        header {{ text-align: center; padding: 25px 15px 15px 15px; background: linear-gradient(135deg, #1c2541, #3a506b, #00b4d8); color: #ffffff; border-radius: 16px; margin-bottom: 25px; }}
         
+        /* TICKER TAPE STYLES */
+        .ticker-wrap {{ width: 100%; background: rgba(11, 19, 43, 0.6); overflow: hidden; height: 38px; line-height: 38px; border-radius: 8px; margin-top: 15px; border: 1px solid rgba(0, 180, 216, 0.4); display: flex; align-items: center; }}
+        .ticker-title {{ background: #00b4d8; color: #0b132b; padding: 0 12px; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; white-space: nowrap; height: 100%; display: flex; align-items: center; z-index: 2; }}
+        .ticker-move {{ display: inline-block; white-space: nowrap; padding-left: 100%; animation: ticker 75s linear infinite; }}
+        .ticker-wrap:hover .ticker-move {{ animation-play-state: paused; }}
+        .ticker-item {{ display: inline-block; padding: 0 20px; font-size: 0.85rem; color: #caf0f8; }}
+        .ticker-flag {{ font-size: 0.75rem; opacity: 0.9; margin-right: 4px; }}
+        @keyframes ticker {{
+            0% {{ transform: translate3d(0, 0, 0); }}
+            100% {{ transform: translate3d(-100%, 0, 0); }}
+        }}
+
         .widget-bar {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-bottom: 25px; }}
         .widget {{ background: #1c2541; padding: 16px; border-radius: 12px; border-left: 4px solid #00b4d8; }}
         .widget-title {{ font-size: 0.75rem; text-transform: uppercase; color: #90e0ef; font-weight: bold; margin-bottom: 5px; }}
@@ -522,8 +555,16 @@ html_content = f"""<!DOCTYPE html>
 </head>
 <body>
     <header>
-        <h1>⚡ Patrick’s Nieuwsboard</h1>
-        <p>Laatst bijgewerkt: <b>{last_updated}</b> (Actieve uren: 05:00-20:00 CET)</p>
+        <h1 style="margin: 0 0 5px 0;">⚡ Patrick’s Nieuwsboard</h1>
+        <p style="margin: 0;">Laatst bijgewerkt: <b>{last_updated}</b> (Actieve uren: 05:00-20:00 CET)</p>
+        
+        <!-- TICKER TAPE BAR -->
+        <div class="ticker-wrap">
+            <div class="ticker-title">📡 Laatste Nieuws</div>
+            <div class="ticker-move">
+                {ticker_items_html}
+            </div>
+        </div>
     </header>
     
     <div class="widget-bar">
@@ -552,7 +593,7 @@ html_content = f"""<!DOCTYPE html>
     </div>
 
     <footer>
-        <p>Build ID: <code>{build_id}</code> | AI Engine: Gemini 3.6 Flash (Guaranteed Picsum Images & Country Badges)</p>
+        <p>Build ID: <code>{build_id}</code> | AI Engine: Gemini 3.6 Flash (Ticker Tape & Guaranteed Images Active)</p>
     </footer>
 
     <div id="modalOverlay" class="modal-overlay" onclick="if(event.target.id==='modalOverlay') closeModal();">
@@ -612,6 +653,13 @@ html_content = f"""<!DOCTYPE html>
         function closeModal() {{
             document.getElementById('modalOverlay').style.display = 'none';
         }}
+
+        // Automatische herlaad-trigger voor iPad/Safari bij hervatten van actieve status
+        document.addEventListener("visibilitychange", function() {{
+            if (document.visibilityState === "visible") {{
+                window.location.reload(true);
+            }}
+        }});
     </script>
 </body>
 </html>
