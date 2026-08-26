@@ -44,115 +44,115 @@ if api_key:
 
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
 
-# 3. UITGEBREIDE FEEDS (Minimaal 10 top relevante bronnen per rubriek: NL, EN, DE)
+# 3. UITGEBREIDE FEEDS MET LANDCODERING (NL, EN, DE)
 FEEDS = {
     "Wereld": [
-        "https://feeds.nos.nl/nosnieuwsbuitenland",
-        "https://www.nu.nl/rss/Buitenland",
-        "http://feeds.bbci.co.uk/news/world/rss.xml",
-        "https://www.tagesschau.de/xml/rss2/",
-        "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
-        "https://www.reutersagency.com/feed/?taxonomy=best-topics&post_type=best",
-        "https://www.aljazeera.com/xml/rss/all.xml",
-        "https://rss.dw.com/rdf/rss-en-world",
-        "https://www.lemonde.fr/en/rss/une.xml",
-        "https://www.theguardian.com/world/rss"
+        {"url": "https://feeds.nos.nl/nosnieuwsbuitenland", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.nu.nl/rss/Buitenland", "country": "NL", "flag": "🇳🇱"},
+        {"url": "http://feeds.bbci.co.uk/news/world/rss.xml", "country": "GB", "flag": "🇬🇧"},
+        {"url": "https://www.tagesschau.de/xml/rss2/", "country": "DE", "flag": "🇩🇪"},
+        {"url": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://www.reutersagency.com/feed/?taxonomy=best-topics&post_type=best", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://www.aljazeera.com/xml/rss/all.xml", "country": "QA", "flag": "🇶🇦"},
+        {"url": "https://rss.dw.com/rdf/rss-en-world", "country": "DE", "flag": "🇩🇪"},
+        {"url": "https://www.lemonde.fr/en/rss/une.xml", "country": "FR", "flag": "🇫🇷"},
+        {"url": "https://www.theguardian.com/world/rss", "country": "GB", "flag": "🇬🇧"}
     ],
     "Europa": [
-        "https://feeds.nos.nl/nosnieuwseuropa",
-        "https://www.bnr.nl/rss/nieuws",
-        "https://www.politico.eu/feed/",
-        "https://www.euronews.com/rss?format=xml",
-        "https://www.spiegel.de/europa/index.rss",
-        "https://www.bbc.com/news/world/europe/rss.xml",
-        "https://www.lemonde.fr/europe/rss_full.xml",
-        "https://www.irishtimes.com/crawled/rss/world/europe.xml",
-        "https://www.brusselsjournal.com/rss.xml",
-        "https://www.euractiv.com/feed/"
+        {"url": "https://feeds.nos.nl/nosnieuwseuropa", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.bnr.nl/rss/nieuws", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.politico.eu/feed/", "country": "EU", "flag": "🇪🇺"},
+        {"url": "https://www.euronews.com/rss?format=xml", "country": "EU", "flag": "🇪🇺"},
+        {"url": "https://www.spiegel.de/europa/index.rss", "country": "DE", "flag": "🇩🇪"},
+        {"url": "https://www.bbc.com/news/world/europe/rss.xml", "country": "GB", "flag": "🇬🇧"},
+        {"url": "https://www.lemonde.fr/europe/rss_full.xml", "country": "FR", "flag": "🇫🇷"},
+        {"url": "https://www.irishtimes.com/crawled/rss/world/europe.xml", "country": "IE", "flag": "🇮🇪"},
+        {"url": "https://www.brusselsjournal.com/rss.xml", "country": "BE", "flag": "🇧🇪"},
+        {"url": "https://www.euractiv.com/feed/", "country": "EU", "flag": "🇪🇺"}
     ],
     "Nederland": [
-        "https://feeds.nos.nl/nosnieuwsbinnenland",
-        "https://www.rtlnieuws.nl/rss.xml",
-        "https://www.nu.nl/rss/Binnenland",
-        "https://www.trouw.nl/binnenland/rss.xml",
-        "https://www.volkskrant.nl/nieuws-achtergrond/rss.xml",
-        "https://www.parool.nl/nederland/rss.xml",
-        "https://www.ad.nl/binnenland/rss.xml",
-        "https://www.telegraaf.nl/rss",
-        "https://www.nrc.nl/rss/",
-        "https://www.metrotime.be/nl/rss.xml"
+        {"url": "https://feeds.nos.nl/nosnieuwsbinnenland", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.rtlnieuws.nl/rss.xml", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.nu.nl/rss/Binnenland", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.trouw.nl/binnenland/rss.xml", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.volkskrant.nl/nieuws-achtergrond/rss.xml", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.parool.nl/nederland/rss.xml", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.ad.nl/binnenland/rss.xml", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.telegraaf.nl/rss", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.nrc.nl/rss/", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.metrotime.be/nl/rss.xml", "country": "BE", "flag": "🇧🇪"}
     ],
     "Midden-Limburg": [
-        "https://www.weertdegekste.nl/feed/",
-        "https://www.nederweert24.nl/feed/",
-        "https://www.l1nieuws.nl/rss/nieuws",
-        "https://www.limburger.nl/rss",
-        "https://www.middenlimburgactueel.nl/feed/",
-        "https://www.weert.nl/rss",
-        "https://www.roermond.nl/rss",
-        "https://www.1limburg.nl/rss",
-        "https://www.vilt.be/rss",
-        "https://www.vvd-weert.nl/feed/"
+        {"url": "https://www.weertdegekste.nl/feed/", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.nederweert24.nl/feed/", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.l1nieuws.nl/rss/nieuws", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.limburger.nl/rss", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.middenlimburgactueel.nl/feed/", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.weert.nl/rss", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.roermond.nl/rss", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.1limburg.nl/rss", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.vilt.be/rss", "country": "BE", "flag": "🇧🇪"},
+        {"url": "https://www.vvd-weert.nl/feed/", "country": "NL", "flag": "🇳🇱"}
     ],
     "Wiskunde & Wetenschap": [
-        "https://www.nu.nl/rss/Wetenschap",
-        "https://feeds.nos.nl/nosnieuwswetenschap",
-        "https://www.sciencedaily.com/rss/all.xml",
-        "https://www.spektrum.de/alias/rss/spektrum-de-rss-feed/996406",
-        "https://www.nature.com/nature.rss",
-        "https://www.newscientist.com/feed/home/",
-        "https://phys.org/rss-feed/",
-        "https://www.scientificamerican.com/feed/",
-        "https://www.kennislink.nl/feed/",
-        "https://www.quantamagazine.org/feed/"
+        {"url": "https://www.nu.nl/rss/Wetenschap", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://feeds.nos.nl/nosnieuwswetenschap", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.sciencedaily.com/rss/all.xml", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://www.spektrum.de/alias/rss/spektrum-de-rss-feed/996406", "country": "DE", "flag": "🇩🇪"},
+        {"url": "https://www.nature.com/nature.rss", "country": "GB", "flag": "🇬🇧"},
+        {"url": "https://www.newscientist.com/feed/home/", "country": "GB", "flag": "🇬🇧"},
+        {"url": "https://phys.org/rss-feed/", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://www.scientificamerican.com/feed/", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://www.kennislink.nl/feed/", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.quantamagazine.org/feed/", "country": "US", "flag": "🇺🇸"}
     ],
     "Technologie": [
-        "https://www.bright.nl/rss",
-        "https://www.nu.nl/rss/Tech",
-        "https://feeds.arstechnica.com/arstechnica/index",
-        "https://www.heise.de/rss/heise-atom.xml",
-        "https://tweakers.net/feeds/nieuws.xml",
-        "https://www.theverge.com/rss/index.xml",
-        "https://wired.com/feed/rss",
-        "https://techcrunch.com/feed/",
-        "https://www.golem.de/rss.php?feed=RSS2.0",
-        "https://www.zdnet.com/news/rss.xml"
+        {"url": "https://www.bright.nl/rss", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.nu.nl/rss/Tech", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://feeds.arstechnica.com/arstechnica/index", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://www.heise.de/rss/heise-atom.xml", "country": "DE", "flag": "🇩🇪"},
+        {"url": "https://tweakers.net/feeds/nieuws.xml", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.theverge.com/rss/index.xml", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://wired.com/feed/rss", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://techcrunch.com/feed/", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://www.golem.de/rss.php?feed=RSS2.0", "country": "DE", "flag": "🇩🇪"},
+        {"url": "https://www.zdnet.com/news/rss.xml", "country": "US", "flag": "🇺🇸"}
     ],
     "Sport": [
-        "https://feeds.nos.nl/nossport",
-        "https://www.nu.nl/rss/Sport",
-        "https://www.espn.com/espn/rss/news",
-        "https://www.kicker.de/news.rss",
-        "https://www.voetbalzone.nl/rss/nieuws.xml",
-        "https://www.sportnieuws.nl/rss",
-        "https://www.bbc.com/sport/rss.xml",
-        "https://www.skysports.com/rss/12040",
-        "https://www.marca.com/en/rss/index.xml",
-        "https://www.laola1.at/de/rss/"
+        {"url": "https://feeds.nos.nl/nossport", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.nu.nl/rss/Sport", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.espn.com/espn/rss/news", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://www.kicker.de/news.rss", "country": "DE", "flag": "🇩🇪"},
+        {"url": "https://www.voetbalzone.nl/rss/nieuws.xml", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.sportnieuws.nl/rss", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.bbc.com/sport/rss.xml", "country": "GB", "flag": "🇬🇧"},
+        {"url": "https://www.skysports.com/rss/12040", "country": "GB", "flag": "🇬🇧"},
+        {"url": "https://www.marca.com/en/rss/index.xml", "country": "ES", "flag": "🇪🇸"},
+        {"url": "https://www.laola1.at/de/rss/", "country": "AT", "flag": "🇦🇹"}
     ],
     "Fitness & Resistance Training": [
-        "https://www.fit.nl/feed",
-        "https://www.menshealth.com/nl/rss/all.xml/",
-        "https://www.menshealth.com/rss/all.xml/",
-        "https://www.ironman.com/news/rss",
-        "https://www.bodybuilding.com/rss/articles",
-        "https://startingstrength.com/feed",
-        "https://generationsiron.com/feed/",
-        "https://www.strongerbyscience.com/feed/",
-        "https://breakmuscle.com/feed/",
-        "https://www.t-nation.com/feed/"
+        {"url": "https://www.fit.nl/feed", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.menshealth.com/nl/rss/all.xml/", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.menshealth.com/rss/all.xml/", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://www.ironman.com/news/rss", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://www.bodybuilding.com/rss/articles", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://startingstrength.com/feed", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://generationsiron.com/feed/", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://www.strongerbyscience.com/feed/", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://breakmuscle.com/feed/", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://www.t-nation.com/feed/", "country": "US", "flag": "🇺🇸"}
     ],
     "Humor & Luchtig": [
-        "https://speld.nl/feed/",
-        "https://www.nu.nl/rss/Opmerkelijk",
-        "https://www.theonion.com/rss",
-        "https://www.postillon.com/feeds/posts/default?alt=rss",
-        "https://www.humo.be/rss",
-        "https://www.clickhole.com/feed/",
-        "https://www.duffelblog.com/feed",
-        "https://www.babylonbee.com/feed",
-        "https://www.vandaaginside.nl/rss.xml",
-        "https://www.fok.nl/rss/nieuws"
+        {"url": "https://speld.nl/feed/", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.nu.nl/rss/Opmerkelijk", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.theonion.com/rss", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://www.postillon.com/feeds/posts/default?alt=rss", "country": "DE", "flag": "🇩🇪"},
+        {"url": "https://www.humo.be/rss", "country": "BE", "flag": "🇧🇪"},
+        {"url": "https://www.clickhole.com/feed/", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://www.duffelblog.com/feed", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://www.babylonbee.com/feed", "country": "US", "flag": "🇺🇸"},
+        {"url": "https://www.vandaaginside.nl/rss.xml", "country": "NL", "flag": "🇳🇱"},
+        {"url": "https://www.fok.nl/rss/nieuws", "country": "NL", "flag": "🇳🇱"}
     ]
 }
 
@@ -178,7 +178,7 @@ try:
 except Exception as e:
     print(f"Weerfout: {e}")
 
-# 5. DYNAMISCHE SPREUK EN TIP
+# 5. SPREUK EN TIP
 daily_quote = "De enige constante in het leven is verandering."
 daily_quote_author = "Heraclitus"
 daily_tip = "Neem elk uur even 2 minuten afstand van je scherm om je ogen rust te geven."
@@ -191,7 +191,7 @@ if client:
             "2. Een unieke, praktische dagelijkse tip op het gebied van productiviteit, fitness of gezondheid.\n"
             "Geef antwoord exact als JSON: {\"quote\": \"...\", \"auteur\": \"...\", \"tip\": \"...\"}"
         )
-        res_extras = client.models.generate-content(
+        res_extras = client.models.generate_content(
             model='gemini-3.6-flash',
             contents=prompt_extras,
             config={'response_mime_type': 'application/json', 'tools': []}
@@ -213,7 +213,6 @@ def strip_tags(text):
     return re.sub('<[^<]+?>', '', text)
 
 def extract_domain_name(url):
-    """ Haalt 1 of 2 woorden bronnaam op uit een URL voor de knop """
     try:
         domain = urllib.parse.urlparse(url).netloc
         domain = domain.replace('www.', '').split('.')[0]
@@ -221,12 +220,11 @@ def extract_domain_name(url):
     except Exception:
         return "Bron"
 
-def build_unsplash_url(keywords, item_id):
-    """ Genereert een gegarandeerd unieke en werkende Unsplash beeld-URL """
-    kw = urllib.parse.quote(keywords.replace(" ", ","))
-    return f"https://source.unsplash.com/featured/800x600/?{kw}&sig={item_id}"
+def get_guaranteed_image(item_id):
+    """ Genereert een gegarandeerde, unieke foto via Picsum Photos """
+    return f"https://picsum.photos/seed/{item_id}/800/600"
 
-def extract_feed_image(entry, default_category, title, item_id):
+def extract_feed_image(entry, item_id):
     if 'media_content' in entry and entry.media_content:
         for media in entry.media_content:
             if 'url' in media and media['url'].startswith('http'):
@@ -241,16 +239,19 @@ def extract_feed_image(entry, default_category, title, item_id):
     if img_match:
         return img_match.group(1)
         
-    return build_unsplash_url(f"{default_category},news", item_id)
+    return get_guaranteed_image(item_id)
 
-# 6. FEEDS VERZAMELEN MET ONTDUBBELING
+# 6. FEEDS VERZAMELEN MET LANDCODE EN ONTDUBBELING
 all_headlines_with_sources = []
 feed_results = {}
 seen_titles = set()
 
-for cat, urls in FEEDS.items():
+for cat, feed_list in FEEDS.items():
     pool_items = []
-    for url in urls:
+    for f_info in feed_list:
+        url = f_info["url"]
+        country = f_info["country"]
+        flag = f_info["flag"]
         try:
             feed = feedparser.parse(url, request_headers=HEADERS)
             if feed.entries:
@@ -258,6 +259,8 @@ for cat, urls in FEEDS.items():
                     clean_t = re.sub(r'[^\w\s]', '', entry.title.lower()).strip()
                     if clean_t not in seen_titles:
                         seen_titles.add(clean_t)
+                        entry['country_code'] = country
+                        entry['country_flag'] = flag
                         pool_items.append(entry)
         except Exception as err:
             print(f"Feed fout {url}: {err}")
@@ -271,7 +274,7 @@ for cat, urls in FEEDS.items():
             "category": cat
         })
 
-# 7. OPINIESTUK GENEREREN OF UIT CACHE LADEN (1x per dag)
+# 7. OPINIESTUK GENEREREN OF CACHE LADEN
 OPINION_CACHE_FILE = "opinion_cache.json"
 opinion_data = None
 
@@ -293,17 +296,15 @@ if not opinion_data and client and all_headlines_with_sources:
             f"{json.dumps(sample, ensure_ascii=False)}\n\n"
             f"Opdracht:\n"
             f"1. Kies het meest maatschappelijk relevante onderwerp.\n"
-            f"2. Schrijf een sterk, pakkend achtergrond- en opinieartikel in het Nederlands (vertaal indien nodig).\n"
-            f"3. Geef een nauwkeurige Nederlandse caption die exact beschrijft wat er op de bijpassende foto te zien is.\n"
-            f"4. Bepaal 2 hele specifieke Engelstalige Unsplash-zoekwoorden (image_search_keywords) die direct aansluiten op het beeld.\n"
-            f"5. Geef een betrouwbaarheidsindicator als percentage (0-100%) op basis van feiten, plus toelichting.\n\n"
+            f"2. Schrijf een sterk achtergrond- en opinieartikel in het Nederlands.\n"
+            f"3. Geef een nauwkeurige Nederlandse caption die aansluit bij de foto.\n"
+            f"4. Geef een betrouwbaarheidsindicator als percentage (0-100%) op basis van feiten, plus toelichting.\n\n"
             f"Geef antwoord als JSON:\n"
             f"{{\n"
             f'  "titel": "Pakkende Nederlandse titel",\n'
             f'  "samenvatting": "Korte samenvatting in 2 zinnen in het Nederlands",\n'
             f'  "inhoud": "### Kerninzichten\\n* [Punt 1]\\n* [Punt 2]\\n\\n### Diepgaande Analyse\\n[Tekst]\\n\\n### Conclusie\\n[Conclusie]",\n'
             f'  "image_caption": "Gedetailleerde Nederlandse beschrijving van het visuele beeld",\n'
-            f'  "image_search_keywords": "specific_keyword1,specific_keyword2",\n'
             f'  "reliability_score": 88,\n'
             f'  "reliability_reason": "Gebaseerd op meervoudige geverifieerde bronnen."\n'
             f"}}"
@@ -314,7 +315,6 @@ if not opinion_data and client and all_headlines_with_sources:
             config={'response_mime_type': 'application/json', 'tools': []}
         )
         data = json.loads(res.text.strip())
-        search_kw = data.get("image_search_keywords", "opinion,news")
         
         opinion_data = {
             "titel": data.get("titel", "Actueel Maatschappelijk Debat"),
@@ -323,7 +323,7 @@ if not opinion_data and client and all_headlines_with_sources:
             "image_caption": data.get("image_caption", "Sfeerbeeld van het maatschappelijk debat"),
             "reliability_score": data.get("reliability_score", 85),
             "reliability_reason": data.get("reliability_reason", "Meervoudig geverifieerde bronnen."),
-            "img": build_unsplash_url(search_kw, "opinion1")
+            "img": get_guaranteed_image("opinion_today_1")
         }
         with open(OPINION_CACHE_FILE, "w", encoding="utf-8") as f:
             json.dump({"date": today_str, "data": opinion_data}, f, ensure_ascii=False)
@@ -337,14 +337,13 @@ if not opinion_data and client and all_headlines_with_sources:
             "image_caption": "Nieuwsoverzicht van de dag",
             "reliability_score": 50,
             "reliability_reason": "Onvoldoende data voor verificatie.",
-            "img": build_unsplash_url("journalism,news", "fallback_op")
+            "img": get_guaranteed_image("fallback_op")
         }
 
-# 8. REGULIERE ARTIKELEN VERZAMELEN & BATCH AI SAMENVATTING (Inclusief Vertaling & Plaatjes Match)
+# 8. REGULIERE ARTIKELEN VERZAMELEN
 modal_data = {}
 article_id = 0
 
-# Voeg opiniestuk toe als artikel #1
 article_id += 1
 modal_data[str(article_id)] = {
     "title": opinion_data["titel"],
@@ -356,13 +355,15 @@ modal_data[str(article_id)] = {
     "reliability_score": opinion_data.get("reliability_score", 85),
     "reliability_reason": opinion_data.get("reliability_reason", ""),
     "source_name": "Opinie Redactie",
+    "country_code": "NL",
+    "country_flag": "🇳🇱",
     "is_background": True
 }
 
 featured_html = f"""
 <div class="featured-banner" onclick="openArticle('1')">
     <div class="featured-img-wrapper">
-        <img src="{opinion_data['img']}" alt="{opinion_data['titel']}" onerror="this.onerror=null;this.src='https://source.unsplash.com/featured/800x600/?journalism';">
+        <img src="{opinion_data['img']}" alt="{opinion_data['titel']}">
         <span class="badge badge-featured">🔥 Dagelijks Opinie-Dossier</span>
     </div>
     <div class="featured-content">
@@ -389,7 +390,7 @@ for cat, count in category_counts.items():
         clean_sum = strip_tags(item.get('summary', item.get('description', '')))
         item_link = item.get('link', '#')
         source_name = extract_domain_name(item_link)
-        raw_img = extract_feed_image(item, cat, item.title, article_id)
+        img_url = extract_feed_image(item, f"art_{article_id}")
         
         articles_to_process.append({
             "id": str(article_id),
@@ -397,11 +398,13 @@ for cat, count in category_counts.items():
             "category": cat,
             "link": item_link,
             "source_name": source_name,
+            "country_code": item.get("country_code", "NL"),
+            "country_flag": item.get("country_flag", "🇳🇱"),
             "clean_sum": clean_sum,
-            "img_url": raw_img
+            "img_url": img_url
         })
 
-# BATCH AI PROCESS: Vertalingen, Samenvattingen & Matchende Plaatjes
+# BATCH AI PROCESS (Vertaling, Samenvatting & Captions)
 processed_summaries = {}
 if client and articles_to_process:
     try:
@@ -409,13 +412,12 @@ if client and articles_to_process:
         batch_prompt = (
             f"Verwerk de volgende lijst nieuwsartikelen:\n{json.dumps(input_payload, ensure_ascii=False)}\n\n"
             f"Instructies per artikel ID:\n"
-            f"1. ALS de titel/tekst NIET in het Nederlands, Engels of Duits is (bijv. Frans, Spaans), vertaal deze dan VERPLICHT naar het Nederlands.\n"
-            f"2. Maak een heldere samenvatting in max 2 zinnen (voorkeur Nederlands).\n"
-            f"3. Schrijf een bijpassende caption in het Nederlands die het verhaal op het beeld beschrijft.\n"
-            f"4. Bepaal 2 Engelstalige Unsplash zoekwoorden (search_keywords) die exact en uniek op de inhoud aansluiten.\n\n"
-            f"Geef het antwoord terug als JSON dictionary met het artikel ID als key:\n"
+            f"1. ALS de titel/tekst NIET in het Nederlands, Engels of Duits is, vertaal deze naar het Nederlands.\n"
+            f"2. Maak een heldere samenvatting in max 2 zinnen (Nederlands).\n"
+            f"3. Schrijf een bijpassende caption in het Nederlands die de inhoud van de foto toelicht.\n\n"
+            f"Geef antwoord als JSON dictionary met het artikel ID als key:\n"
             f"{{\n"
-            f'  "2": {{"title": "Gevraagde titel (vertaald naar NL indien vreemde taal, anders origineel)", "summary": "...", "caption": "...", "search_keywords": "word1,word2"}}\n'
+            f'  "2": {{"title": "Gevraagde titel (vertaald indien nodig)", "summary": "...", "caption": "..."}}\n'
             f"}}"
         )
         res_batch = client.models.generate_content(
@@ -436,10 +438,7 @@ for item in articles_to_process:
     final_title = ai_data.get("title", item["title"])
     ai_summary = ai_data.get("summary", item["clean_sum"][:130] + "...")
     img_caption = ai_data.get("caption", f"Afbeelding ter illustratie bij: {final_title[:30]}")
-    
-    # Gebruik altijd contextueel matchende unieke Unsplash beelden op basis van de AI zoekwoorden
-    search_keywords = ai_data.get("search_keywords", f"{item['category']},news")
-    final_img_url = build_unsplash_url(search_keywords, aid)
+    final_img_url = item["img_url"]
     
     modal_data[aid] = {
         "title": final_title,
@@ -450,6 +449,8 @@ for item in articles_to_process:
         "full_text": item["clean_sum"],
         "original_link": item["link"],
         "source_name": item["source_name"],
+        "country_code": item["country_code"],
+        "country_flag": item["country_flag"],
         "is_background": False
     }
 
@@ -457,8 +458,9 @@ for item in articles_to_process:
     articles_html += f"""
     <div class="card{full_width}" onclick="openArticle('{aid}')">
         <div class="card-img-wrapper">
-            <img src="{final_img_url}" alt="{final_title}" onerror="this.onerror=null;this.src='https://source.unsplash.com/featured/800x600/?news&sig={aid}';">
+            <img src="{final_img_url}" alt="{final_title}">
             <span class="badge">{item['category']}</span>
+            <span class="badge-source">{item['country_flag']} {item['country_code']} • {item['source_name']}</span>
         </div>
         <div class="card-content">
             <h3>{final_title}</h3>
@@ -502,6 +504,7 @@ html_content = f"""<!DOCTYPE html>
         .card-img-wrapper {{ position: relative; height: 160px; }}
         .card img {{ width: 100%; height: 100%; object-fit: cover; }}
         .badge {{ position: absolute; top: 10px; left: 10px; background: rgba(0, 180, 216, 0.9); color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; }}
+        .badge-source {{ position: absolute; bottom: 10px; right: 10px; background: rgba(11, 19, 43, 0.85); color: #90e0ef; padding: 3px 8px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; border: 1px solid #3a506b; }}
         .card-content {{ padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }}
         h3 {{ margin: 0 0 10px 0; font-size: 1rem; color: #caf0f8; }}
         p {{ font-size: 0.85rem; color: #cbd5e1; margin: 0; flex-grow: 1; }}
@@ -549,15 +552,18 @@ html_content = f"""<!DOCTYPE html>
     </div>
 
     <footer>
-        <p>Build ID: <code>{build_id}</code> | AI Engine: Gemini 3.6 Flash (Dynamic Image & Translation Enabled)</p>
+        <p>Build ID: <code>{build_id}</code> | AI Engine: Gemini 3.6 Flash (Guaranteed Picsum Images & Country Badges)</p>
     </footer>
 
     <div id="modalOverlay" class="modal-overlay" onclick="if(event.target.id==='modalOverlay') closeModal();">
         <div class="modal-container">
-            <img id="modalImg" style="width:100%; height:240px; object-fit:cover; border-radius:8px;" src="" alt="" onerror="this.onerror=null;this.src='https://source.unsplash.com/featured/800x600/?news';">
+            <img id="modalImg" style="width:100%; height:240px; object-fit:cover; border-radius:8px;" src="" alt="">
             <div id="modalCaption" style="font-size:0.8rem; color:#90e0ef; margin-top:6px; font-style:italic;"></div>
-            <span id="modalBadge" style="background:#00b4d8; color:white; padding:3px 8px; border-radius:10px; font-size:0.7rem; font-weight:bold; margin-top:10px; display:inline-block;"></span>
-            <h2 id="modalTitle" style="color:white; font-size:1.3rem;"></h2>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                <span id="modalBadge" style="background:#00b4d8; color:white; padding:3px 8px; border-radius:10px; font-size:0.7rem; font-weight:bold;"></span>
+                <span id="modalSourceBadge" style="background:#0b132b; color:#90e0ef; padding:3px 8px; border-radius:8px; font-size:0.75rem; border:1px solid #3a506b;"></span>
+            </div>
+            <h2 id="modalTitle" style="color:white; font-size:1.3rem; margin-top:10px;"></h2>
             <div id="modalReliability" style="display:none; background:#0f172a; padding:8px 12px; border-radius:8px; border-left:3px solid #ffb703; margin:10px 0; font-size:0.85rem; color:#e2e8f0;"></div>
             <div id="modalAiBox" style="background:#0b132b; padding:10px; border-left:3px solid #00b4d8; margin:10px 0; color:#90e0ef; font-size:0.9rem;"></div>
             <div id="modalFullText" style="line-height:1.6; font-size:0.9rem;"></div>
@@ -577,6 +583,7 @@ html_content = f"""<!DOCTYPE html>
             document.getElementById('modalImg').src = a.img;
             document.getElementById('modalCaption').innerText = '📷 ' + a.caption;
             document.getElementById('modalBadge').innerText = a.category;
+            document.getElementById('modalSourceBadge').innerText = (a.country_flag || '') + ' ' + (a.country_code || '') + ' • ' + (a.source_name || '');
             document.getElementById('modalTitle').innerText = a.title;
             
             const relBox = document.getElementById('modalReliability');
@@ -587,7 +594,7 @@ html_content = f"""<!DOCTYPE html>
                 relBox.style.display = 'none';
             }}
 
-            document.getElementById('modalAiBox').innerHTML = '<b>Samenvatting & Visuele Focus:</b><br>' + a.ai_summary;
+            document.getElementById('modalAiBox').innerHTML = '<b>Samenvatting & Context:</b><br>' + a.ai_summary;
             document.getElementById('modalFullText').innerHTML = a.full_text;
             
             const srcBtn = document.getElementById('modalSourceLink');
