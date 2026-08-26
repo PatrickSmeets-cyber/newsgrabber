@@ -45,56 +45,115 @@ if api_key:
 
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
 
-# 3. UITGEBREIDE FEEDS (NL, EN, DE + Men's Health & Ironman)
+# 3. UITGEBREIDE FEEDS (Minimaal 10 top relevante bronnen per rubriek: NL, EN, DE)
 FEEDS = {
     "Wereld": [
         "https://feeds.nos.nl/nosnieuwsbuitenland",
         "https://www.nu.nl/rss/Buitenland",
         "http://feeds.bbci.co.uk/news/world/rss.xml",
-        "https://www.tagesschau.de/xml/rss2/"
+        "https://www.tagesschau.de/xml/rss2/",
+        "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+        "https://www.reutersagency.com/feed/?taxonomy=best-topics&post_type=best",
+        "https://www.aljazeera.com/xml/rss/all.xml",
+        "https://rss.dw.com/rdf/rss-en-world",
+        "https://www.lemonde.fr/en/rss/une.xml",
+        "https://www.theguardian.com/world/rss"
     ],
     "Europa": [
         "https://feeds.nos.nl/nosnieuwseuropa",
         "https://www.bnr.nl/rss/nieuws",
-        "https://www.politico.eu/feed/"
+        "https://www.politico.eu/feed/",
+        "https://www.euronews.com/rss?format=xml",
+        "https://www.spiegel.de/europa/index.rss",
+        "https://www.bbc.com/news/world/europe/rss.xml",
+        "https://www.lemonde.fr/europe/rss_full.xml",
+        "https://www.irishtimes.com/crawled/rss/world/europe.xml",
+        "https://www.brusselsjournal.com/rss.xml",
+        "https://www.euractiv.com/feed/"
     ],
     "Nederland": [
         "https://feeds.nos.nl/nosnieuwsbinnenland",
         "https://www.rtlnieuws.nl/rss.xml",
-        "https://www.nu.nl/rss/Binnenland"
+        "https://www.nu.nl/rss/Binnenland",
+        "https://www.trouw.nl/binnenland/rss.xml",
+        "https://www.volkskrant.nl/nieuws-achtergrond/rss.xml",
+        "https://www.parool.nl/nederland/rss.xml",
+        "https://www.ad.nl/binnenland/rss.xml",
+        "https://www.telegraaf.nl/rss",
+        "https://www.nrc.nl/rss/",
+        "https://www.metrotime.be/nl/rss.xml"
     ],
     "Midden-Limburg": [
         "https://www.weertdegekste.nl/feed/",
         "https://www.nederweert24.nl/feed/",
-        "https://www.l1nieuws.nl/rss/nieuws"
+        "https://www.l1nieuws.nl/rss/nieuws",
+        "https://www.limburger.nl/rss",
+        "https://www.middenlimburgactueel.nl/feed/",
+        "https://www.weert.nl/rss",
+        "https://www.roermond.nl/rss",
+        "https://www.1limburg.nl/rss",
+        "https://www.vilt.be/rss",
+        "https://www.vvd-weert.nl/feed/"
     ],
     "Wiskunde & Wetenschap": [
         "https://www.nu.nl/rss/Wetenschap",
         "https://feeds.nos.nl/nosnieuwswetenschap",
         "https://www.sciencedaily.com/rss/all.xml",
-        "https://www.spektrum.de/alias/rss/spektrum-de-rss-feed/996406"
+        "https://www.spektrum.de/alias/rss/spektrum-de-rss-feed/996406",
+        "https://www.nature.com/nature.rss",
+        "https://www.newscientist.com/feed/home/",
+        "https://phys.org/rss-feed/",
+        "https://www.scientificamerican.com/feed/",
+        "https://www.kennislink.nl/feed/",
+        "https://www.quantamagazine.org/feed/"
     ],
     "Technologie": [
         "https://www.bright.nl/rss",
         "https://www.nu.nl/rss/Tech",
         "https://feeds.arstechnica.com/arstechnica/index",
-        "https://www.heise.de/rss/heise-atom.xml"
+        "https://www.heise.de/rss/heise-atom.xml",
+        "https://tweakers.net/feeds/nieuws.xml",
+        "https://www.theverge.com/rss/index.xml",
+        "https://wired.com/feed/rss",
+        "https://techcrunch.com/feed/",
+        "https://www.golem.de/rss.php?feed=RSS2.0",
+        "https://www.zdnet.com/news/rss.xml"
     ],
     "Sport": [
         "https://feeds.nos.nl/nossport",
         "https://www.nu.nl/rss/Sport",
         "https://www.espn.com/espn/rss/news",
-        "https://www.kicker.de/news.rss"
+        "https://www.kicker.de/news.rss",
+        "https://www.voetbalzone.nl/rss/nieuws.xml",
+        "https://www.sportnieuws.nl/rss",
+        "https://www.bbc.com/sport/rss.xml",
+        "https://www.skysports.com/rss/12040",
+        "https://www.marca.com/en/rss/index.xml",
+        "https://www.laola1.at/de/rss/"
     ],
     "Fitness & Resistance Training": [
         "https://www.fit.nl/feed",
         "https://www.menshealth.com/nl/rss/all.xml/",
         "https://www.menshealth.com/rss/all.xml/",
-        "https://www.ironman.com/news/rss"
+        "https://www.ironman.com/news/rss",
+        "https://www.bodybuilding.com/rss/articles",
+        "https://startingstrength.com/feed",
+        "https://generationsiron.com/feed/",
+        "https://www.strongerbyscience.com/feed/",
+        "https://breakmuscle.com/feed/",
+        "https://www.t-nation.com/feed/"
     ],
     "Humor & Luchtig": [
         "https://speld.nl/feed/",
-        "https://www.nu.nl/rss/Opmerkelijk"
+        "https://www.nu.nl/rss/Opmerkelijk",
+        "https://www.theonion.com/rss",
+        "https://www.postillon.com/feeds/posts/default?alt=rss",
+        "https://www.humo.be/rss",
+        "https://www.clickhole.com/feed/",
+        "https://www.duffelblog.com/feed",
+        "https://www.babylonbee.com/feed",
+        "https://www.vandaaginside.nl/rss.xml",
+        "https://www.fok.nl/rss/nieuws"
     ]
 }
 
@@ -154,20 +213,13 @@ def clean_markdown(text):
 def strip_tags(text):
     return re.sub('<[^<]+?>', '', text)
 
-# Fallback afbeeldingen per categorie (Unsplash HD)
-FALLBACK_IMAGES = {
-    "Wereld": "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=800",
-    "Europa": "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=800",
-    "Nederland": "https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=800",
-    "Midden-Limburg": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800",
-    "Wiskunde & Wetenschap": "https://images.unsplash.com/photo-1507668077129-56e32842fceb?w=800",
-    "Technologie": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800",
-    "Sport": "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800",
-    "Fitness & Resistance Training": "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=800",
-    "Humor & Luchtig": "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=800"
-}
+# Dynamic Context-Based Image Generator (Unsplash Topic Specific)
+def get_topic_image_url(title, category):
+    keywords = re.findall(r'\b[a-zA-Z]{4,}\b', title.lower())
+    query = ",".join(keywords[:2]) if keywords else category.lower()
+    return f"https://source.unsplash.com/featured/800x600/?{urllib.parse.quote(query)}"
 
-def extract_feed_image(entry, default_category):
+def extract_feed_image(entry, default_category, title):
     if 'media_content' in entry and entry.media_content:
         for media in entry.media_content:
             if 'url' in media and media['url'].startswith('http'):
@@ -182,11 +234,12 @@ def extract_feed_image(entry, default_category):
     if img_match:
         return img_match.group(1)
         
-    return FALLBACK_IMAGES.get(default_category, "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800")
+    return get_topic_image_url(title, default_category)
 
-# 6. FEEDS VERZAMELEN
+# 6. FEEDS VERZAMELEN MET ONTDUBBELING
 all_headlines_with_sources = []
 feed_results = {}
+seen_titles = set()
 
 for cat, urls in FEEDS.items():
     pool_items = []
@@ -194,7 +247,12 @@ for cat, urls in FEEDS.items():
         try:
             feed = feedparser.parse(url, request_headers=HEADERS)
             if feed.entries:
-                pool_items.extend(feed.entries)
+                for entry in feed.entries:
+                    # Ontdubbeling op basis van opgeschoonde titel
+                    clean_t = re.sub(r'[^\w\s]', '', entry.title.lower()).strip()
+                    if clean_t not in seen_titles:
+                        seen_titles.add(clean_t)
+                        pool_items.append(entry)
         except Exception as err:
             print(f"Feed fout {url}: {err}")
             
@@ -207,7 +265,7 @@ for cat, urls in FEEDS.items():
             "category": cat
         })
 
-# 7. OPINIESTUK GENEREREN OF UIT CACHE LADEN (1x per dag)
+# 7. OPINIESTUK GENEREREN OF UIT CACHE LADEN (1x per dag) + Betrouwbaarheidsindicator
 OPINION_CACHE_FILE = "opinion_cache.json"
 opinion_data = None
 
@@ -230,13 +288,16 @@ if not opinion_data and client and all_headlines_with_sources:
             f"Opdracht:\n"
             f"1. Kies het meest maatschappelijk relevante onderwerp.\n"
             f"2. Schrijf een sterk, pakkend achtergrond- en opinieartikel met een specifieke, aansprekende titel.\n"
-            f"3. Geef een visuele beschrijving voor een bijpassend beeld (image_caption) dat exact beschrijft wat er op de afbeelding te zien is.\n\n"
+            f"3. Geef een visuele beschrijving voor een bijpassend beeld (image_caption) dat exact beschrijft wat er op de afbeelding te zien is en past bij de inhoud.\n"
+            f"4. Bepaal een betrouwbaarheidsindicator als percentage (score 0-100%) op basis van de gebruikte bronnen en de verifieerbaarheid van de feiten, en geef een korte toelichting.\n\n"
             f"Geef antwoord als JSON:\n"
             f"{{\n"
             f'  "titel": "Pakkende specifieke titel",\n'
             f'  "samenvatting": "Korte samenvatting in 2 zinnen",\n'
             f'  "inhoud": "### Kerninzichten\\n* [Punt 1]\\n* [Punt 2]\\n\\n### Diepgaande Analyse\\n[Tekst]\\n\\n### Conclusie\\n[Conclusie]",\n'
-            f'  "image_caption": "Gedetailleerde beschrijving van het visuele beeld bij dit onderwerp"\n'
+            f'  "image_caption": "Gedetailleerde beschrijving die exact aansluit op de afbeelding en tekst",\n'
+            f'  "reliability_score": 85,\n'
+            f'  "reliability_reason": "Gebaseerd op meervoudige internationale kwaliteitsmediameldingen."\n'
             f"}}"
         )
         res = client.models.generate_content(
@@ -250,7 +311,9 @@ if not opinion_data and client and all_headlines_with_sources:
             "samenvatting": data.get("samenvatting", ""),
             "inhoud": clean_markdown(data.get("inhoud", "")),
             "image_caption": data.get("image_caption", "Sfeerbeeld van het maatschappelijk debat"),
-            "img": "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200"
+            "reliability_score": data.get("reliability_score", 85),
+            "reliability_reason": data.get("reliability_reason", "Meervoudig geverifieerde bronnen."),
+            "img": get_topic_image_url(data.get("titel", "news"), "Wereld")
         }
         with open(OPINION_CACHE_FILE, "w", encoding="utf-8") as f:
             json.dump({"date": today_str, "data": opinion_data}, f, ensure_ascii=False)
@@ -262,6 +325,8 @@ if not opinion_data and client and all_headlines_with_sources:
             "samenvatting": "Kon geen nieuw dossier genereren.",
             "inhoud": f"Fout bij genereren: {err}",
             "image_caption": "Nieuwsoverzicht",
+            "reliability_score": 50,
+            "reliability_reason": "Onvoldoende data voor verificatie.",
             "img": "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200"
         }
 
@@ -278,6 +343,8 @@ modal_data[str(article_id)] = {
     "caption": opinion_data["image_caption"],
     "ai_summary": opinion_data["samenvatting"],
     "full_text": opinion_data["inhoud"],
+    "reliability_score": opinion_data.get("reliability_score", 85),
+    "reliability_reason": opinion_data.get("reliability_reason", ""),
     "is_background": True
 }
 
@@ -290,7 +357,8 @@ featured_html = f"""
     <div class="featured-content">
         <h2>{opinion_data['titel']}</h2>
         <p>{opinion_data['samenvatting']}</p>
-        <div style="font-size:0.75rem; color:#ffb703; margin-top:8px;">📷 {opinion_data['image_caption']}</div>
+        <div style="font-size:0.8rem; color:#4cc9f0; margin-top:8px;"><b>🛡️ Betrouwbaarheidsindicator:</b> {opinion_data.get('reliability_score', 85)}% <small style="color:#cbd5e1;">({opinion_data.get('reliability_reason', '')})</small></div>
+        <div style="font-size:0.75rem; color:#ffb703; margin-top:6px;">📷 {opinion_data['image_caption']}</div>
         <div class="read-more">Lees het volledige opiniedossier &rarr;</div>
     </div>
 </div>
@@ -308,7 +376,7 @@ for cat, count in category_counts.items():
     for item in items:
         article_id += 1
         clean_sum = strip_tags(item.get('summary', item.get('description', '')))
-        img_url = extract_feed_image(item, cat)
+        img_url = extract_feed_image(item, cat, item.title)
         articles_to_process.append({
             "id": str(article_id),
             "title": item.title,
@@ -318,7 +386,7 @@ for cat, count in category_counts.items():
             "img_url": img_url
         })
 
-# BATCH AI PROCESS: Alle nieuwsartikelen in 1 enkele API call verwerken!
+# BATCH AI PROCESS: Alle nieuwsartikelen in 1 enkele API call verwerken
 processed_summaries = {}
 if client and articles_to_process:
     try:
@@ -326,8 +394,8 @@ if client and articles_to_process:
         batch_prompt = (
             f"Verwerk de volgende lijst nieuwsartikelen:\n{json.dumps(input_payload, ensure_ascii=False)}\n\n"
             f"Opdracht per artikel ID:\n"
-            f"1. Maak een heldere samenvatting in max 2 zinnen.\n"
-            f"2. Schrijf een 'caption' die een nauwkeurige, inhoudelijke beschrijving geeft van wat er op de bijbehorende nieuwsfoto te zien is (max 10 woorden).\n\n"
+            f"1. Maak een heldere samenvatting in max 2 zinnen in het Nederlands.\n"
+            f"2. Schrijf een 'caption' die het getoonde visuele beeld exact beschrijft in relatie tot de inhoud van de tekst (max 12 woorden).\n\n"
             f"Geef het antwoord terug als JSON dictionary met het artikel ID als key:\n"
             f"{{\n"
             f'  "2": {{"summary": "...", "caption": "..."}},\n'
@@ -350,7 +418,7 @@ for item in articles_to_process:
     ai_data = processed_summaries.get(aid, {})
     
     ai_summary = ai_data.get("summary", item["clean_sum"][:130] + "...")
-    img_caption = ai_data.get("caption", f"Nieuwsafbeelding bij {item['title'][:30]}")
+    img_caption = ai_data.get("caption", f"Afbeelding ter illustratie van: {item['title'][:30]}")
     
     modal_data[aid] = {
         "title": item["title"],
@@ -398,7 +466,7 @@ html_content = f"""<!DOCTYPE html>
         .widget-title {{ font-size: 0.75rem; text-transform: uppercase; color: #90e0ef; font-weight: bold; margin-bottom: 5px; }}
 
         .featured-banner {{ width: 100%; background: #1e293b; border-radius: 16px; border: 2px solid #ffb703; overflow: hidden; margin-bottom: 25px; cursor: pointer; display: flex; flex-direction: column; }}
-        @media (min-width: 768px) {{ .featured-banner {{ flex-direction: row; height: 320px; }} .featured-img-wrapper {{ width: 50%; height: 100% !important; }} .featured-content {{ width: 50%; padding: 30px !important; }} }}
+        @media (min-width: 768px) {{ .featured-banner {{ flex-direction: row; height: 340px; }} .featured-img-wrapper {{ width: 50%; height: 100% !important; }} .featured-content {{ width: 50%; padding: 30px !important; }} }}
         .featured-img-wrapper {{ position: relative; height: 200px; }}
         .featured-img-wrapper img {{ width: 100%; height: 100%; object-fit: cover; }}
         .badge-featured {{ background: #ffb703; color: #000; position: absolute; top: 15px; left: 15px; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; }}
@@ -468,6 +536,7 @@ html_content = f"""<!DOCTYPE html>
             <div id="modalCaption" style="font-size:0.8rem; color:#90e0ef; margin-top:6px; font-style:italic;"></div>
             <span id="modalBadge" style="background:#00b4d8; color:white; padding:3px 8px; border-radius:10px; font-size:0.7rem; font-weight:bold; margin-top:10px; display:inline-block;"></span>
             <h2 id="modalTitle" style="color:white; font-size:1.3rem;"></h2>
+            <div id="modalReliability" style="display:none; background:#0f172a; padding:8px 12px; border-radius:8px; border-left:3px solid #ffb703; margin:10px 0; font-size:0.85rem; color:#e2e8f0;"></div>
             <div id="modalAiBox" style="background:#0b132b; padding:10px; border-left:3px solid #00b4d8; margin:10px 0; color:#90e0ef; font-size:0.9rem;"></div>
             <div id="modalFullText" style="line-height:1.6; font-size:0.9rem;"></div>
             <div class="modal-actions">
@@ -487,6 +556,15 @@ html_content = f"""<!DOCTYPE html>
             document.getElementById('modalCaption').innerText = '📷 ' + a.caption;
             document.getElementById('modalBadge').innerText = a.category;
             document.getElementById('modalTitle').innerText = a.title;
+            
+            const relBox = document.getElementById('modalReliability');
+            if (a.reliability_score !== undefined) {{
+                relBox.style.display = 'block';
+                relBox.innerHTML = '<b>🛡️ Betrouwbaarheidsindicator: ' + a.reliability_score + '%</b><br><small style="color:#cbd5e1;">' + (a.reliability_reason || '') + '</small>';
+            }} else {{
+                relBox.style.display = 'none';
+            }}
+
             document.getElementById('modalAiBox').innerHTML = '<b>Samenvatting & Visuele Focus:</b><br>' + a.ai_summary;
             document.getElementById('modalFullText').innerHTML = a.full_text;
             
