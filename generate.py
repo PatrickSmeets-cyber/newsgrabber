@@ -15,15 +15,16 @@ warnings.filterwarnings("ignore", category=UserWarning, module="google.genai")
 
 from google import genai
 
-# 1. TIJDZONE & UUR-CHECK (05:00 t/m 20:00 CET/CEST)
+# 1. TIJDZONE & STRIKTE UUR-CHECK (Alleen om 05:00, 10:00, 15:00 en 20:00 CET)
 tz = zoneinfo.ZoneInfo("Europe/Amsterdam")
 now = datetime.now(tz)
 current_hour = now.hour
 
 print(f"Huidige tijd: {now.strftime('%Y-%m-%d %H:%M:%S')} (Uur: {current_hour})")
 
-if not (5 <= current_hour <= 20):
-    print("⏳ Buiten de actieve uren (05:00 - 20:00 uur). Geen update uitgevoerd.")
+# Stopt het script DIRECT als het geen 5, 10, 15 of 20 uur is (bespaart AI-tokens en CPU-tijd)
+if current_hour not in [5, 10, 15, 20]:
+    print(f"⏳ Huidige uur ({current_hour}:00) is geen update-moment (gepland om 05:00, 10:00, 15:00 en 20:00). Script stopt zonder AI-aanroep.")
     exit(0)
 
 last_updated = now.strftime("%d-%m-%Y om %H:%M uur")
@@ -626,7 +627,7 @@ html_content = f"""<!DOCTYPE html>
 <body>
     <header>
         <h1 style="margin: 0 0 5px 0;">⚡ Patrick’s Nieuwsboard</h1>
-        <p style="margin: 0;">Laatst bijgewerkt: <b>{last_updated}</b> (Actieve uren: 05:00-20:00 CET)</p>
+        <p style="margin: 0;">Laatst bijgewerkt: <b>{last_updated}</b> (Geplande uren: 05:00, 10:00, 15:00 & 20:00 CET)</p>
         
         <div class="ticker-wrap">
             <div class="ticker-icon">📡</div>
