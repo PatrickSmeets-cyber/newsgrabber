@@ -352,11 +352,13 @@ ticker_items_html = ""
 for t_item in recent_ticker_items:
     ticker_items_html += f'<span class="ticker-item"><span class="ticker-flag">{t_item["flag"]} {t_item["country"]}</span> <b>{t_item["source"]}:</b> {t_item["title"]}</span>'
 
-# 7. OPINIESTUK GENEREREN OF CACHE LADEN MET CONTEXTUELE AFBEELDING
+# 7. OPINIESTUK GENEREREN OF CACHE LADEN (Negeren bij handmatige workflow_dispatch run)
 OPINION_CACHE_FILE = "opinion_cache.json"
 opinion_data = None
 
-if os.path.exists(OPINION_CACHE_FILE):
+if is_workflow_dispatch and os.path.exists(OPINION_CACHE_FILE):
+    print("🔄 Handmatige run gedetecteerd: opiniestuk-cache wordt genegeerd.")
+elif os.path.exists(OPINION_CACHE_FILE):
     try:
         with open(OPINION_CACHE_FILE, "r", encoding="utf-8") as f:
             cached = json.load(f)
@@ -753,7 +755,10 @@ html_content = f"""<!DOCTYPE html>
 </html>
 """
 
+# Forceer unieke commit door verborgen timestamp onderaan het HTML-bestand toe te voegen
+html_content += f"\n<!-- Build Timestamp: {datetime.now(tz).isoformat()} -->"
+
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
 
-print(f"✅ index.html gegenereerd! Build ID: {build_id}")
+print(f"✅ index.html succesvol gegenereerd! Build ID: {build_id}")
