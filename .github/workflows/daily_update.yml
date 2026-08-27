@@ -2,8 +2,8 @@ name: Nieuwsboard Uurlijkse Update
 
 on:
   schedule:
-    # Draait elk uur tussen 03:00 en 19:00 UTC (komt overeen met 05:00 - 20:00 CET/CEST)
-    - cron: '0 3-19 * * *'
+    # Trigger elk uur (het Python script bepaalt zelf of er daadwerkelijk een AI-update draait)
+    - cron: '0 * * * *'
   workflow_dispatch:
 
 jobs:
