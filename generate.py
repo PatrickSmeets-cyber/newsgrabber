@@ -15,16 +15,21 @@ warnings.filterwarnings("ignore", category=UserWarning, module="google.genai")
 
 from google import genai
 
-# 1. TIJDZONE & STRIKTE UUR-CHECK (Alleen om 05:00, 10:00, 15:00 en 20:00 CET)
+# 1. TIJDZONE & RUIMERE UUR-CHECK (Met opvang van GitHub Actions vertraging)
 tz = zoneinfo.ZoneInfo("Europe/Amsterdam")
 now = datetime.now(tz)
 current_hour = now.hour
 
 print(f"Huidige tijd: {now.strftime('%Y-%m-%d %H:%M:%S')} (Uur: {current_hour})")
 
-# Stopt het script DIRECT als het geen 5, 10, 15 of 20 uur is (bespaart AI-tokens en CPU-tijd)
-if current_hour not in [5, 10, 15, 20]:
-    print(f"⏳ Huidige uur ({current_hour}:00) is geen update-moment (gepland om 05:00, 10:00, 15:00 en 20:00). Script stopt zonder AI-aanroep.")
+# Geaccepteerde update-uren (inclusief +1 uur speling voor vertraagde GitHub triggers)
+ALLOWED_HOURS = [5, 6, 10, 11, 15, 16, 20, 21]
+
+# Handmatige triggers via GitHub UI (workflow_dispatch) altijd toestaan
+is_workflow_dispatch = os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch"
+
+if not is_workflow_dispatch and current_hour not in ALLOWED_HOURS:
+    print(f"⏳ Huidige uur ({current_hour}:00) valt buiten de geplande vensters {ALLOWED_HOURS}. Script stopt direct om AI-tokens te besparen.")
     exit(0)
 
 last_updated = now.strftime("%d-%m-%Y om %H:%M uur")
@@ -280,7 +285,6 @@ def extract_domain_name(url):
         return "Bron"
 
 def get_guaranteed_image(item_id, keywords="news"):
-    """ Haalt een contextuele foto op via Unsplash op basis van relevante trefwoorden """
     kw_encoded = urllib.parse.quote(keywords)
     return f"https://source.unsplash.com/800x600/?{kw_encoded}"
 
@@ -721,17 +725,14 @@ html_content = f"""<!DOCTYPE html>
             document.getElementById('modalOverlay').style.display = 'none';
         }}
 
-        // --- VERVERS-LOGICA GEOPTIMALISEERD VOOR IPAD / SAFARI ---
         function checkAndReload() {{
             const now = Date.now();
-            // Als het scherm langer dan 60 seconden niet actief was, ververs de pagina
             if (now - lastActiveTime > 60000) {{
                 window.location.reload(true);
             }}
             lastActiveTime = now;
         }}
 
-        // 1. Heropenen vanuit Safari-geheugen (BFcache)
         window.addEventListener('pageshow', function(event) {{
             if (event.persisted) {{
                 window.location.reload(true);
@@ -740,14 +741,12 @@ html_content = f"""<!DOCTYPE html>
             }}
         }});
 
-        // 2. Tab-wissel of ontgrendeling
         document.addEventListener('visibilitychange', function() {{
             if (document.visibilityState === 'visible') {{
                 checkAndReload();
             }}
         }});
 
-        // 3. Focus wanneer PWA of Safari op de voorgrond komt
         window.addEventListener('focus', checkAndReload);
     </script>
 </body>
