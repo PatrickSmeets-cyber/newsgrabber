@@ -3,7 +3,7 @@ name: Nieuwsboard Uurlijkse Update
 on:
   schedule:
     # Draait elk uur op het hele uur (UTC)
-    - cron: '0 * * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch: # Maakt handmatig starten via de GitHub UI mogelijk
 
 jobs:
