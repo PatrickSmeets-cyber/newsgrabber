@@ -23,7 +23,7 @@ current_hour = now.hour
 print(f"Huidige tijd: {now.strftime('%Y-%m-%d %H:%M:%S')} (Uur: {current_hour})")
 
 # Geaccepteerde update-uren (inclusief +1 uur speling voor vertraagde GitHub triggers)
-ALLOWED_HOURS = [5, 6, 10, 11, 15, 16, 20, 21]
+ALLOWED_HOURS = [5, 10, 15, 20]
 
 # Handmatige triggers via GitHub UI (workflow_dispatch) altijd toestaan
 is_workflow_dispatch = os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch"
